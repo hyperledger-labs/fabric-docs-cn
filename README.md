@@ -15,5 +15,5 @@ JulienGuo - https://github.com/JulienGuo
 lujjiang - lujjiang@cn.ibm.com
 
 # Sponsor
-lehors - lehors@us.ibm.com
+Arnaud Le Hors - lehors@us.ibm.com
 Baohua Yang - yangbaohua@gmail.com
