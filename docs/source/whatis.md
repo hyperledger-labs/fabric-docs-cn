@@ -17,7 +17,7 @@ Bitcoin and Ethereum fall into a class of blockchain that we would classify as
 _public permissionless_ blockchain technology.  Basically, these are public
 networks, open to anyone, where participants interact anonymously.
 
-区块链的第一个、也是最广为人知的应用是.[比特币](https://en.wikipedia.org/wiki/Bitcoin)加密货币，其他应用都跟随它的脚步产生。以太币是另一种加密货币，采用了不同的方法，集成了许多与比特币相同的特性，但增加了 _智能合约_ ，从而为分布式应用创建了一个平台。比特币和以太坊属于一类区块链，我们将其归类为 _公共非许可_ 区块链技术。基本上，这些是公共网络，对任何人开放，参与者匿名互动。
+区块链的第一个、也是最广为人知的应用是[比特币](https://en.wikipedia.org/wiki/Bitcoin)加密货币，其他应用都跟随它的脚步产生。以太币是另一种加密货币，采用了不同的方法，集成了许多与比特币相同的特性，但增加了 _智能合约_ ，从而为分布式应用创建了一个平台。比特币和以太坊属于一类区块链，我们将其归类为 _公共非许可_ 区块链技术。基本上，这些是公共网络，对任何人开放，参与者匿名互动。
 
 As the popularity of Bitcoin, Ethereum and a few other derivative technologies
 grew, interest in applying the underlying technology of the blockchain,
@@ -112,7 +112,7 @@ decentralized use case, a more traditional
 [byzantine fault tolerant](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance)
 (BFT) consensus protocol might be required.
 
-该平台最重要的区别之一是它支持**可插拔的共识协议**，使平台能够更有效地进行定制以适应特定的用例和信任模型。例如，当部署在单个企业内或由可信任的权威机构运营时，完全拜占庭容错的共识可能被认为是不必要的，并且对性能和吞吐量造成过度拖累。在诸如此类的情况下，.[崩溃容错](https://en.wikipedia.org/wiki/Fault_tolerance)共识协议可能绰绰有余，而在去中心化用例中，可能需要更传统的.[拜占庭容错](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance)共识协议。
+该平台最重要的区别之一是它支持**可插拔的共识协议**，使平台能够更有效地进行定制以适应特定的用例和信任模型。例如，当部署在单个企业内或由可信任的权威机构运营时，完全拜占庭容错的共识可能被认为是不必要的，并且对性能和吞吐量造成过度拖累。在诸如此类的情况下，[崩溃容错](https://en.wikipedia.org/wiki/Fault_tolerance)共识协议可能绰绰有余，而在去中心化用例中，可能需要更传统的[拜占庭容错](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance)共识协议。
 
 Fabric can leverage consensus protocols that **do not require a native
 cryptocurrency** to incent costly mining or to fuel smart contract execution.
