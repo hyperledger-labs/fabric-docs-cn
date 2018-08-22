@@ -461,4 +461,4 @@ Srinivasan Muralidharan, Chet Murthy, Binh Nguyen, Manish Sethi, Gari Singh,
 Keith Smith, Alessandro Sorniotti, Chrysoula Stathakopoulou, Marko Vukolic,
 Sharon Weed Cocco, Jason Yellick
 
-前面的内容源自同行审阅的 [“Hyperledger Fabric：一个授权区块链的分布式操作系统”](https://arxiv.org/abs/1801.10228v1) - Elli Androulaki，Artem Barger，Vita Bortnikov，Christian Cachin，Konstantinos Christidis，Angelo De Caro，David Enyeart，Christopher Ferris，Gennady Laventman，Yacov Manevich，Srinivasan Muralidharan，Chet Murthy，Binh Nguyen，Manish Sethi，Gari Singh，Keith Smith，Alessandro Sorniotti，Chrysoula Stathakopoulou，Marko Vukolic，Sharon Weed Cocco，Jason Yellick
+前面的内容源自同行审阅的 [“Hyperledger Fabric：一个许可区块链的分布式操作系统”](https://arxiv.org/abs/1801.10228v1) - Elli Androulaki，Artem Barger，Vita Bortnikov，Christian Cachin，Konstantinos Christidis，Angelo De Caro，David Enyeart，Christopher Ferris，Gennady Laventman，Yacov Manevich，Srinivasan Muralidharan，Chet Murthy，Binh Nguyen，Manish Sethi，Gari Singh，Keith Smith，Alessandro Sorniotti，Chrysoula Stathakopoulou，Marko Vukolic，Sharon Weed Cocco，Jason Yellick
