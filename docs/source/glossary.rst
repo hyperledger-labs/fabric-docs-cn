@@ -1,11 +1,13 @@
 
-Glossary
+Glossary - 词汇表
 ===========================
 
 Terminology is important, so that all Hyperledger Fabric users and developers
 agree on what we mean by each specific term. What is a smart contract for
 example. The documentation will reference the glossary as needed, but feel free
 to read the entire thing in one sitting if you like; it's pretty enlightening!
+
+专业术语很重要，所以全体“超级账本Fabric”项目的用户和开发人员，都同意我们所说的每个特定术语的含义，比如什么是链码。该文档将会按需引用这些术语，如果你愿意的话 可以随意阅读整个文档，这会非常有启发！
 
 .. _Anchor-Peer:
 
