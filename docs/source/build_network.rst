@@ -472,12 +472,22 @@ Configtxgen 使用一个文件- ``configtx.yaml``，这个文件包含了一个�
 These headers are important, as we will pass them in as arguments when we create
 our artifacts.
 
+
+
+这些标题很重要，因为在我们创建我们的网络各项构件的时侯它们将作为传递的参数。
+
 .. note:: Notice that our ``SampleConsortium`` is defined in
 ​          the system-level profile and then referenced by
 ​          our channel-level profile.  Channels exist within
 ​          the purview of a consortium, and all consortia
 ​          must be defined in the scope of the network at
 ​          large.
+
+
+
+.. note::
+
+​	注意我们的 ``SampleConsortium`` 在系统级配置文件中定义，并且在通道级的配置文件中关联引用。管道存在于联盟的范围内，所有的联盟必须定义在整个网络范围内。
 
 This file also contains two additional specifications that are worth
 noting. Firstly, we specify the anchor peers for each Peer Org
@@ -486,6 +496,14 @@ the location of the MSP directory for each member, in turn allowing us to store 
 root certificates for each Org in the orderer genesis block.  This is a critical
 concept. Now any network entity communicating with the ordering service can have
 its digital signature verified.
+
+
+
+该文件还包含两个值得注意的附加规范。第一，我们为每个组织指定了锚节点（``peer0.org1.example.com`` & ``peer0.org2.example.com``）。第二，我们为每个成员指定MSP文件位置，进而让我们可以在order的初始区块中存储每个组织的根证书。这是一个关键概念。现在每个和order service 服务通信的网络实体都有它自己的被验证过的数字签名证书。
+
+
+
+
 
 Run the tools
 -------------
