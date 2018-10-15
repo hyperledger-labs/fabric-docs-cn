@@ -505,14 +505,16 @@ its digital signature verified.
 
 
 
-Run the tools
+Run the tools - 运行工具
 -------------
 
 You can manually generate the certificates/keys and the various configuration
 artifacts using the ``configtxgen`` and ``cryptogen`` commands. Alternately,
 you could try to adapt the byfn.sh script to accomplish your objectives.
 
-Manually generate the artifacts
+你可以用`configtxgen`和`cryptogen`命令来手动生成证书/密钥和各种配置文件。或者，你可以尝试使用`byfn.sh`脚本来完成你的目标。
+
+Manually generate the artifacts - 手动生成构件
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 You can refer to the ``generateCerts`` function in the byfn.sh script for the
@@ -520,14 +522,24 @@ commands necessary to generate the certificates that will be used for your
 network configuration as defined in the ``crypto-config.yaml`` file. However,
 for the sake of convenience, we will also provide a reference here.
 
+你可以参考 byfn.sn脚本中的``generateCerts`` 函数，生成证书所需要的命令。它将会在 ``crypto-config.yaml``文件中被定义，作为你的网络配置使用。然而,为了方便起见，我们在这里也提供一个参考。
+
+
+
 First let's run the ``cryptogen`` tool.  Our binary is in the ``bin``
 directory, so we need to provide the relative path to where the tool resides.
+
+
+
+首先，让我们来运行``cryptogen`` 工具。我们的这个二进制文件存放在 ``bin`` 文件目录下，所以我们需要提供工具所在的相对路径。
 
 .. code:: bash
 
     ../bin/cryptogen generate --config=./crypto-config.yaml
 
 You should see the following in your terminal:
+
+你会在你的终端中看到下面的内容：
 
 .. code:: bash
 
@@ -537,9 +549,15 @@ You should see the following in your terminal:
 The certs and keys (i.e. the MSP material) will be output into a directory - ``crypto-config`` -
 at the root of the ``first-network`` directory.
 
+证书和秘钥 (i.e. the MSP material)将会输出在文件夹- ``crypto-config`` 。位置在 ``first-network``文件夹的根目录。
+
+
+
 Next, we need to tell the ``configtxgen`` tool where to look for the
 ``configtx.yaml`` file that it needs to ingest.  We will tell it look in our
 present working directory:
+
+接下来，我们需要告诉`configtxgen`工具去哪儿去寻找 它需要提取内容的`configtx.yaml`文件。我们会告诉它在我们当前所在工作目录：
 
 .. code:: bash
 
@@ -547,11 +565,15 @@ present working directory:
 
 Then, we'll invoke the ``configtxgen`` tool to create the orderer genesis block:
 
+然后我们会调用``configtxgen`` 工具去创建初始区块：
+
 .. code:: bash
 
     ../bin/configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block
 
 You should see an output similar to the following in your terminal:
+
+你可以在你的终端看到相似的输出：
 
 .. code:: bash
 
@@ -563,13 +585,19 @@ You should see an output similar to the following in your terminal:
 ​          will be output into the ``channel-artifacts`` directory at the root of this
 ​          project.
 
+.. note:: 
+
+​	我们创建的 orderer初始区块和随后的网络构件将会输出在这个项目的根目录， ``channel-artifacts`` 文件夹下。
+
 .. _createchanneltx:
 
-Create a Channel Configuration Transaction
+Create a Channel Configuration Transaction - 创建通道配置交易
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Next, we need to create the channel transaction artifact. Be sure to replace ``$CHANNEL_NAME`` or
 set ``CHANNEL_NAME`` as an environment variable that can be used throughout these instructions:
+
+接下来，我们需要去创建通道的交易构件。请确保替换`$CHANNEL_NAME`或者将`CHANNEL_NAME`设置为整个说明中可以使用的环境变量：
 
 .. code:: bash
 
@@ -578,6 +606,8 @@ set ``CHANNEL_NAME`` as an environment variable that can be used throughout thes
     export CHANNEL_NAME=mychannel  && ../bin/configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID $CHANNEL_NAME
 
 You should see an output similar to the following in your terminal:
+
+你可以在终端中看到一份相似的输出：
 
 .. code:: bash
 
@@ -589,31 +619,46 @@ Next, we will define the anchor peer for Org1 on the channel that we are
 constructing. Again, be sure to replace ``$CHANNEL_NAME`` or set the environment variable
 for the following commands.  The terminal output will mimic that of the channel transaction artifact:
 
+接下来，我们会为我们构建的通道上的Org1定义锚节点。请再次确认$CHANNEL_NAME已被替换或者为以下命令设置了环境变量：
+
 .. code:: bash
 
     ../bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org1MSP
 
 Now, we will define the anchor peer for Org2 on the same channel:
 
+现在，我们将在同一个通道上为Org2定义锚节点 `anchor peer`：
+
 .. code:: bash
 
     ../bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org2MSP
 
-Start the network
+Start the network -启动网络
 -----------------
 
 .. note:: If you ran the ``byfn.sh`` example above previously, be sure that you
 ​          have brought down the test network before you proceed (see
-​          `Bring Down the Network`_).
+​          `Bring Down the Network`).
+
+.. note:: 
+
+​	如果之前启动了 ``byfn.sh``例子，再继续之前确认一下你已经把这个测试网络关掉了(查看
+​          `Bring Down the Network`_).。
 
 We will leverage a script to spin up our network. The
 docker-compose file references the images that we have previously downloaded,
 and bootstraps the orderer with our previously generated ``genesis.block``.
 
+我们将使用一个脚本启动我们的网络。docker-compose file关联了我们之前下载的镜像，然后通过我们之前生成的初始区块``genesis.block``引导orderer。
+
 We want to go through the commands manually in order to expose the
 syntax and functionality of each call.
 
+我们想要通过手动运行那些命令，目的是为了发现语法和每个调用的功能。
+
 First let's start our network:
+
+首先启动我们的网络：
 
 .. code:: bash
 
@@ -622,9 +667,11 @@ First let's start our network:
 If you want to see the realtime logs for your network, then do not supply the ``-d`` flag.
 If you let the logs stream, then you will need to open a second terminal to execute the CLI calls.
 
+如果你想要实时查看你的网络日志，请不要加  ``-d``标识。如果你想要日志流，你需要打开第二个终端来执行CLI命令。
+
 .. _peerenvvars:
 
-Environment variables
+Environment variables -环境变量
 ^^^^^^^^^^^^^^^^^^^^^
 
 For the following CLI commands against ``peer0.org1.example.com`` to work, we need
@@ -635,6 +682,8 @@ calls to other peers or the orderer, then you can provide these
 values accordingly by editing the  ``docker-compose-base.yaml`` before starting the
 container. Modify the following four environment variables to use a different
 peer and org.
+
+为了使针对`peer0.org1.example.com`的CLI命令起作用，我们需要使用下面给出四个环境变量来介绍我们的命令。这些关于``peer0.org1.example.com`` 的命令已经被拷贝到CLI容器中，因此我们不需要复制他们就能使用。然而如果你想发送调用到别的peers或者orderers，你就需要再启动容器之前，通过编辑 ``docker-compose-base.yaml``文件来提供这些值。修改下面的环境变量可以使用不同的peer和org。
 
 .. code:: bash
 
@@ -647,7 +696,7 @@ peer and org.
 
 .. _createandjoin:
 
-Create & Join Channel
+Create & Join Channel - 创建和加入通道
 ^^^^^^^^^^^^^^^^^^^^^
 
 Recall that we created the channel configuration transaction using the
@@ -657,13 +706,21 @@ using the same or different profiles in the ``configtx.yaml`` that you pass
 to the ``configtxgen`` tool. Then you can repeat the process defined in this
 section to establish those other channels in your network.
 
+回想一下，我们在:ref:`createchanneltx`章节中使用``configtxgen`` 工具创建通道配置交易。你可以使用在``configtx.yaml``中相同或者不同的传给``configtxgen``工具的配置，重复之前的过程来创建一个额外的通道配置交易。然后你可以重复在章节中的过程去发布一个另外的通道到你的网络中。
+
+
+
 We will enter the CLI container using the ``docker exec`` command:
+
+我们可以使用 ``docker exec`` 输入CLI容器命令:
 
 .. code:: bash
 
         docker exec -it cli bash
 
 If successful you should see the following:
+
+成功的话你会看到下面的输出：
 
 .. code:: bash
 
@@ -672,6 +729,10 @@ If successful you should see the following:
 If you do not want to run the CLI commands against the default peer
 ``peer0.org1.example.com``, replace the values of ``peer0`` or ``org1`` in the
 four environment variables and run the commands:
+
+如果你不想对默认的peer``peer0.org1.example.com``运行cli命令，替换在四个环境变量中的 ``peer0`` or ``org1`` 值，然后运行命令：
+
+
 
 .. code:: bash
 
@@ -686,6 +747,8 @@ Next, we are going to pass in the generated channel configuration transaction
 artifact that we created in the :ref:`createchanneltx` section (we called
 it ``channel.tx``) to the orderer as part of the create channel request.
 
+接下来，我们会把在:ref:`createchanneltx`章节中创建的通道配置交易构件（我们称之为``channel.tx``）作为创建通道请求的一部分传递给orderer。
+
 We specify our channel name with the ``-c`` flag and our channel configuration
 transaction with the ``-f`` flag. In this case it is ``channel.tx``, however
 you can mount your own configuration transaction with a different name.  Once again
@@ -693,6 +756,8 @@ we will set the ``CHANNEL_NAME`` environment variable within our CLI container s
 we don't have to explicitly pass this argument. Channel names must be all lower
 case, less than 250 characters long and match the regular expression
 ``[a-z][a-z0-9.-]*``.
+
+我们使用 ``-c`` 标志指定通道的名称，``-f``标志指定通道配置交易。在这个例子中它是 ``channel.tx``，当然你也可以使用不同的名称，挂载你自己的交易配置。我们将再次在CLI容器中设置``CHANNEL_NAME``环境变量，这样我们就不要显示的传递这个参数。通道的名称必须全部是消息字母，小于250个字符，并且匹配正则表达式``[a-z][a-z0-9.-]*``。
 
 
 .. code:: bash
@@ -710,17 +775,31 @@ case, less than 250 characters long and match the regular expression
 ​          the local path to the orderer's root cert, allowing us to verify the
 ​          TLS handshake.
 
+
+
+注意
+
+  	注意``--cafile``会作为命令的一部分。这是orderer的根证书的本地路径，允许我们去验证TLS握手。
+
 This command returns a genesis block - ``<channel-ID.block>`` - which we will use to join the channel.
 It contains the configuration information specified in ``channel.tx``  If you have not
 made any modifications to the default channel name, then the command will return you a
 proto titled ``mychannel.block``.
+
+这个命令返回一个初始区块- ``<channel-ID.block>``。我们将会用它来加入通道。它包含了 ``channel.tx`` 中的配置信息。
 
 .. note:: You will remain in the CLI container for the remainder of
 ​          these manual commands. You must also remember to preface all commands
 ​          with the corresponding environment variables when targeting a peer other than
 ​          ``peer0.org1.example.com``.
 
+注意
+
+​	你将在CLI容器中继续执行这些手动命令的其余部分。在针对``peer0.org1.example.com``节点之外的peer时，你必须记住用相应的环境变量作为所有命令的前言。
+
 Now let's join ``peer0.org1.example.com`` to the channel.
+
+现在让我们加入`peer0.org1.example.com`通道。
 
 .. code:: bash
 
@@ -735,10 +814,14 @@ You can make other peers join the channel as necessary by making appropriate
 changes in the four environment variables we used in the :ref:`peerenvvars`
 section, above.
 
+你可以通过适当的修改在:ref:`peerenvvars`章节中的四个环境变量来让其他的节点加入通道。
+
 Rather than join every peer, we will simply join ``peer0.org2.example.com`` so that
 we can properly update the anchor peer definitions in our channel.  Since we are
 overriding the default environment variables baked into the CLI container, this full
 command will be the following:
+
+不是加入每一个peer，我们只是简单的加入 ``peer0.org2.example.com``以便我们可以更新定义在通道中的锚节点。由于我们正在覆盖CLI容器中融入的默认的环境变量，整个命令将会是这样：
 
 .. code:: bash
 
@@ -749,7 +832,11 @@ rather than passing in the entire string.  Once they've been set, you simply nee
 to issue the ``peer channel join`` command again and the CLI container will act
 on behalf of ``peer0.org2.example.com``.
 
-Update the anchor peers
+或者，您可以选择单独设置这些环境变量而不是传递整个字符串。设置完成后，只需再次发出``peer channel join`` 命令，然后CLI容器会代表``peer0.org2.example.com``起作用。
+
+
+
+Update the anchor peers -更新锚节点
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 The following commands are channel updates and they will propagate to the definition
@@ -757,7 +844,11 @@ of the channel.  In essence, we adding additional configuration information on t
 of the channel's genesis block.  Note that we are not modifying the genesis block, but
 simply adding deltas into the chain that will define the anchor peers.
 
+接下来的命令是通道更新，它会传递到通道的定义中去。实际上，我们在通道的创世区块的头部添加了额外的配置信息。注意我们没有编辑初始区块，但是简单的将增量添加到将会定义锚节点的链中。
+
 Update the channel definition to define the anchor peer for Org1 as ``peer0.org1.example.com``:
+
+更新通道定义，将Org1的锚节点定义为``peer0.org1.example.com``。
 
 .. code:: bash
 
@@ -766,6 +857,8 @@ Update the channel definition to define the anchor peer for Org1 as ``peer0.org1
 Now update the channel definition to define the anchor peer for Org2 as ``peer0.org2.example.com``.
 Identically to the ``peer channel join`` command for the Org2 peer, we will need to
 preface this call with the appropriate environment variables.
+
+现在更新通道定义，将Org2的锚节点定义为``peer0.org2.example.com``。与Org2 peer ``peer channel join`` 命令相同，我们需要使用合适的环境变量作为这个命令的前言。
 
 .. code:: bash
 
