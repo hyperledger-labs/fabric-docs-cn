@@ -864,18 +864,26 @@ preface this call with the appropriate environment variables.
 
   CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp CORE_PEER_ADDRESS=peer0.org2.example.com:7051 CORE_PEER_LOCALMSPID="Org2MSP" CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt peer channel update -o orderer.example.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/Org2MSPanchors.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 
-Install & Instantiate Chaincode
+Install & Instantiate Chaincode -安装实例化链码
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. note:: We will utilize a simple existing chaincode. To learn how to write
 ​          your own chaincode, see the :doc:`chaincode4ade` tutorial.
 
+注意：
+
+​	我们将利用现有的一个简单链码来学习怎么编写你自己的链码。请参考:doc:`chaincode4ade` 
+
 Applications interact with the blockchain ledger through ``chaincode``.  As
 such we need to install the chaincode on every peer that will execute and
 endorse our transactions, and then instantiate the chaincode on the channel.
 
+应用程序和区块链账本通过链码``chaincode``互相起作用。因此，我们需要在每个会执行以及背书我们交易的peer节点安装chaincode，然后在通道上实例化chaincode。
+
 First, install the sample Go or Node.js chaincode onto one of the four peer nodes.  These commands
 place the specified source code flavor onto our peer's filesystem.
+
+首先，安装Go或者Node.js 链码在四个peer节点中的一个。
 
 .. note:: You can only install one version of the source code per chaincode name
 ​          and version.  The source code exists on the peer's file system in the
