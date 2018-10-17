@@ -883,13 +883,19 @@ endorse our transactions, and then instantiate the chaincode on the channel.
 First, install the sample Go or Node.js chaincode onto one of the four peer nodes.  These commands
 place the specified source code flavor onto our peer's filesystem.
 
-首先，安装Go或者Node.js 链码在四个peer节点中的一个。
+首先，安装Go或者Node.js 链码在四个peer节点中的一个。这些命令把指定的源码放在我们的peer的文件系统里。
 
 .. note:: You can only install one version of the source code per chaincode name
 ​          and version.  The source code exists on the peer's file system in the
 ​          context of chaincode name and version; it is language agnostic.  Similarly
 ​          the instantiated chaincode container will be reflective of whichever
 ​          language has been installed on the peer.
+
+注意
+
+每个链码的一个版本的源码，你只能安装一个名称和版本。源码存在于peer的文件系统上的链码名称和版本的上下文里。它与语言无关。同样，被实例化的链码容器将反映出事什么语言被安装在peer上。
+
+​	
 
 **Golang**
 
@@ -912,10 +918,14 @@ launch a chaincode container for the targeted peer.  Take note of the ``-P``
 argument. This is our policy where we specify the required level of endorsement
 for a transaction against this chaincode to be validated.
 
+接下来，在通道上实例化链码。这会在通道上初始化链码，为链码指定背书策略，然后为目标的peer节点启动链码容器。注意``-P``这个参数。这是我们的策略，我们在此策略中指定针对要验证的此链码的交易所需的背书级别。
+
 In the command below you’ll notice that we specify our policy as
 ``-P "AND ('Org1MSP.peer','Org2MSP.peer')"``. This means that we need
 “endorsement” from a peer belonging to Org1 **AND** Org2 (i.e. two endorsement).
 If we changed the syntax to ``OR`` then we would need only one endorsement.
+
+在下面的命令里你将会注意到我们指定``-P "AND ('Org1MSP.peer','Org2MSP.peer')"``作为策略。这表明我们需要一个属于Org1和Org2(i.e. two endorsement)的peer节点”背书“。如果我们把语法改成``OR``，那我们将只需要一个背书节点。
 
 **Golang**
 
@@ -932,6 +942,12 @@ If we changed the syntax to ``OR`` then we would need only one endorsement.
 ​           The command is not hanging; rather it is installing the fabric-shim
 ​           layer as the image is being compiled.
 
+注意
+
+Node.js链码实例化大约需要一分钟，命令任务没有挂掉，而是在编译 fabric-shim层镜像。
+
+
+
 .. code:: bash
 
     # be sure to replace the $CHANNEL_NAME environment variable if you have not exported it
@@ -944,6 +960,9 @@ See the `endorsement
 policies <http://hyperledger-fabric.readthedocs.io/en/latest/endorsement-policies.html>`__
 documentation for more details on policy implementation.
 
+查看背书策略`endorsement
+policies <http://hyperledger-fabric.readthedocs.io/en/latest/endorsement-policies.html>`__获取更多策略实现的内容。
+
 If you want additional peers to interact with ledger, then you will need to join
 them to the channel, and install the same name, version and language of the
 chaincode source onto the appropriate peer's filesystem.  A chaincode container
@@ -951,10 +970,14 @@ will be launched for each peer as soon as they try to interact with that specifi
 chaincode.  Again, be cognizant of the fact that the Node.js images will be slower
 to compile.
 
+如果你想添加另外的peers与超极账本交互，你需要加入它们的通道，然后安装一样名字版本语言的链码在适当的对等文件系统。一旦它们尝试与特定的链代码进行交互，就会为每一个peer启动一个链码容器。再一次，要认识到Node.js镜像的编译速度会慢一些。
+
 Once the chaincode has been instantiated on the channel, we can forgo the ``l``
 flag.  We need only pass in the channel identifier and name of the chaincode.
 
-Query
+一旦链码在通道上实例化，我们可以放弃  ``l``标志。我们只需传递通道标识符和链码的名称。
+
+Query -查询
 ^^^^^
 
 Let's query for the value of ``a`` to make sure the chaincode was properly
