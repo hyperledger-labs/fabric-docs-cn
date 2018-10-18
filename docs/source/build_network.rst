@@ -441,7 +441,7 @@ channel configuration transaction file is broadcast to the orderer at :ref:`Chan
 time.  The anchor peer transactions, as the name might suggest, specify each
 Org's :ref:`Anchor-Peer` on this channel.
 
-order block 是 排序服务的初始区块`Genesis-Block`，channel configuration transaction在 :ref:`Channel`创建的时候广播给排序服务。 anchor peer transactions，正如名称所示，指定了每个组织在此channel上的:ref:`Anchor-Peer`
+order block 是 排序服务的初始区块`Genesis-Block`，channel configuration transaction在 :ref:`Channel` 创建的时候广播给排序服务。 anchor peer transactions，正如名称所示，指定了每个组织在此channel上的 :ref:`Anchor-Peer` 。
 
 How does it work? -它是怎么工作的？
 ^^^^^^^^^^^^^^^^^
