@@ -354,7 +354,7 @@ key (``signcerts``).
 
 
 
-Cryptogen 通过一个包含网络拓扑的文件``crypto-config.yaml``，为所有组织和属于这些组织的组件生成一组证书和秘钥。每一个组织被分配一个唯一的根证书(``ca-cert``)，它绑定该组织的特定组件(peers and orderers)。通过为每个组织分配一个惟一的CA证书，我们模拟了一个典型的网络，一个参与成员 :ref:`Member`将使用它自己的认证授权。超级账本中的事务和通信是由一个实体的私钥（(``keystore``）签名的，然后通过公钥（``signcerts``）验证。
+Cryptogen 通过一个包含网络拓扑的文件``crypto-config.yaml``，为所有组织和属于这些组织的组件生成一组证书和秘钥。每一个组织被分配一个唯一的根证书(``ca-cert``)，它绑定该组织的特定组件(peers and orderers)。通过为每个组织分配一个惟一的CA证书，我们模拟了一个参与人员  :ref:`Member` 将使用它自己的认证授权的典型的网络。超级账本中的事务和通信是由一个实体的私钥（(``keystore``）签名的，然后通过公钥（``signcerts``）验证。
 
 You will notice a ``count`` variable within this file.  We use this to specify
 the number of peers per Organization; in our case there are two peers per Org.
