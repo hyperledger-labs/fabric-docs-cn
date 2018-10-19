@@ -4,8 +4,8 @@ Building Your First Network-创建你的第一个fabric网络
 Note
 
 These instructions have been verified to work against the latest stable Docker images and the pre-compiled setup utilities within the supplied tar file. If you run these commands with images or tools from the current master branch, it is possible that you will see configuration and panic errors.	  
-注意：
 
+注意：
 这些说明已经被验证，它可以在最新稳定版的docker镜像和提供tar文件的预编译的安装实用程序中工作。如果你在当前分支下，通过镜像或者工具使用这些命令，可能会有一些配置或者panic错误。
 
 The build your first network (BYFN) scenario provisions a sample Hyperledger
