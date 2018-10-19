@@ -1613,10 +1613,9 @@ Troubleshooting - 故障排除
 
       :set ff=unix
 
-.. note:: If you continue to see errors, share your logs on the
-​          **fabric-questions** channel on
-​          `Hyperledger Rocket Chat <https://chat.hyperledger.org/home>`__
-​          or on `StackOverflow <https://stackoverflow.com/questions/tagged/hyperledger-fabric>`__.
+Note
+
+If you continue to see errors, share your logs on the fabric-questions channel on Hyperledger Rocket Chat or on StackOverflow.
 
 注意
 
