@@ -301,10 +301,9 @@ and requirements to build a fully-functional Hyperledger Fabric network.
 
 如果你想要了解更多关于底层工具和引导材料的信息，继续阅读。在接下来的章节，我们将浏览构建一个功能完整的Hyperledger Fabric 网络的各个步骤和要求。
 
-.. note:: The manual steps outlined below assume that the ``CORE_LOGGING_LEVEL`` in
-​          the ``cli`` container is set to ``DEBUG``. You can set this by modifying
-​          the ``docker-compose-cli.yaml`` file in the ``first-network`` directory.
-​          e.g.
+Note
+
+The manual steps outlined below assume that the CORE_LOGGING_LEVEL in the cli container is set to DEBUG. You can set this by modifying the docker-compose-cli.yaml file in the first-network directory. e.g.
 
 注意
 
@@ -842,8 +841,9 @@ preface this call with the appropriate environment variables.
 Install & Instantiate Chaincode -安装实例化链码
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. note:: We will utilize a simple existing chaincode. To learn how to write
-​          your own chaincode, see the :doc:`chaincode4ade` tutorial.
+Note
+
+We will utilize a simple existing chaincode. To learn how to write your own chaincode, see the :doc:`chaincode4ade` tutorial.
 
 注意：
 
@@ -860,11 +860,9 @@ place the specified source code flavor onto our peer's filesystem.
 
 首先，安装Go或者Node.js 链码在四个peer节点中的一个。这些命令把指定的源码放在我们的peer的文件系统里。
 
-.. note:: You can only install one version of the source code per chaincode name
-​          and version.  The source code exists on the peer's file system in the
-​          context of chaincode name and version; it is language agnostic.  Similarly
-​          the instantiated chaincode container will be reflective of whichever
-​          language has been installed on the peer.
+Note
+
+You can only install one version of the source code per chaincode name and version. The source code exists on the peer's file system in the context of chaincode name and version; it is language agnostic. Similarly the instantiated chaincode container will be reflective of whichever language has been installed on the peer.
 
 注意
 
@@ -913,9 +911,9 @@ If we changed the syntax to ``OR`` then we would need only one endorsement.
 
 **Node.js**
 
-.. note::  The instantiation of the Node.js chaincode will take roughly a minute.
-​           The command is not hanging; rather it is installing the fabric-shim
-​           layer as the image is being compiled.
+Note
+
+The instantiation of the Node.js chaincode will take roughly a minute. The command is not hanging; rather it is installing the fabric-shim layer as the image is being compiled.
 
 注意
 
@@ -1028,11 +1026,7 @@ invocations.
 What's happening behind the scenes? - 幕后发生了什么？
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. note:: These steps describe the scenario in which
-​          ``script.sh`` is run by './byfn.sh up'.  Clean your network
-​          with ``./byfn.sh down`` and ensure
-​          this command is active.  Then use the same
-​          docker-compose prompt to launch your network again
+These steps describe the scenario in which script.sh is run by './byfn.sh up'. Clean your network with ./byfn.sh down and ensure this command is active. Then use the same docker-compose prompt to launch your network again
 
 注意
 
@@ -1223,9 +1217,9 @@ for the entirety of the instructions on this page.
 
 BYFN示例给我们提供了两种风格的Docker Compose文件，它们都继承自``docker-compose-base.yaml``（在 ``base``目录下）。我们的第一种类型，``docker-compose-cli.yaml``，给我们提供了一个CLI容器，以及一个orderer容器，四个peer容器。我们用此文件来展开这个页面上的所有说明。
 
-.. note:: the remainder of this section covers a docker-compose file designed for the
-​          SDK.  Refer to the `Node SDK <https://github.com/hyperledger/fabric-sdk-node>`__
-​          repo for details on running these tests.
+Note
+
+the remainder of this section covers a docker-compose file designed for the SDK. Refer to the Node SDK repo for details on running these tests.
 
 注意
 
@@ -1279,13 +1273,9 @@ the network pass ``docker-compose-couch.yaml`` as well:
 
 **chaincode_example02**现在应该使用下面的CouchDB。
 
-.. note::  If you choose to implement mapping of the fabric-couchdb container
-​           port to a host port, please make sure you are aware of the security
-​           implications. Mapping of the port in a development environment makes the
-​           CouchDB REST API available, and allows the
-​           visualization of the database via the CouchDB web interface (Fauxton).
-​           Production environments would likely refrain from implementing port mapping in
-​           order to restrict outside access to the CouchDB containers.
+Note
+
+If you choose to implement mapping of the fabric-couchdb container port to a host port, please make sure you are aware of the security implications. Mapping of the port in a development environment makes the CouchDB REST API available, and allows the visualization of the database via the CouchDB web interface (Fauxton). Production environments would likely refrain from implementing port mapping in order to restrict outside access to the CouchDB containers.
 
 注意
 
@@ -1467,8 +1457,9 @@ Troubleshooting - 故障排除
 
       ./byfn.sh down
 
-   .. note:: You **will** see errors if you do not remove old containers
-   ​          and images.
+   Note
+
+   You will see errors if you do not remove old containers and images.
 
    注意
 
