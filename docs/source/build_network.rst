@@ -37,11 +37,9 @@ sub-directory now.
 
   cd fabric-samples/first-network
 
-.. note:: The supplied commands in this documentation
-​          **MUST** be run from your ``first-network`` sub-directory
-​          of the ``fabric-samples`` repository clone.  If you elect to run the
-​          commands from a different location, the various provided scripts
-​          will be unable to find the binaries.
+Note
+
+The supplied commands in this documentation MUST be run from your first-network sub-directory of the fabric-samples repository clone. If you elect to run the commands from a different location, the various provided scripts will be unable to find the binaries.
 
 
 
