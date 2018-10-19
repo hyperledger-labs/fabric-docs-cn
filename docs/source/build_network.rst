@@ -43,7 +43,8 @@ The supplied commands in this documentation MUST be run from your first-network 
 
 
 
-注意：​	
+注意
+	
 这个文档里提供的命令都需要运行在你克隆的``fabric-samples``项目的子目录 ``first-network``里。如果你选择从不同的位置运行命令，提供的那些脚本将无法找到二进制文件。
 
 Want to run it now?-想要现在运行吗？
@@ -171,7 +172,7 @@ network entities, the ``genesis block`` used to bootstrap the ordering service,
 and a collection of configuration transactions required to configure a
 :ref:`Channel`.
 
-第一步为我们各种网络实体生成证书和秘钥。初始区块 ``genesis block``用于引导排序服务，也包含了一组用于配置 :ref:`Channel`所需要的一组配置交易集合。
+第一步为我们各种网络实体生成证书和秘钥。初始区块 ``genesis block``用于引导排序服务，也包含了一组用于配置 :ref:`Channel` 所需要的一组配置交易集合。
 
 Bring Up the Network - 启动网络
 ^^^^^^^^^^^^^^^^^^^^
