@@ -1,13 +1,11 @@
 Building Your First Network-创建你的第一个fabric网络
 ======================================================
 
-.. note:: These instructions have been verified to work against the
-​          latest stable Docker images and the pre-compiled
-​          setup utilities within the supplied tar file. If you run
-​          these commands with images or tools from the current master
-​          branch, it is possible that you will see configuration and panic
-​          errors.	  
-注意：
+Note
+
+These instructions have been verified to work against the latest stable Docker images and the pre-compiled setup utilities within the supplied tar file. If you run these commands with images or tools from the current master branch, it is possible that you will see configuration and panic errors.	  
+
+注意
 
 这些说明已经被验证，它可以在最新稳定版的docker镜像和提供tar文件的预编译的安装实用程序中工作。如果你在当前分支下，通过镜像或者工具使用这些命令，可能会有一些配置或者panic错误。
 
@@ -39,15 +37,14 @@ sub-directory now.
 
   cd fabric-samples/first-network
 
-.. note:: The supplied commands in this documentation
-​          **MUST** be run from your ``first-network`` sub-directory
-​          of the ``fabric-samples`` repository clone.  If you elect to run the
-​          commands from a different location, the various provided scripts
-​          will be unable to find the binaries.
+Note
+
+The supplied commands in this documentation MUST be run from your first-network sub-directory of the fabric-samples repository clone. If you elect to run the commands from a different location, the various provided scripts will be unable to find the binaries.
 
 
 
-注意：​	
+注意
+	
 这个文档里提供的命令都需要运行在你克隆的``fabric-samples``项目的子目录 ``first-network``里。如果你选择从不同的位置运行命令，提供的那些脚本将无法找到二进制文件。
 
 Want to run it now?-想要现在运行吗？
@@ -175,7 +172,7 @@ network entities, the ``genesis block`` used to bootstrap the ordering service,
 and a collection of configuration transactions required to configure a
 :ref:`Channel`.
 
-第一步为我们各种网络实体生成证书和秘钥。初始区块 ``genesis block``用于引导排序服务，也包含了一组用于配置 :ref:`Channel`所需要的一组配置交易集合。
+第一步为我们各种网络实体生成证书和秘钥。初始区块 ``genesis block``用于引导排序服务，也包含了一组用于配置 :ref:`Channel` 所需要的一组配置交易集合。
 
 Bring Up the Network - 启动网络
 ^^^^^^^^^^^^^^^^^^^^
@@ -304,10 +301,9 @@ and requirements to build a fully-functional Hyperledger Fabric network.
 
 如果你想要了解更多关于底层工具和引导材料的信息，继续阅读。在接下来的章节，我们将浏览构建一个功能完整的Hyperledger Fabric 网络的各个步骤和要求。
 
-.. note:: The manual steps outlined below assume that the ``CORE_LOGGING_LEVEL`` in
-​          the ``cli`` container is set to ``DEBUG``. You can set this by modifying
-​          the ``docker-compose-cli.yaml`` file in the ``first-network`` directory.
-​          e.g.
+Note
+
+The manual steps outlined below assume that the CORE_LOGGING_LEVEL in the cli container is set to DEBUG. You can set this by modifying the docker-compose-cli.yaml file in the first-network directory. e.g.
 
 注意
 
@@ -354,7 +350,7 @@ key (``signcerts``).
 
 
 
-Cryptogen 通过一个包含网络拓扑的文件``crypto-config.yaml``，为所有组织和属于这些组织的组件生成一组证书和秘钥。每一个组织被分配一个唯一的根证书(``ca-cert``)，它绑定该组织的特定组件(peers and orderers)。通过为每个组织分配一个惟一的CA证书，我们模拟了一个典型的网络，一个参与成员 :ref:`Member`将使用它自己的认证授权。超级账本中的事务和通信是由一个实体的私钥（(``keystore``）签名的，然后通过公钥（``signcerts``）验证。
+Cryptogen 通过一个包含网络拓扑的文件``crypto-config.yaml``，为所有组织和属于这些组织的组件生成一组证书和秘钥。每一个组织被分配一个唯一的根证书(``ca-cert``)，它绑定该组织的特定组件(peers and orderers)。通过为每个组织分配一个惟一的CA证书，我们模拟了一个参与人员  :ref:`Member` 将使用它自己的认证授权的典型的网络。超级账本中的事务和通信是由一个实体的私钥（(``keystore``）签名的，然后通过公钥（``signcerts``）验证。
 
 You will notice a ``count`` variable within this file.  We use this to specify
 the number of peers per Organization; in our case there are two peers per Org.
@@ -441,7 +437,7 @@ channel configuration transaction file is broadcast to the orderer at :ref:`Chan
 time.  The anchor peer transactions, as the name might suggest, specify each
 Org's :ref:`Anchor-Peer` on this channel.
 
-order block 是 排序服务的初始区块`Genesis-Block`，channel configuration transaction在 :ref:`Channel`创建的时候广播给排序服务。 anchor peer transactions，正如名称所示，指定了每个组织在此channel上的:ref:`Anchor-Peer`
+order block 是 排序服务的初始区块`Genesis-Block`，channel configuration transaction在 :ref:`Channel` 创建的时候广播给排序服务。 anchor peer transactions，正如名称所示，指定了每个组织在此channel上的 :ref:`Anchor-Peer` 。
 
 How does it work? -它是怎么工作的？
 ^^^^^^^^^^^^^^^^^
@@ -845,8 +841,9 @@ preface this call with the appropriate environment variables.
 Install & Instantiate Chaincode -安装实例化链码
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. note:: We will utilize a simple existing chaincode. To learn how to write
-​          your own chaincode, see the :doc:`chaincode4ade` tutorial.
+Note
+
+We will utilize a simple existing chaincode. To learn how to write your own chaincode, see the :doc:`chaincode4ade` tutorial.
 
 注意：
 
@@ -863,11 +860,9 @@ place the specified source code flavor onto our peer's filesystem.
 
 首先，安装Go或者Node.js 链码在四个peer节点中的一个。这些命令把指定的源码放在我们的peer的文件系统里。
 
-.. note:: You can only install one version of the source code per chaincode name
-​          and version.  The source code exists on the peer's file system in the
-​          context of chaincode name and version; it is language agnostic.  Similarly
-​          the instantiated chaincode container will be reflective of whichever
-​          language has been installed on the peer.
+Note
+
+You can only install one version of the source code per chaincode name and version. The source code exists on the peer's file system in the context of chaincode name and version; it is language agnostic. Similarly the instantiated chaincode container will be reflective of whichever language has been installed on the peer.
 
 注意
 
@@ -916,9 +911,9 @@ If we changed the syntax to ``OR`` then we would need only one endorsement.
 
 **Node.js**
 
-.. note::  The instantiation of the Node.js chaincode will take roughly a minute.
-​           The command is not hanging; rather it is installing the fabric-shim
-​           layer as the image is being compiled.
+Note
+
+The instantiation of the Node.js chaincode will take roughly a minute. The command is not hanging; rather it is installing the fabric-shim layer as the image is being compiled.
 
 注意
 
@@ -1031,11 +1026,7 @@ invocations.
 What's happening behind the scenes? - 幕后发生了什么？
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. note:: These steps describe the scenario in which
-​          ``script.sh`` is run by './byfn.sh up'.  Clean your network
-​          with ``./byfn.sh down`` and ensure
-​          this command is active.  Then use the same
-​          docker-compose prompt to launch your network again
+These steps describe the scenario in which script.sh is run by './byfn.sh up'. Clean your network with ./byfn.sh down and ensure this command is active. Then use the same docker-compose prompt to launch your network again
 
 注意
 
@@ -1226,9 +1217,9 @@ for the entirety of the instructions on this page.
 
 BYFN示例给我们提供了两种风格的Docker Compose文件，它们都继承自``docker-compose-base.yaml``（在 ``base``目录下）。我们的第一种类型，``docker-compose-cli.yaml``，给我们提供了一个CLI容器，以及一个orderer容器，四个peer容器。我们用此文件来展开这个页面上的所有说明。
 
-.. note:: the remainder of this section covers a docker-compose file designed for the
-​          SDK.  Refer to the `Node SDK <https://github.com/hyperledger/fabric-sdk-node>`__
-​          repo for details on running these tests.
+Note
+
+the remainder of this section covers a docker-compose file designed for the SDK. Refer to the Node SDK repo for details on running these tests.
 
 注意
 
@@ -1282,13 +1273,9 @@ the network pass ``docker-compose-couch.yaml`` as well:
 
 **chaincode_example02**现在应该使用下面的CouchDB。
 
-.. note::  If you choose to implement mapping of the fabric-couchdb container
-​           port to a host port, please make sure you are aware of the security
-​           implications. Mapping of the port in a development environment makes the
-​           CouchDB REST API available, and allows the
-​           visualization of the database via the CouchDB web interface (Fauxton).
-​           Production environments would likely refrain from implementing port mapping in
-​           order to restrict outside access to the CouchDB containers.
+Note
+
+If you choose to implement mapping of the fabric-couchdb container port to a host port, please make sure you are aware of the security implications. Mapping of the port in a development environment makes the CouchDB REST API available, and allows the visualization of the database via the CouchDB web interface (Fauxton). Production environments would likely refrain from implementing port mapping in order to restrict outside access to the CouchDB containers.
 
 注意
 
@@ -1470,8 +1457,9 @@ Troubleshooting - 故障排除
 
       ./byfn.sh down
 
-   .. note:: You **will** see errors if you do not remove old containers
-   ​          and images.
+   Note
+
+   You will see errors if you do not remove old containers and images.
 
    注意
 
@@ -1616,10 +1604,9 @@ Troubleshooting - 故障排除
 
       :set ff=unix
 
-.. note:: If you continue to see errors, share your logs on the
-​          **fabric-questions** channel on
-​          `Hyperledger Rocket Chat <https://chat.hyperledger.org/home>`__
-​          or on `StackOverflow <https://stackoverflow.com/questions/tagged/hyperledger-fabric>`__.
+Note
+
+If you continue to see errors, share your logs on the fabric-questions channel on Hyperledger Rocket Chat or on StackOverflow.
 
 注意
 
