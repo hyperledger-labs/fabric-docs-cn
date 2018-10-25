@@ -1,16 +1,22 @@
 
-Using Private Data in Fabric
+Using Private Data in Fabric-在Fabric中使用私有数据
 ============================
 
 This tutorial will demonstrate the use of collections to provide storage
 and retrieval of private data on the blockchain network for authorized peers
 of organizations.
 
+本教程将演示在区块链网络上，组织中授权过的peer节点如何使用集合提供私有数据的存储和检索。
+
 The information in this tutorial assumes knowledge of private data
 stores and their use cases. For more information, check out :doc:`private-data/private-data`.
 
+本教程中的信息假定您了解私有数据存储及其用例。 有关更多信息，请查看：doc：`private-data / private-data`。
+
 The tutorial will take you through the following steps for practice defining,
 configuring and using private data with Fabric:
+
+本教程将指导您完成以下步骤，以便在Fabric中定义，配置和使用私有数据：
 
 #. :ref:`pd-build-json`
 #. :ref:`pd-read-write-private-data`
@@ -31,13 +37,18 @@ Instead the necessary commands are provided throughout this tutorial to use the
 network. We will describe what is happening at each step, making it possible to
 understand the tutorial without actually running the sample.
 
+被教程将使用 `marbles private data sample <https://github.com/hyperledger/fabric-samples/tree/master/chaincode/marbles02_private>`__运行在构建你的第一个网络（BYFN）的教程网络上--- 去演示如何创建，部署和使用私有数据集。marbles私有数据例子将会被部署到:doc:`build_network`
+(BYFN)示例网络上。你应该先完成安装任务 :doc:`install`;然而运行BYFN教程不是本教程的前提，相反，本教程提供了必要的命令来使用网络。我们将描述在每一步发生了什么，使得在没有实际运行示例的情况下理解教程成为可能。
+
 .. _pd-build-json:
 
-Build a collection definition JSON file
+Build a collection definition JSON file-构件集合定义在JSON文件中
 ------------------------------------------
 
 The first step in privatizing data on a channel is to build a collection
 definition which defines access to the private data.
+
+将通道上的数据私有化的第一步是构建一个集合定义，用于定义对私有数据的访问。
 
 The collection definition describes who can persist data, how many peers the
 data is distributed to, how many peers are required to disseminate the private
@@ -45,28 +56,33 @@ data, and how long the private data is persisted in the private database. Later,
 we will demonstrate how chaincode APIs ``PutPrivateData`` and ``GetPrivateData``
 are used to map the collection to the private data being secured.
 
+这个集合定义了谁可以持久化数据。数据分配到多少个peers，多少peer节点被要求传播这些私有数据和这些私有数据被持久化在这些私有数据库中多久。随后我们将演示如何使用chaincode API``PutPrivateData``和``GetPrivateData``将集合映射到受保护的私有数据。
+
 A collection definition is composed of five properties:
+
+一个集合定义由五个属性组成：
 
 .. _blockToLive:
 
 - ``name``: Name of the collection.
-
+- ``name``: 集合的名称。
 - ``policy``: Defines the organization peers allowed to persist the collection data.
-
+- ``policy``: 定义组织的peer节点允许持久化集合数据。
 - ``requiredPeerCount``: Number of peers required to disseminate the private data as
   a condition of the endorsement of the chaincode
-
+- ``requiredPeerCount``: 被要求传播私有数据的peer节点数量，作为链码背书的条件。
 - ``maxPeerCount``: For data redundancy purposes, the number of other peers
   that the current endorsing peer will attempt to distribute the data to.
   If an endorsing peer goes down, these other peers are available at commit time
   if there are requests to pull the private data.
-
+- ``maxPeerCount``: 出于数据冗余的目的，当前背书的peer会试图分发到的其他peer节点的数量。
 - ``blockToLive``: For very sensitive information such as pricing or personal information,
   this value represents how long the data should live on the private database in terms
   of blocks. The data will live for this specified number of blocks on the private database
   and after that it will get purged, making this data obsolete from the network.
   To keep private data indefinitely, that is, to never purge private data, set
   the ``blockToLive`` property to ``0``.
+- ``blockToLive``: 对一些特别敏感的信息，如价格或者私人信息，此值表示数据在区块的角度，应在私有数据库上存在多长时间。这些数据将在私有数据库上对那些指定数量的块有效，之后将被清除，从而使这些数据从网络中过时。要无限期地保留私有数据，即永远不要清除私有数据，请设置``blockToLive``属性为``0``。
 
 To illustrate usage of private data, the marbles private data example contains
 two private data collection definitions: ``collectionMarbles``
@@ -76,8 +92,14 @@ Org2) to have the private data in a private database. The
 ``collectionMarblesPrivateDetails`` collection allows only members of Org1 to
 have the private data in their private database.
 
+为了说明私有数据的使用，marbles私有数据示例包含了两个私有数据集定义： ``collectionMarbles``
+和``collectionMarblePrivateDetails``。``collectionMarbles``定义中的``policy``属性允许通道的所有成员（Org1和Org2）在私有数据库中拥有私有数据。``collectionMarblesPrivateDetails``集合只允许Org1的成员
+私有数据库中包含私有数据。
+
 For more information on building a policy definition refer to the :doc:`endorsement-policies`
 topic.
+
+更多有关构建一个策略的定义请查阅:doc:`endorsement-policies`。
 
 .. code-block:: JSON
 
@@ -85,38 +107,43 @@ topic.
 
  [
    {
-        "name": "collectionMarbles",
-        "policy": "OR('Org1MSP.member', 'Org2MSP.member')",
-        "requiredPeerCount": 0,
-        "maxPeerCount": 3,
-        "blockToLive":1000000
+​        "name": "collectionMarbles",
+​        "policy": "OR('Org1MSP.member', 'Org2MSP.member')",
+​        "requiredPeerCount": 0,
+​        "maxPeerCount": 3,
+​        "blockToLive":1000000
    },
 
    {
-        "name": "collectionMarblePrivateDetails",
-        "policy": "OR('Org1MSP.member')",
-        "requiredPeerCount": 0,
-        "maxPeerCount": 3,
-        "blockToLive":3
+​        "name": "collectionMarblePrivateDetails",
+​        "policy": "OR('Org1MSP.member')",
+​        "requiredPeerCount": 0,
+​        "maxPeerCount": 3,
+​        "blockToLive":3
    }
  ]
 
 The data to be secured by these policies is mapped in chaincode and will be
 shown later in the tutorial.
 
+这些策略要保护的数据映射在链码中，稍后将在本教程中显示。
+
 This collection definition file is deployed on the channel when its associated
-chaincode is instantiated on the channel using the `peer chaincode instantiate command <http://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`__.
-More details on this process are provided in Section 3 below.
+chaincode is instantiated on the channel using the `peer chaincode instantiate command <http://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`__.More details on this process are provided in Section 3 below.
+
+当使用命令`peer chaincode instantiate command <http://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`__在通道上实例化其关联的链码时，此集合定义文件将部署在通道上。有关此过程的更多详细信息，请参见下面的第3节。
 
 .. _pd-read-write-private-data:
 
-Read and Write private data using chaincode APIs
+Read and Write private data using chaincode APIs-用chaincode  APIs读写私有数据
 ------------------------------------------------
 
 The next step in understanding how to privatize data on a channel is to build
 the data definition in the chaincode.  The marbles private data sample divides
 the private data into two separate data definitions according to how the data will
 be accessed.
+
+理解如何在通道上私有化数据的下一步是在链代码中构建数据定义。marbles 私有数据示例根据数据的访问方式将私有数据划分为两个单独的数据定义。
 
 .. code-block:: GO
 
@@ -138,8 +165,12 @@ be accessed.
 
  Specifically access to the private data will be restricted as follows:
 
+具体访问私人数据将受到如下限制：
+
  - ``name, color, size, and owner`` will be visible to all members of the channel (Org1 and Org2)
+ - ``name, color, size, and owner`` 将会对通道（Org1和Org2）的所有成员可见。
  - ``price`` only visible to members of Org1
+ - ``price`` 仅仅对Org1的成员可见。
 
 Thus two different sets of private data are defined in the marbles private data
 sample. The mapping of this data to the collection policy which restricts its
@@ -147,15 +178,19 @@ access is controlled by chaincode APIs. Specifically, reading and writing
 private data using a collection definition is performed by calling ``GetPrivateData()``
 and ``PutPrivateData()``, which can be found `here <https://github.com/hyperledger/fabric/blob/master/core/chaincode/shim/interfaces.go#L179>`_.
 
-The following diagrams illustrate the private data model used by the marbles
-private data sample.
+因此，在marbles 私有数据示例中定义了两组不同的私有数据。这个数据到限制其访问的集合策略的映射由链码APIs控制。具体来说，使用集合定义读取和写入私有数据是通过调用``GetPrivateData()``
+and ``PutPrivateData()``来实现的，可以在这里找到： `<https://github.com/hyperledger/fabric/blob/master/core/chaincode/shim/interfaces.go#L179>`_.
+
+The following diagrams illustrate the private data model used by the marbles private data sample.
+
+下图说明了marbles 私有数据示例使用的私有数据模型：
 
  .. image:: images/SideDB-org1.png
 
  .. image:: images/SideDB-org2.png
 
+Reading collection data-读取集合数据
 
-Reading collection data
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 Use the chaincode API ``GetPrivateData()`` to query private data in the
@@ -165,7 +200,7 @@ Org1 and Org2 to have the private data in a side database, and the collection
 ``collectionMarblePrivateDetails`` allows only members of Org1 to have the
 private data in a side database. For implementation details refer to the
 following two `marbles private data functions <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/marbles_chaincode_private.go>`__:
-
+使用链码API  ``GetPrivateData()`` 在数据库中查询私有数据。 ``GetPrivateData()``需要两个参数，集合名词和数据的键。
  * **readMarble** for querying the values of the ``name, color, size and owner`` attributes
  * **readMarblePrivateDetails** for querying the values of the ``price`` attribute
 
@@ -173,7 +208,7 @@ When we issue the database queries using the peer commands later in this tutoria
 we will call these two functions.
 
 Writing private data
-~~~~~~~~~~~~~~~~~~~~
+​~~~~~~~~~~~~~~~~~~~~
 
 Use the chaincode API ``PutPrivateData()`` to store the private data
 into the private database. The API also requires the name of the collection.
@@ -280,7 +315,7 @@ execute and endorse our transactions. Chaincode is installed onto a peer and
 then instantiated onto the channel using :doc:`peer-commands`.
 
 Install chaincode on all peers
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+​~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 As discussed above, the BYFN network includes two organizations, Org1 and Org2,
 with two peers each. Therefore the chaincode has to be installed on four peers:
@@ -353,7 +388,7 @@ Use the `peer chaincode install <http://hyperledger-fabric.readthedocs.io/en/mas
        peer chaincode install -n marblesp -v 1.0 -p github.com/chaincode/marbles02_private/go/
 
 Instantiate the chaincode on the channel
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+​~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Use the `peer chaincode instantiate <http://hyperledger-fabric.readthedocs.io/en/master/commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-instantiate>`__
 command to instantiate the marbles chaincode on a channel. To configure
@@ -561,7 +596,7 @@ argument.
     {"docType":"marble","name":"marble1","color":"blue","size":35,"owner":"tom"}
 
 Query private data Org2 is not authorized to
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+​~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Peers in Org2 do not have the marbles ``price`` private data in their side database.
 When they try to query for this data, they get back a hash of the key matching
@@ -795,3 +830,5 @@ the collection JSON file.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
