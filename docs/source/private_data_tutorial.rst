@@ -200,6 +200,7 @@ Org1 and Org2 to have the private data in a side database, and the collection
 ``collectionMarblePrivateDetails`` allows only members of Org1 to have the
 private data in a side database. For implementation details refer to the
 following two `marbles private data functions <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/marbles_chaincode_private.go>`__:
+
 使用链码API  ``GetPrivateData()`` 在数据库中查询私有数据。 ``GetPrivateData()``需要两个参数，集合名词和数据的键。
  * **readMarble** for querying the values of the ``name, color, size and owner`` attributes
  * **readMarblePrivateDetails** for querying the values of the ``price`` attribute
