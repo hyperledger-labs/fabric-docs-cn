@@ -200,7 +200,7 @@ Org1 and Org2 to have the private data in a side database, and the collection
 ``collectionMarblePrivateDetails`` allows only members of Org1 to have the
 private data in a side database. For implementation details refer to the
 following two `marbles private data functions <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/marbles_chaincode_private.go>`__:
-
+------------
 使用链码API  ``GetPrivateData()`` 在数据库中查询私有数据。 ``GetPrivateData()``需要两个参数，集合名称和数据的键。
  * **readMarble** for querying the values of the ``name, color, size and owner`` attributes
   * **readMarble** 用于查询名称，颜色，大小和所有者属性的值。
@@ -208,6 +208,7 @@ following two `marbles private data functions <https://github.com/hyperledger/fa
  * **readMarblePrivateDetails** 用于查询价格的值。
 When we issue the database queries using the peer commands later in this tutorial,
 we will call these two functions.
+------------
 当我们在本教程后面使用peer命令发出数据库查询时，我们将调用这两个函数。
 
 Writing private data-写入私有数据
@@ -221,13 +222,16 @@ twice in the chaincode:
 
 1. Write the private data ``name, color, size and owner`` using the
    collection named ``collectionMarbles``.
+   ------------
    使用集合名称``collectionMarbles``写入私有数据 ``name, color, size and owner``.
 2. Write the private data ``price`` using the collection named
    ``collectionMarblePrivateDetails``.
+   ------------
   使用集合名称``collectionMarblePrivateDetails``写入私有数据 ``price``.
 
 For example, in the following snippet of the ``initMarble`` function,
 ``PutPrivateData()`` is called twice, once for each set of private data.
+------------
 举例来说，在``initMarble``函数的以下片段中，``PutPrivateData（）``被调用两次，每组私有数据集一次。
 
 .. code-block:: GO
