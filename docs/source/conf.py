@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 #
+# Copyright IBM Corp. All Rights Reserved.
+#
 # SPDX-License-Identifier: Apache-2.0
 #
-# hyperledger-fabricdocs documentation build configuration file, created by
-# sphinx-quickstart on Mon Feb 20 16:11:53 2017.
+# hyperledger-fabric-ca documentation build configuration file, created by
+# sphinx-quickstart on Tue May 23 17:35:49 2017.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -22,7 +24,6 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('.'))
 
-
 import sphinx_rtd_theme
 
 # -- General configuration ------------------------------------------------
@@ -34,6 +35,7 @@ import sphinx_rtd_theme
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+
 extensions = ['sphinx.ext.autodoc',
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
@@ -45,26 +47,17 @@ extensions = ['sphinx.ext.autodoc',
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
-# recommonmark is a python utility that allows markdown to be used within
-# Sphinx projects.
-# Installed version as per directive in docs/requirement.txt
-from recommonmark.parser import CommonMarkParser
-
-source_parsers = {
-    '.md': CommonMarkParser,
-}
-
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = ['.rst', '.md']
+source_suffix = '.rst'
 
 # The master toctree document.
 master_doc = 'index'
 
 # General information about the project.
-project = u'hyperledger-fabricdocs'
+project = u'hyperledger-fabric-cadocs'
 copyright = u'2017, hyperledger'
 author = u'hyperledger'
 
@@ -101,9 +94,12 @@ todo_include_todos = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
+
 html_theme = 'sphinx_rtd_theme'
 
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+
+html_add_permalinks = True
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -122,7 +118,7 @@ def setup(app):
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'hyperledger-fabricdocsdoc'
+htmlhelp_basename = 'hyperledger-fabric-cadocs'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -149,7 +145,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'hyperledger-fabricdocs.tex', u'hyperledger-fabricdocs Documentation',
+    (master_doc, 'hyperledger-fabric-cadocs.tex', u'hyperledger-fabric-ca Documentation',
      u'hyperledger', 'manual'),
 ]
 
@@ -159,7 +155,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'hyperledger-fabricdocs', u'hyperledger-fabricdocs Documentation',
+    (master_doc, 'hyperledger-fabric-cadocs', u'hyperledger-fabric-ca Documentation',
      [author], 1)
 ]
 
@@ -170,14 +166,10 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'hyperledger-fabricdocs', u'hyperledger-fabricdocs Documentation',
-     author, 'hyperledger-fabricdocs', 'One line description of project.',
+    (master_doc, 'hyperledger-fabric-cadocs', u'hyperledger-fabric-ca Documentation',
+     author, 'hyperledger-fabric-ca', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-
-# -- Options for Epub output ----------------------------------------------
 
 # Bibliographic Dublin Core info.
 epub_title = project
@@ -185,19 +177,8 @@ epub_author = author
 epub_publisher = author
 epub_copyright = copyright
 
-# The unique identifier of the text. This can be a ISBN number
-# or the project homepage.
-#
-# epub_identifier = ''
-
-# A unique identification for the text.
-#
-# epub_uid = ''
-
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ['search.html']
-
-
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}
