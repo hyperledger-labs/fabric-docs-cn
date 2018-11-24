@@ -1493,7 +1493,7 @@ for peer and orderer identities. As before, applications can use a Fabric SDK to
 associated with creating authorization header and request payload, and with processing the response.
 
 Getting Idemix CRI (Certificate Revocation Information) - 获取 Idemix CRI （证书撤销信息）
------------------------------------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 An Idemix CRI (Credential Revocation Information) is similar in purpose to an X509 CRL (Certificate Revocation List):
 to revoke what was previously issued.  However, there are some differences.
 
