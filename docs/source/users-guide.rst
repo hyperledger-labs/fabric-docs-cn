@@ -1,84 +1,94 @@
-Fabric CA User's Guide
-======================
+Fabric CA User's Guide - Fabric CA 用户指南
+============================================
 
 The Hyperledger Fabric CA is a Certificate Authority (CA)
 for Hyperledger Fabric.
+Hyperledger Fabric CA 是 Hyperledger Fabric 使用的证书颁发机构(CA)。
 
 It provides features such as:
+它提供了以下功能：
 
   * registration of identities, or connects to LDAP as the user
     registry
+  * 身份注册，或作为用户注册中心连接到LDAP
   * issuance of Enrollment Certificates (ECerts)
+  * 签发背书证书(ECerts)
   * certificate renewal and revocation
+  * 证书的更新和撤销
 
 Hyperledger Fabric CA consists of both a server and a client component as
 described later in this document.
+如本文后面所述，Hyperledger Fabric CA 由服务器和客户端组件组成。
 
 For developers interested in contributing to Hyperledger Fabric CA, see the
 `Fabric CA repository <https://github.com/hyperledger/fabric-ca>`__ for more
 information.
+对于有兴趣为Hyperledger Fabric CA做出贡献的开发人员，查看
+`Fabric CA 代码仓库 <https://github.com/hyperledger/fabric-ca>`__ 获取更多信息。
 
 
 .. _Back to Top:
+.. _回到顶部:
 
-Table of Contents
------------------
+Table of Contents - 总目录
+----------------------------------
 
-1. `Overview`_
+1. `Overview - 概览`_
 
-2. `Getting Started`_
+2. `Getting Started - 快速开始`_
 
-   1. `Prerequisites`_
-   2. `Install`_
-   3. `Explore the Fabric CA CLI`_
+   1. `Prerequisites - 先决条件`_
+   2. `Install - 安装`_
+   3. `Explore the Fabric CA CLI - 探讨 Fabric CA CLI`_
 
-3. `Configuration Settings`_
+3. `Configuration Settings - 配置设置`_
 
-   1. `A word on file paths`_
+   1. `A word on file paths - 文件路径上的一个词`_
 
-4. `Fabric CA Server`_
+4. `Fabric CA Server - Fabric CA Server`_
 
-   1. `Initializing the server`_
-   2. `Starting the server`_
-   3. `Configuring the database`_
-   4. `Configuring LDAP`_
-   5. `Setting up a cluster`_
-   6. `Setting up multiple CAs`_
-   7. `Enrolling an intermediate CA`_
-   8. `Upgrading the server`_
+   1. `Initializing the server - 初始化server`_
+   2. `Starting the server - 启动server`_
+   3. `Configuring the database - 配置数据库`_
+   4. `Configuring LDAP - 配置LDAP`_
+   5. `Setting up a cluster - 设置一个集群`_
+   6. `Setting up multiple CAs - 设置多CA`_
+   7. `Enrolling an intermediate CA - 登记一个中间CA`_
+   8. `Upgrading the server - 升级server`_
 
-5. `Fabric CA Client`_
+5. `Fabric CA Client - Fabric CA Client`_
 
-   1. `Enrolling the bootstrap identity`_
-   2. `Registering a new identity`_
-   3. `Enrolling a peer identity`_
-   5. `Getting Identity Mixer credential for a user`_
-   6. `Getting Idemix CRI`_
-   7. `Reenrolling an identity`_
-   8. `Revoking a certificate or identity`_
-   9. `Generating a CRL (Certificate Revocation List)`_
-   10. `Attribute-Based Access Control`_
-   11. `Dynamic Server Configuration Update`_
-   12. `Enabling TLS`_
-   13. `Contact specific CA instance`_
+   1. `Enrolling the bootstrap identity - 登记引导身份`_
+   2. `Registering a new identity - 注册一个新的身份`_
+   3. `Enrolling a peer identity - 登记一个节点身份`_
+   5. `Getting Identity Mixer credential for a user - 获取用户的身份混合器凭据`_
+   6. `Getting Idemix CRI - 获取 Idemix CRI`_
+   7. `Reenrolling an identity - 重新登记一个身份`_
+   8. `Revoking a certificate or identity - 撤销一个证书或者身份`_
+   9. `Generating a CRL (Certificate Revocation List) - 生成一个撤销列表`_
+   10. `Attribute-Based Access Control - 基于属性的访问控制`_
+   11. `Dynamic Server Configuration Update - 动态服务配置更新`_
+   12. `Enabling TLS - 启用 TLS`_
+   13. `Contact specific CA instance - 连接特定的CA实例`_
 
-6. `HSM`_
+6. `HSM - HSM`_
 
-   1. `Configuring Fabric CA server to use softhsm2`_
+   1. `Configuring Fabric CA server to use softhsm2 - 配置 Fabric CA server 使用softhsm2`_
 
-7. `File Formats`_
+7. `File Formats - 文件格式`_
 
-   1. `Fabric CA server's configuration file format`_
-   2. `Fabric CA client's configuration file format`_
+   1. `Fabric CA server's configuration file format - Fabric CA 服务端的文件格式`_
+   2. `Fabric CA client's configuration file format - Fabric CA 客户端的文件格式`_
 
-8. `Troubleshooting`_
+8. `Troubleshooting - 故障排除`_
 
 
-Overview
---------
+Overview - 概览
+----------------
 
 The diagram below illustrates how the Hyperledger Fabric CA server fits into the
 overall Hyperledger Fabric architecture.
+下图展示了 Hyperledger Fabric CA 服务如何适配 Hyperledger Fabric 的整体架构。
 
 .. image:: ./images/fabric-ca.png
 
@@ -102,11 +112,11 @@ A server may contain multiple CAs.  Each CA is either a root CA or an
 intermediate CA.  Each intermediate CA has a parent CA which is either a
 root CA or another intermediate CA.
 
-Getting Started
----------------
+Getting Started - 快速开始
+------------------------------
 
-Prerequisites
-~~~~~~~~~~~~~~~
+Prerequisites - 先决条件
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  Go 1.9+ installation
 -  ``GOPATH`` environment variable is set correctly
@@ -131,8 +141,8 @@ For more information on libtool, see https://www.gnu.org/software/libtool.
 
 For more information on libltdl-dev, see https://www.gnu.org/software/libtool/manual/html_node/Using-libltdl.html.
 
-Install
-~~~~~~~
+Install - 安装
+~~~~~~~~~~~~~~
 
 The following installs both the `fabric-ca-server` and `fabric-ca-client` binaries
 in $GOPATH/bin.
@@ -239,8 +249,8 @@ the fabric-ca-client.
     # cd docker/server
     # docker-compose up -d
 
-Explore the Fabric CA CLI
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Explore the Fabric CA CLI - 探讨 Fabric CA CLI
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This section simply provides the usage messages for the Fabric CA server and client
 for convenience.  Additional usage information is provided in following sections.
@@ -259,8 +269,8 @@ The following links shows the :doc:`Server Command Line <servercli>` and
 
 `Back to Top`_
 
-Configuration Settings
-~~~~~~~~~~~~~~~~~~~~~~
+Configuration Settings - 配置设置
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The Fabric CA provides 3 ways to configure settings on the Fabric CA server
 and client. The precedence order is:
@@ -307,8 +317,8 @@ The same approach applies to fabric-ca-server, except instead of using
 
 .. _server:
 
-A word on file paths
-^^^^^^^^^^^^^^^^^^^^^
+A word on file paths - 文件路径上的一个词
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 All the properties in the Fabric CA server and client configuration file
 that specify file names support both relative and absolute paths.
 Relative paths are relative to the config directory, where the
@@ -332,8 +342,8 @@ directory, ``cert.pem`` file in the ``~/config/certs`` directory and the
 
 
 
-Fabric CA Server
-----------------
+Fabric CA Server - Fabric CA Server
+-----------------------------------
 
 This section describes the Fabric CA server.
 
@@ -360,8 +370,8 @@ in the server's home directory.
 
 .. _initialize:
 
-Initializing the server
-~~~~~~~~~~~~~~~~~~~~~~~
+Initializing the server - 初始化server
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Initialize the Fabric CA server as follows:
 
@@ -457,8 +467,8 @@ Elliptic Curve (ECDSA) offers the following key size options:
 | 521    | secp521r1    | ecdsa-with-SHA512     |
 +--------+--------------+-----------------------+
 
-Starting the server
-~~~~~~~~~~~~~~~~~~~
+Starting the server - 启动server
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Start the Fabric CA server as follows:
 
@@ -500,8 +510,8 @@ You may skip to the `Fabric CA Client <#fabric-ca-client>`__ section if
 you do not want to configure the Fabric CA server to run in a cluster or
 to use LDAP.
 
-Configuring the database
-~~~~~~~~~~~~~~~~~~~~~~~~
+Configuring the database - 配置数据库
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This section describes how to configure the Fabric CA server to connect
 to PostgreSQL or MySQL databases. The default database is SQLite and the
@@ -712,8 +722,8 @@ will reject the connection. To specify client key and certificate files
 for the Fabric CA server, set the ``db.tls.client.certfile``,
 and ``db.tls.client.keyfile`` configuration properties.
 
-Configuring LDAP
-~~~~~~~~~~~~~~~~
+Configuring LDAP - 配置LDAP
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The Fabric CA server can be configured to read from an LDAP server.
 
@@ -872,8 +882,8 @@ When LDAP is configured, enrollment works as follows:
    password. If the LDAP bind is successful, the enrollment processing is
    authorized and can proceed.
 
-Setting up a cluster
-~~~~~~~~~~~~~~~~~~~~
+Setting up a cluster - 设置一个集群
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You may use any IP sprayer to load balance to a cluster of Fabric CA
 servers. This section provides an example of how to set up Haproxy to
@@ -905,8 +915,8 @@ haproxy.conf
 
 Note: If using TLS, need to use ``mode tcp``.
 
-Setting up multiple CAs
-~~~~~~~~~~~~~~~~~~~~~~~
+Setting up multiple CAs - 设置多CA
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The fabric-ca server by default consists of a single default CA. However, additional CAs
 can be added to a single server by using `cafiles` or `cacount` configuration options.
@@ -985,8 +995,8 @@ For example, the following command will start two customized CA instances:
     --cafiles ca/ca2/fabric-ca-config.yaml
 
 
-Enrolling an intermediate CA
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Enrolling an intermediate CA - 登记一个中间CA
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In order to create a CA signing certificate for an intermediate CA, the intermediate
 CA must enroll with a parent CA in the same way that a fabric-ca-client enrolls with a CA.
@@ -1003,8 +1013,8 @@ CA tries to explicitly specify a CN value.
 For other intermediate CA flags see `Fabric CA server's configuration file format`_ section.
 
 
-Upgrading the server
-~~~~~~~~~~~~~~~~~~~~
+Upgrading the server - 升级server
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The Fabric CA server must be upgraded before upgrading the Fabric CA client.
 Prior to upgrade, it is suggested that the current database be backed up:
@@ -1119,8 +1129,8 @@ To display summary information from the haproxy "show stat" command, the followi
 
 .. _client:
 
-Fabric CA Client
-----------------
+Fabric CA Client - Fabric CA Client
+--------------------------------------
 
 This section describes how to use the fabric-ca-client command.
 
@@ -1137,8 +1147,8 @@ The Fabric CA client's home directory is determined as follows:
 The instructions below assume that the client configuration file exists
 in the client's home directory.
 
-Enrolling the bootstrap identity
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Enrolling the bootstrap identity - 登记引导身份
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 First, if needed, customize the CSR (Certificate Signing Request) section
 in the client configuration file. Note that ``csr.cn`` field must be set
@@ -1179,8 +1189,8 @@ The enroll command stores an enrollment certificate (ECert), corresponding priva
 certificate chain PEM files in the subdirectories of the Fabric CA client's ``msp`` directory.
 You will see messages indicating where the PEM files are stored.
 
-Registering a new identity
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Registering a new identity - 注册一个新的身份
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The identity performing the register request must be currently enrolled, and
 must also have the proper authority to register the type of the identity that is being
@@ -1389,8 +1399,8 @@ Viper treats map keys as case insensitive and always returns lowercase value. To
     export FABRIC_CA_CLIENT_HOME=$HOME/fabric-ca/clients/admin
     fabric-ca-client register --id.name client1 --id.type client --id.affiliation bu1.department1.Team1
 
-Enrolling a peer identity
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Enrolling a peer identity - 登记一个节点身份
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Now that you have successfully registered a peer identity, you may now
 enroll the peer given the enrollment ID and secret (i.e. the *password*
@@ -1452,8 +1462,8 @@ certificate in the chain is followed by its issuer's CA certificate. If you need
 to return the CA chain in the opposite order, then set the environment variable ``CA_CHAIN_PARENT_FIRST``
 to ``true`` and restart the Fabric CA server. The Fabric CA client will handle either order appropriately.
 
-Getting Identity Mixer credential for a user
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Getting Identity Mixer credential for a user - 获取用户的身份混合器凭据
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Identity Mixer (Idemix) is a cryptographic protocol suite for privacy-preserving authentication and transfer of certified attributes.
 Idemix allows users to authenticate with verifiers without the involvement of the issuer (CA) and selectively disclose only those attributes
 that are required by the verifier and can do so without being linkable across their transactions.
@@ -1481,8 +1491,8 @@ Note that Hyperledger Fabric will support clients/users to sign transactions wit
 for peer and orderer identities. As before, applications can use a Fabric SDK to send requests to the Fabric CA server. SDKs hide the complexity
 associated with creating authorization header and request payload, and with processing the response.
 
-Getting Idemix CRI (Certificate Revocation Information)
------------------------------------------------
+Getting Idemix CRI (Certificate Revocation Information) - 获取 Idemix CRI
+-----------------------------------------------------------------------------------
 An Idemix CRI (Credential Revocation Information) is similar in purpose to an X509 CRL (Certificate Revocation List):
 to revoke what was previously issued.  However, there are some differences.
 
@@ -1490,7 +1500,7 @@ In X509, the issuer revokes an end user's certificate and its ID is included in 
 The verifier checks to see if the user's certificate is in the CRL and if so, returns an authorization failure.
 The end user is not involved in this revocation process, other than receiving an authorization error from a verifier.
 
-In Idemix, the end user is involved.  The issuer revokes an end user's credential similar to X509 and evidence of this 
+In Idemix, the end user is involved.  The issuer revokes an end user's credential similar to X509 and evidence of this
 revocation is recorded in the CRI.  The CRI is given to the end user (aka "prover").  The end user then generates a 
 proof that their credential has not been revoked according to the CRI.  The end user gives this proof to the verifier
 who verifies the proof according to the CRI.
@@ -1502,8 +1512,8 @@ handles remaining in the revocation handle pool. In this case, the fabric-ca-ser
 handles which increments the epoch of the CRI. The number of revocation handles in the revocation handle pool is configurable
 via the ``idemix.rhpoolsize`` server configuration property.
 
-Reenrolling an Identity
-~~~~~~~~~~~~~~~~~~~~~~~
+Reenrolling an Identity - 重新登记一个身份
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Suppose your enrollment certificate is about to expire or has been compromised.
 You can issue the reenroll command to renew your enrollment certificate as follows.
@@ -1513,8 +1523,8 @@ You can issue the reenroll command to renew your enrollment certificate as follo
     export FABRIC_CA_CLIENT_HOME=$HOME/fabric-ca/clients/peer1
     fabric-ca-client reenroll
 
-Revoking a certificate or identity
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Revoking a certificate or identity - 撤销一个证书或者身份
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 An identity or a certificate can be revoked. Revoking an identity will revoke all
 the certificates owned by the identity and will also prevent the identity from getting
 any new certificates. Revoking a certificate will invalidate a single certificate.
@@ -1584,11 +1594,11 @@ it in the **<msp folder>/crls/crl.pem** file.
 
     fabric-ca-client revoke -e peer1 --gencrl
 
-A CRL can also be generated using the `gencrl` command. Refer to the `Generating a CRL (Certificate Revocation List)`_
+A CRL can also be generated using the `gencrl` command. Refer to the `Generating a CRL (Certificate Revocation List) - 生成一个撤销列表`_
 section for more information on the `gencrl` command.
 
-Generating a CRL (Certificate Revocation List)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Generating a CRL (Certificate Revocation List) - 生成一个撤销列表
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 After a certificate is revoked in the Fabric CA server, the appropriate MSPs in Hyperledger Fabric must also be updated.
 This includes both local MSPs of the peers as well as MSPs in the appropriate channel configuration blocks.
 To do this, PEM encoded CRL (certificate revocation list) file must be placed in the `crls`
@@ -1640,8 +1650,8 @@ sample demonstrates how to generate a CRL that contains certificate of a revoked
 msp. It will then demonstrate that querying the channel using the revoked user credentials will result
 in an authorization error.
 
-Enabling TLS
-~~~~~~~~~~~~
+Enabling TLS - 启用 TLS
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 This section describes in more detail how to configure TLS for a Fabric CA client.
 
@@ -1666,8 +1676,8 @@ file.
 The **client** option is required only if mutual TLS is configured on
 the server.
 
-Attribute-Based Access Control
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Attribute-Based Access Control - 基于属性的访问控制
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Access control decisions can be made by chaincode (and by the Hyperledger Fabric runtime)
 based upon an identity's attributes.  This is called
@@ -1746,8 +1756,8 @@ see `https://github.com/hyperledger/fabric/tree/release-1.1/core/chaincode/lib/c
 For an end-to-end sample which demonstrates Attribute-Based Access Control and more,
 see `https://github.com/hyperledger/fabric-samples/tree/release-1.1/fabric-ca/README.md <https://github.com/hyperledger/fabric-samples/tree/release-1.1/fabric-ca/README.md>`_
 
-Dynamic Server Configuration Update
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Dynamic Server Configuration Update - 动态服务配置更新
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This section describes how to use fabric-ca-client to dynamically update portions
 of the fabric-ca-server's configuration without restarting the server.
@@ -2187,8 +2197,8 @@ in the MSP:
  export FABRIC_CA_CLIENT_HOME=/tmp/clientHome
  fabric-ca-client certificate list --id admin --store msp/admincerts
 
-Contact specific CA instance
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Contact specific CA instance - 连接特定的CA实例
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When a server is running multiple CA instances, requests can be directed to a
 specific CA. By default, if no CA name is specified in the client request the
@@ -2202,15 +2212,15 @@ filter as follows:
 
 `Back to Top`_
 
-HSM
----
+HSM - HSM
+---------
 By default, the Fabric CA server and client store private keys in a PEM-encoded file,
 but they can also be configured to store private keys in an HSM (Hardware Security Module)
 via PKCS11 APIs. This behavior is configured in the BCCSP (BlockChain Crypto Service Provider)
 section of the server’s or client’s configuration file.
 
-Configuring Fabric CA server to use softhsm2
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Configuring Fabric CA server to use softhsm2 - 配置 Fabric CA server 使用softhsm2
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This section shows how to configure the Fabric CA server or client to use a software version
 of PKCS11 called softhsm (see https://github.com/opendnssec/SoftHSMv2).
@@ -2249,8 +2259,8 @@ FABRIC_CA_SERVER_BCCSP_PKCS11_LABEL=ForFabric
 
 `Back to Top`_
 
-File Formats
-------------
+File Formats - 文件格式
+------------------------
 
 Fabric CA server's configuration file format
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2268,8 +2278,8 @@ link shows a sample :doc:`Client configuration file <clientconfig>`.
 
 `Back to Top`_
 
-Troubleshooting
----------------
+Troubleshooting - 故障排除
+------------------------------
 
 1. If you see a ``Killed: 9`` error on OSX when trying to execute
    ``fabric-ca-client`` or ``fabric-ca-server``, there is a long thread
