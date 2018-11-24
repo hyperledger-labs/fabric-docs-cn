@@ -41,15 +41,20 @@ Table of Contents - 总目录
    2. `Install - 安装`_
    3. `Start Server Natively - 在本地启动服务`_
    4. `Start Server via Docker - 通过Docker启动服务`_
+      1. `Docker Hub - Docker Hub`_
+      2. `Building Your Own Docker image - 构建你自己的 Docker 镜像`_
    5. `Explore the Fabric CA CLI - 探讨 Fabric CA CLI`_
    6. `Configuration Settings - 配置设置`_
-      1. `A word on file paths - 文件路径上的一个词`_
+      1. `A word on file paths - 文件路径的简单说明`_
 
 3. `Fabric CA Server - Fabric CA Server`_
 
    1. `Initializing the server - 初始化server`_
    2. `Starting the server - 启动server`_
    3. `Configuring the database - 配置数据库`_
+      1. `PostgreSQL - PostgreSQL`_
+         1. `PostgreSQL SSL Configuration - PostgreSQL SSL 配置`_
+      2. `MySQL - MySQL`_
    4. `Configuring LDAP - 配置LDAP`_
    5. `Setting up a cluster - 设置一个集群`_
    6. `Setting up multiple CAs - 设置多CA`_
@@ -67,10 +72,21 @@ Table of Contents - 总目录
    7. `Reenrolling an identity - 重新登记一个身份`_
    8. `Revoking a certificate or identity - 撤销一个证书或者身份`_
    9. `Generating a CRL (Certificate Revocation List) - 生成一个撤销列表`_
-   10. `Attribute-Based Access Control - 基于属性的访问控制`_
-   11. `Dynamic Server Configuration Update - 动态服务配置更新`_
-   12. `Enabling TLS - 启用 TLS`_
-   13. `Contact specific CA instance - 连接特定的CA实例`_
+   10. `Enabling TLS - 启用 TLS`_
+   11. `Attribute-Based Access Control - 基于属性的访问控制`_
+   12. `Dynamic Server Configuration Update - 动态服务配置更新`_
+      1. `Dynamically updating identities - 动态地更新身份`_
+      2. `Getting Identity Information - 获取身份信息`_
+         1. `Adding an identity - 添加一个身份`_
+         2. `Modifying an identity - 修改一个身份`_
+         3. `Removing an identity - 移除一个身份`_
+      3. `Dynamically updating affiliations - 动态地更新从属关系`_
+         1. `Adding an affiliation - 添加一个从属关系`_
+         2. `Modifying an affiliation - 修改一个从属关系`_
+         3. `Removing an affiliation - 移除一个从属关系`_
+      4. `Listing affiliation information - 列出从属关系信息`_
+   13. `Manage Certificates - 管理证书`_
+   14. `Contact specific CA instance - 连接特定的CA实例`_
 
 5. `HSM - HSM`_
 
@@ -171,8 +187,8 @@ following error:
 
     package github.com/hyperledger/fabric-ca/cmd/fabric-ca-client: exit status 1
 
-Start Server Natively
-~~~~~~~~~~~~~~~~~~~~~
+Start Server Natively - 在本地启动服务
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The following starts the `fabric-ca-server` with default settings.
 
@@ -187,11 +203,11 @@ setting.
 A default configuration file named `fabric-ca-server-config.yaml`
 is created in the local directory which can be customized.
 
-Start Server via Docker
-~~~~~~~~~~~~~~~~~~~~~~~
+Start Server via Docker - 通过Docker启动服务
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Docker Hub
-^^^^^^^^^^^^
+Docker Hub - Docker Hub
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 Go to: https://hub.docker.com/r/hyperledger/fabric-ca/tags/
 
@@ -228,8 +244,8 @@ This will pull down the specified fabric-ca image in the compose file
 if it does not already exist, and start an instance of the fabric-ca
 server.
 
-Building Your Own Docker image
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Building Your Own Docker image - 构建你自己的 Docker 镜像
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 You can build and start the server via docker-compose as shown below.
 
@@ -318,16 +334,21 @@ The same approach applies to fabric-ca-server, except instead of using
 
 .. _server:
 
-A word on file paths - 文件路径上的一个词
+A word on file paths - 文件路径的简单说明
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 All the properties in the Fabric CA server and client configuration file
 that specify file names support both relative and absolute paths.
+Fabric CA 服务端和客户端配置文件里面的所有指定文件名的属性都支持相对路径和绝对路径。
 Relative paths are relative to the config directory, where the
 configuration file is located. For example, if the config directory is
 ``~/config`` and the tls section is as shown below, the Fabric CA server
 or client will look for the ``root.pem`` file in the ``~/config``
 directory, ``cert.pem`` file in the ``~/config/certs`` directory and the
 ``key.pem`` file in the ``/abs/path`` directory
+相对路径和配置的目录有关，相对的是配置文件所在的位置。例如，如果配置目录是
+``~/config`` 并且 tls 部分就像下面展示的那样，Fabric CA 服务器或者客户端将会在
+``~/config`` 目录寻找``root.pem`` 文件，``cert.pem`` 文件在 ``~/config/certs``
+目录，``key.pem`` 文件在 ``/abs/path`` 目录。
 
 .. code:: yaml
 
@@ -340,6 +361,7 @@ directory, ``cert.pem`` file in the ``~/config/certs`` directory and the
         keyfile: /abs/path/key.pem
 
 `Back to Top`_
+`回到顶部`_
 
 
 
@@ -527,8 +549,8 @@ versions in a cluster setup:
 - PostgreSQL: 9.5.5 or later
 - MySQL: 5.7 or later
 
-PostgreSQL
-^^^^^^^^^^
+PostgreSQL - PostgreSQL
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following sample may be added to the server's configuration file in
 order to connect to a PostgreSQL database. Be sure to customize the
@@ -604,8 +626,8 @@ of the ``db.tls`` section:
 | **certfiles** - A list of PEM-encoded trusted root certificate files.
 | **certfile** and **keyfile** - PEM-encoded certificate and key files that are used by the Fabric CA server to communicate securely with the PostgreSQL server
 
-PostgreSQL SSL Configuration
-"""""""""""""""""""""""""""""
+PostgreSQL SSL Configuration - PostgreSQL SSL 配置
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 **Basic instructions for configuring SSL on the PostgreSQL server:**
 
@@ -631,8 +653,8 @@ For more details on configuring SSL on the PostgreSQL server, please refer
 to the following PostgreSQL documentation:
 https://www.postgresql.org/docs/9.4/static/libpq-ssl.html
 
-MySQL
-^^^^^^^
+MySQL - MySQL
+^^^^^^^^^^^^^^
 
 The following sample may be added to the Fabric CA server configuration file in
 order to connect to a MySQL database. Be sure to customize the various
@@ -1125,6 +1147,7 @@ To display summary information from the haproxy "show stat" command, the followi
 
 
 `Back to Top`_
+`回到顶部`_
 
 
 
@@ -1766,8 +1789,8 @@ of the fabric-ca-server's configuration without restarting the server.
 All commands in this section require that you first be enrolled by executing the
 `fabric-ca-client enroll` command.
 
-Dynamically updating identities
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Dynamically updating identities - 动态地更新身份
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This section describes how to use fabric-ca-client to dynamically update identities.
 
@@ -1786,8 +1809,8 @@ An authorization failure will occur if the client identity does not satisfy all 
 
 The following shows how to add, modify, and remove an affiliation.
 
-Getting Identity Information
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Getting Identity Information - 获取身份信息
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 A caller may retrieve information on a identity from the fabric-ca server as long as the caller meets
 the authorization requirements highlighted in the section above. The following command shows how to get an
@@ -1804,8 +1827,8 @@ issuing the following command.
 
     fabric-ca-client identity list
 
-Adding an identity
-"""""""""""""""""""
+Adding an identity - 添加一个身份
+"""""""""""""""""""""""""""""""""""""""""
 
 The following adds a new identity for 'user1'. Adding a new identity performs the same action as registering an
 identity via the 'fabric-ca-client register' command. There are two available methods for adding a new identity.
@@ -1846,8 +1869,8 @@ The table below lists all the fields of an identity and whether they are require
 +----------------+------------+------------------------+
 
 
-Modifying an identity
-""""""""""""""""""""""
+Modifying an identity - 修改一个身份
+"""""""""""""""""""""""""""""""""""
 
 There are two available methods for modifying an existing identity. The first method is via the `--json` flag where you describe
 the modifications in to an identity in a JSON string. Multiple modifications can be made in a single request. Any element of an identity that
@@ -1915,8 +1938,8 @@ command. In this case, both the secret and the type are updated for user 'user1'
 
     fabric-ca-client identity modify user1 --secret newpass --type peer
 
-Removing an identity
-"""""""""""""""""""""
+Removing an identity - 移除一个身份
+"""""""""""""""""""""""""""""""""""
 
 The following removes identity 'user1' and also revokes any certificates associated with the 'user1' identity.
 
@@ -1927,14 +1950,14 @@ The following removes identity 'user1' and also revokes any certificates associa
 Note: Removal of identities is disabled in the fabric-ca-server by default, but may be enabled
 by starting the fabric-ca-server with the `--cfg.identities.allowremove` option.
 
-Dynamically updating affiliations
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Dynamically updating affiliations - 动态地更新从属关系
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This section describes how to use fabric-ca-client to dynamically update affiliations. The
 following shows how to add, modify, remove, and list an affiliation.
 
-Adding an affiliation
-"""""""""""""""""""""""
+Adding an affiliation - 添加一个从属关系
+""""""""""""""""""""""""""""""""""""""""
 
 An authorization failure will occur if the client identity does not satisfy all of the following:
 
@@ -1949,8 +1972,8 @@ The following adds a new affiliation named ‘org1.dept1’.
 
     fabric-ca-client affiliation add org1.dept1
 
-Modifying an affiliation
-"""""""""""""""""""""""""
+Modifying an affiliation - 修改一个从属关系
+"""""""""""""""""""""""""""""""""""""""""
 
 An authorization failure will occur if the client identity does not satisfy all of the following:
 
@@ -1976,8 +1999,8 @@ of identities that are affected to use the new affiliation name.
 
     fabric-ca-client affiliation modify org1 --name org2 --force
 
-Removing an affiliation
-"""""""""""""""""""""""""
+Removing an affiliation - 移除一个从属关系
+"""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 An authorization failure will occur if the client identity does not satisfy all of the following:
 
@@ -2003,8 +2026,8 @@ any of these identities.
 Note: Removal of affiliations is disabled in the fabric-ca-server by default, but may be enabled
 by starting the fabric-ca-server with the `--cfg.affiliations.allowremove` option.
 
-Listing affiliation information
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Listing affiliation information - 列出从属关系信息
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 An authorization failure will occur if the client identity does not satisfy all of the following:
 
@@ -2026,8 +2049,8 @@ issuing the following command.
 
     fabric-ca-client affiliation list
 
-Manage Certificates
-~~~~~~~~~~~~~~~~~~~~
+Manage Certificates - 管理证书
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This section describes how to use fabric-ca-client to manage certificates.
 
