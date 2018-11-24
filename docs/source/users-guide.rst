@@ -39,13 +39,13 @@ Table of Contents - 总目录
 
    1. `Prerequisites - 先决条件`_
    2. `Install - 安装`_
-   3. `Explore the Fabric CA CLI - 探讨 Fabric CA CLI`_
+   3. `Start Server Natively - 在本地启动服务`_
+   4. `Start Server via Docker - 通过Docker启动服务`_
+   5. `Explore the Fabric CA CLI - 探讨 Fabric CA CLI`_
+   6. `Configuration Settings - 配置设置`_
+      1. `A word on file paths - 文件路径上的一个词`_
 
-3. `Configuration Settings - 配置设置`_
-
-   1. `A word on file paths - 文件路径上的一个词`_
-
-4. `Fabric CA Server - Fabric CA Server`_
+3. `Fabric CA Server - Fabric CA Server`_
 
    1. `Initializing the server - 初始化server`_
    2. `Starting the server - 启动server`_
@@ -56,13 +56,14 @@ Table of Contents - 总目录
    7. `Enrolling an intermediate CA - 登记一个中间CA`_
    8. `Upgrading the server - 升级server`_
 
-5. `Fabric CA Client - Fabric CA Client`_
+4. `Fabric CA Client - Fabric CA Client`_
 
    1. `Enrolling the bootstrap identity - 登记引导身份`_
    2. `Registering a new identity - 注册一个新的身份`_
    3. `Enrolling a peer identity - 登记一个节点身份`_
+   4. `Getting a CA certificate chain from another Fabric CA server - 从另一个Fabric CA 服务获取一个CA的证书链`_
    5. `Getting Identity Mixer credential for a user - 获取用户的身份混合器凭据`_
-   6. `Getting Idemix CRI - 获取 Idemix CRI`_
+   6. `Getting Idemix CRI (Certificate Revocation Information) - 获取 Idemix CRI （证书撤销信息）`_
    7. `Reenrolling an identity - 重新登记一个身份`_
    8. `Revoking a certificate or identity - 撤销一个证书或者身份`_
    9. `Generating a CRL (Certificate Revocation List) - 生成一个撤销列表`_
@@ -71,16 +72,16 @@ Table of Contents - 总目录
    12. `Enabling TLS - 启用 TLS`_
    13. `Contact specific CA instance - 连接特定的CA实例`_
 
-6. `HSM - HSM`_
+5. `HSM - HSM`_
 
    1. `Configuring Fabric CA server to use softhsm2 - 配置 Fabric CA server 使用softhsm2`_
 
-7. `File Formats - 文件格式`_
+6. `File Formats - 文件格式`_
 
    1. `Fabric CA server's configuration file format - Fabric CA 服务端的文件格式`_
    2. `Fabric CA client's configuration file format - Fabric CA 客户端的文件格式`_
 
-8. `Troubleshooting - 故障排除`_
+7. `Troubleshooting - 故障排除`_
 
 
 Overview - 概览
@@ -1432,8 +1433,8 @@ For example, if an identity is of type `peer` and its affiliation is
 `department1.team1`, the identity's OU hierarchy (from leaf to root) is
 `OU=team1, OU=department1, OU=peer`.
 
-Getting a CA certificate chain from another Fabric CA server
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Getting a CA certificate chain from another Fabric CA server - 从另一个Fabric CA 服务获取一个CA的证书链
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In general, the cacerts directory of the MSP directory must contain the certificate authority chains
 of other certificate authorities, representing all of the roots of trust for the peer.
@@ -1491,7 +1492,7 @@ Note that Hyperledger Fabric will support clients/users to sign transactions wit
 for peer and orderer identities. As before, applications can use a Fabric SDK to send requests to the Fabric CA server. SDKs hide the complexity
 associated with creating authorization header and request payload, and with processing the response.
 
-Getting Idemix CRI (Certificate Revocation Information) - 获取 Idemix CRI
+Getting Idemix CRI (Certificate Revocation Information) - 获取 Idemix CRI （证书撤销信息）
 -----------------------------------------------------------------------------------
 An Idemix CRI (Credential Revocation Information) is similar in purpose to an X509 CRL (Certificate Revocation List):
 to revoke what was previously issued.  However, there are some differences.
@@ -1501,7 +1502,7 @@ The verifier checks to see if the user's certificate is in the CRL and if so, re
 The end user is not involved in this revocation process, other than receiving an authorization error from a verifier.
 
 In Idemix, the end user is involved.  The issuer revokes an end user's credential similar to X509 and evidence of this
-revocation is recorded in the CRI.  The CRI is given to the end user (aka "prover").  The end user then generates a 
+revocation is recorded in the CRI.  The CRI is given to the end user (aka "prover").  The end user then generates a
 proof that their credential has not been revoked according to the CRI.  The end user gives this proof to the verifier
 who verifies the proof according to the CRI.
 For verification to succeed, the version of the CRI (known as the "epoch") used by the end user and verifier must be same.
@@ -2262,15 +2263,15 @@ FABRIC_CA_SERVER_BCCSP_PKCS11_LABEL=ForFabric
 File Formats - 文件格式
 ------------------------
 
-Fabric CA server's configuration file format
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Fabric CA server's configuration file format - Fabric CA 服务端的文件格式
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A default configuration file is created in the server's home directory
 (see `Fabric CA Server <#server>`__ section for more info). The following
 link shows a sample :doc:`Server configuration file <serverconfig>`.
 
-Fabric CA client's configuration file format
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Fabric CA client's configuration file format - Fabric CA 客户端的文件格式
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A default configuration file is created in the client's home directory
 (see `Fabric CA Client <#client>`__ section for more info). The following
