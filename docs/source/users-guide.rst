@@ -118,6 +118,7 @@ Overview - 概览
 
 The diagram below illustrates how the Hyperledger Fabric CA server fits into the
 overall Hyperledger Fabric architecture.
+
 下图展示了 Hyperledger Fabric CA 服务如何适配 Hyperledger Fabric 的整体架构。
 
 .. image:: ./images/fabric-ca.png
@@ -128,10 +129,12 @@ All communication to the Hyperledger Fabric CA server is via REST APIs.
 See `fabric-ca/swagger/swagger-fabric-ca.json` for the swagger documentation
 for these REST APIs.
 You may view this documentation via the http://editor2.swagger.io online editor.
+
 有两种和 Hyperledger Fabric CA 服务端交互的方式：
 通过 Hyperledger Fabric CA 客户端或者通过 Fabric SDK。
 与 Hyperledger Fabric CA 服务端的所有通信都是通过 REST APIs 来做的。
-查看swagger文档`fabric-ca/swagger/swagger-fabric-ca.json`，这里面记录了通信使用的 REST APIs。
+查看swagger文档 `fabric-ca/swagger/swagger-fabric-ca.json` ，这里面记录了通信使用的 REST APIs。
+
 你可以使用在线编辑器 http://editor2.swagger.io 阅读文档.
 
 The Hyperledger Fabric CA client or SDK may connect to a server in a cluster
@@ -139,13 +142,23 @@ of Hyperledger Fabric CA servers.   This is illustrated in the top right section
 of the diagram. The client routes to an HA Proxy endpoint which load balances
 traffic to one of the fabric-ca-server cluster members.
 
+Hyperledger Fabric CA 客户端或者 SDK 可能连接到 Hyperledger Fabric CA 服务集群中到一个。
+这在图上的右上部分说明了。客户端被路由到HA高可用代理端点，该端点将流量负载均衡给
+fabric-ca-server集群成员之一。
+
 All Hyperledger Fabric CA servers in a cluster share the same database for
 keeping track of identities and certificates.  If LDAP is configured, the identity
 information is kept in LDAP rather than the database.
 
+为了持续跟踪身份和证书，集群中的所有 Hyperledger Fabric CA 服务共享相同的数据库。
+如果配置了 LDAP ，身份信息会被保存在 LDAP 中而不是数据库中。
+
 A server may contain multiple CAs.  Each CA is either a root CA or an
 intermediate CA.  Each intermediate CA has a parent CA which is either a
 root CA or another intermediate CA.
+
+一个服务端可以包含多个CA。每一个CA可能是一个根CA或者是一个中间证书。
+每一个中间证书有一个父CA，父CA可能是根CA或者中间CA。
 
 Getting Started - 快速开始
 ------------------------------
@@ -153,9 +166,9 @@ Getting Started - 快速开始
 Prerequisites - 先决条件
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  Go 1.9+ installation
--  ``GOPATH`` environment variable is set correctly
-- libtool and libtdhl-dev packages are installed
+-  Go 1.9+ installation - 安装Go 1.9+ 的版本
+-  ``GOPATH`` environment variable is set correctly - 正确的设置了 ``GOPATH`` 环境变量
+- libtool and libtdhl-dev packages are installed - 安装了 libtool 和 libtdhl-dev
 
 The following installs the libtool dependencies on Ubuntu:
 
