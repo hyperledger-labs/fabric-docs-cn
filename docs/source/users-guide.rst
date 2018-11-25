@@ -41,10 +41,13 @@ Table of Contents - 总目录
    2. `Install - 安装`_
    3. `Start Server Natively - 在本地启动服务`_
    4. `Start Server via Docker - 通过Docker启动服务`_
+
       1. `Docker Hub - Docker Hub`_
       2. `Building Your Own Docker image - 构建你自己的 Docker 镜像`_
+
    5. `Explore the Fabric CA CLI - 探讨 Fabric CA CLI`_
    6. `Configuration Settings - 配置设置`_
+
       1. `A word on file paths - 文件路径的简单说明`_
 
 3. `Fabric CA Server - Fabric CA Server`_
@@ -52,9 +55,13 @@ Table of Contents - 总目录
    1. `Initializing the server - 初始化server`_
    2. `Starting the server - 启动server`_
    3. `Configuring the database - 配置数据库`_
+
       1. `PostgreSQL - PostgreSQL`_
+
          1. `PostgreSQL SSL Configuration - PostgreSQL SSL 配置`_
+
       2. `MySQL - MySQL`_
+
    4. `Configuring LDAP - 配置LDAP`_
    5. `Setting up a cluster - 设置一个集群`_
    6. `Setting up multiple CAs - 设置多CA`_
@@ -75,16 +82,22 @@ Table of Contents - 总目录
    10. `Enabling TLS - 启用 TLS`_
    11. `Attribute-Based Access Control - 基于属性的访问控制`_
    12. `Dynamic Server Configuration Update - 动态服务配置更新`_
+
       1. `Dynamically updating identities - 动态地更新身份`_
       2. `Getting Identity Information - 获取身份信息`_
+
          1. `Adding an identity - 添加一个身份`_
          2. `Modifying an identity - 修改一个身份`_
          3. `Removing an identity - 移除一个身份`_
+
       3. `Dynamically updating affiliations - 动态地更新从属关系`_
+
          1. `Adding an affiliation - 添加一个从属关系`_
          2. `Modifying an affiliation - 修改一个从属关系`_
          3. `Removing an affiliation - 移除一个从属关系`_
+
       4. `Listing affiliation information - 列出从属关系信息`_
+
    13. `Manage Certificates - 管理证书`_
    14. `Contact specific CA instance - 连接特定的CA实例`_
 
@@ -94,8 +107,8 @@ Table of Contents - 总目录
 
 6. `File Formats - 文件格式`_
 
-   1. `Fabric CA server's configuration file format - Fabric CA 服务端的文件格式`_
-   2. `Fabric CA client's configuration file format - Fabric CA 客户端的文件格式`_
+   1. `Fabric CA server's configuration file format - Fabric CA 服务端的配置文件格式`_
+   2. `Fabric CA client's configuration file format - Fabric CA 客户端的配置文件格式`_
 
 7. `Troubleshooting - 故障排除`_
 
@@ -115,6 +128,11 @@ All communication to the Hyperledger Fabric CA server is via REST APIs.
 See `fabric-ca/swagger/swagger-fabric-ca.json` for the swagger documentation
 for these REST APIs.
 You may view this documentation via the http://editor2.swagger.io online editor.
+有两种和 Hyperledger Fabric CA 服务端交互的方式：
+通过 Hyperledger Fabric CA 客户端或者通过 Fabric SDK。
+与 Hyperledger Fabric CA 服务端的所有通信都是通过 REST APIs 来做的。
+查看swagger文档`fabric-ca/swagger/swagger-fabric-ca.json`，这里面记录了通信使用的 REST APIs。
+你可以使用在线编辑器 http://editor2.swagger.io 阅读文档.
 
 The Hyperledger Fabric CA client or SDK may connect to a server in a cluster
 of Hyperledger Fabric CA servers.   This is illustrated in the top right section
@@ -1033,7 +1051,7 @@ CA tries to explicitly specify a CN value.
 
     fabric-ca-server start -b admin:adminpw -u http://<enrollmentID>:<secret>@<parentserver>:<parentport>
 
-For other intermediate CA flags see `Fabric CA server's configuration file format`_ section.
+For other intermediate CA flags see `Fabric CA server's configuration file format - Fabric CA 服务端的配置文件格式`_ section.
 
 
 Upgrading the server - 升级server
@@ -2286,14 +2304,14 @@ FABRIC_CA_SERVER_BCCSP_PKCS11_LABEL=ForFabric
 File Formats - 文件格式
 ------------------------
 
-Fabric CA server's configuration file format - Fabric CA 服务端的文件格式
+Fabric CA server's configuration file format - Fabric CA 服务端的配置文件格式
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A default configuration file is created in the server's home directory
 (see `Fabric CA Server <#server>`__ section for more info). The following
 link shows a sample :doc:`Server configuration file <serverconfig>`.
 
-Fabric CA client's configuration file format - Fabric CA 客户端的文件格式
+Fabric CA client's configuration file format - Fabric CA 客户端的配置文件格式
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A default configuration file is created in the client's home directory
@@ -2301,6 +2319,7 @@ A default configuration file is created in the client's home directory
 link shows a sample :doc:`Client configuration file <clientconfig>`.
 
 `Back to Top`_
+`回到顶部`_
 
 Troubleshooting - 故障排除
 ------------------------------
