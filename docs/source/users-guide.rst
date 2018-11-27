@@ -172,28 +172,38 @@ Prerequisites - 先决条件
 
 The following installs the libtool dependencies on Ubuntu:
 
+下面是在 Ubuntu 上安装 libtool :
+
 .. code:: bash
 
    sudo apt install libtool libltdl-dev
 
 The following installs the libtool dependencies on MacOSX:
 
+下面是在MacOSX上安装libtool：
+
 .. code:: bash
 
    brew install libtool
 
-.. note:: libtldl-dev is not necessary on MacOSX if you instal
-          libtool via Homebrew
+.. note:: libtldl-dev is not necessary on MacOSX if you install
+          libtool via Homebrew。如果你通过Homebrew安装了libtool，那么在MacOSX上不需要安装libtldl-dev
 
 For more information on libtool, see https://www.gnu.org/software/libtool.
 
+有关libtool的更多信息请查看 https://www.gnu.org/software/libtool.
+
 For more information on libltdl-dev, see https://www.gnu.org/software/libtool/manual/html_node/Using-libltdl.html.
+
+有关libltdl-dev的更多信息请查看 https://www.gnu.org/software/libtool/manual/html_node/Using-libltdl.html.
 
 Install - 安装
 ~~~~~~~~~~~~~~
 
 The following installs both the `fabric-ca-server` and `fabric-ca-client` binaries
 in $GOPATH/bin.
+
+下面是把 `fabric-ca-server` 和 `fabric-ca-client` 二进制版本安装到 $GOPATH/bin.
 
 .. code:: bash
 
@@ -202,6 +212,9 @@ in $GOPATH/bin.
 Note: If you have already cloned the fabric-ca repository, make sure you are on the
 master branch before running the 'go get' command above. Otherwise, you might see the
 following error:
+
+Note: 如果你已经clone了 fabric-ca 仓库，在你运行 'go get' 命令之前，确保你在主分支。否则，你可能
+看到以下错误:
 
 ::
 
