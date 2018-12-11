@@ -1,25 +1,53 @@
 
-Using CouchDB
+Using CouchDB--使用CouchDB
 =============
 
 This tutorial will describe the steps required to use the CouchDB as the state
 database with Hyperledger Fabric. By now, you should be familiar with Fabric
 concepts and have explored some of the samples and tutorials.
 
+本教程将介绍在Hyperledger Fabric中使用CouchDB用作状态数据库所需的步骤。 到现在为止，你应该熟悉Fabric概念并探讨了一些示例和教程。
+
 The tutorial will take you through the following steps:
 
+本教程将包括下面几个步骤：
+
 #. :ref:`cdb-enable-couch`
+
+开启CouchDB
+
 #. :ref:`cdb-create-index`
+
+创建索引
+
 #. :ref:`cdb-add-index`
+
+添加索引到链码文件夹
+
 #. :ref:`cdb-install-instantiate`
+
+安装实例化链码
+
 #. :ref:`cdb-query`
+
+查询CouchDB
+
 #. :ref:`cdb-update-index`
+
+更新CouchDB 索引
+
 #. :ref:`cdb-delete-index`
+
+删除CouchDB索引
 
 For a deeper dive into CouchDB refer to :doc:`couchdb_as_state_database`
 and for more information on the Fabric ledger refer to the `Ledger <ledger/ledger.html>`_
 topic. Follow the tutorial below for details on how to leverage CouchDB in your
 blockchain network.
+
+要深入了解CouchDB，请参考:doc:`couchdb_as_state_database。了解更多超级账本的信息参考 `Ledger <ledger/ledger.html>`_。教程下面会详细介绍如何在你的区块链旺罗冲使用CouchDB。
+
+
 
 Throughout this tutorial we will use the `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__
 as our use case to demonstrate how to use CouchDB with Fabric and will deploy
@@ -28,7 +56,9 @@ completed the task :doc:`install`. However, running the BYFN tutorial is not
 a prerequisite for this tutorial, instead the necessary commands are provided
 throughout this tutorial to use the network.
 
-Why CouchDB?
+在本教程中，我们会使用Marbles sample <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__作为我们的例子来演示如何在Fabric中使用CouchDB，然后会在BYFN网络中部署Marbles。你应该已经完成了这部分:doc:`install。然而，运行BYFN不是本教程的必要条件，提供了一些网络中本教程的一些必要命令。
+
+Why CouchDB? -为什么是CouchDB？
 ~~~~~~~~~~~~
 
 Fabric supports two types of peer databases. LevelDB is the default state
@@ -40,6 +70,7 @@ flexible and efficient against large indexed data stores, when you want to
 query the actual data value content rather than the keys. CouchDB is a JSON
 document datastore rather than a pure key-value store therefore enabling
 indexing of the contents of the documents in the database.
+Fabric支持两种节点数据库。LevelDB是默认的嵌在peer节点，存储链码数据。它支持简单的键值对，仅支持键，键范围和复合键查询。CouchDB是一个可选的备用状态数据库，当链代码数据值建模为JSON时，它支持富查询。 当您要查询实际数据值内容而不是键时，富查询对大型索引数据存储更灵活，更有效。 CouchDB是一个JSON文档数据存储区而不是纯键值存储区，因此可以索引数据库中文档的内容。
 
 In order to leverage the benefits of CouchDB, namely content-based JSON
 queries,your data must be modeled in JSON format. You must decide whether to use
@@ -49,10 +80,12 @@ on the network must use the same database type. If you have a mix of JSON and
 binary data values, you can still use CouchDB, however the binary values can
 only be queried based on key, key range, and composite key queries.
 
+为了利用CouchDB的优势，即基于内容的JSON查询，您的数据必须以JSON格式建模。 在设置网络之前，您必须决定是使用LevelDB还是CouchDB。 由于数据兼容性问题，不支持将peer从使用LevelDB切换到CouchDB。 网络上的所有peer都必须使用相同的数据库类型。 如果混合使用JSON和二进制数据值，仍可以使用CouchDB，但只能根据键，键范围和组合键查询查询二进制值。
+
 .. _cdb-enable-couch:
 
-Enable CouchDB in Hyperledger Fabric
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Enable CouchDB in Hyperledger Fabric -在Hyperledger Fabric 中启用CouchDB
+​~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 CouchDB runs as a separate database process alongside the peer, therefore there
 are additional considerations in terms of setup, management, and operations.
@@ -63,14 +96,17 @@ and update each peer container by changing the configuration found in
 ``core.yaml`` to point to the CouchDB container. The ``core.yaml``
 file must be located in the directory specified by the environment variable
 FABRIC_CFG_PATH:
+CouchDB作为独立的数据库进程与peer节点一起运行，因此在设置，管理和操作方面还有其他注意事项。 可以使用`CouchDB <https://hub.docker.com/r/hyperledger/fabric couchdb />`__的docker镜像，我们建议它在运行在相同的peer服务上。 您需要为每个peer设置一个CouchDB容器，并通过更改``core.yaml``中的配置来更新每个peer容器，以指向CouchDB容器。 ``core.yaml``文件必须位于环境变量FABRIC_CFG_PATH指定的目录中：
 
 * For docker deployments, ``core.yaml`` is pre-configured and located in the peer
   container ``FABRIC_CFG_PATH`` folder. However when using docker environments,
   you typically pass environment variables by editing the
   ``docker-compose-couch.yaml``  to override the core.yaml
+  对于docker部署，``core.yaml``是预配置的，位于peer容器的``FABRIC_CFG_PATH``文件夹中。 但是，在使用docker环境时，通常通过编辑``docker-compose-couch.yaml``来覆盖core.yaml来传递环境变量。
 
 * For native binary deployments, ``core.yaml`` is included with the release artifact
   distribution.
+  对于本地二进制部署，发布构件分发中包含``core.yaml``。
 
 Edit the ``stateDatabase`` section of ``core.yaml``. Specify ``CouchDB`` as the
 ``stateDatabase`` and fill in the associated ``couchDBConfig`` properties. For
@@ -79,12 +115,14 @@ To view an example of a core.yaml file configured for CouchDB, examine the
 BYFN ``docker-compose-couch.yaml`` in the ``HyperLedger/fabric-samples/first-network``
 directory.
 
+编辑``core.yaml``的``stateDatabase``部分。 指定``CouchDB``作为``stateDatabase``并填写相关的``couchDBConfig``属性。 有关配置CouchDB和fabric工作的更多详细信息，请参阅“here <http：// hyperledger fabric.readthedocs.io/en/master/couchdb_as_state_database html＃couchdb-configuration>`__。 要查看为CouchDB配置的core.yaml文件的示例，请检查``HyperLedger / fabric samples / first-network``目录中的BYFN`“docker-compose-couch.yaml``。
+
 .. _cdb-create-index:
 
-Create an index
-~~~~~~~~~~~~~~~
+Create an index-创建索引
+​~~~~~~~~~~~~~~~
 
-Why are indexes important?
+Why are indexes important?-为什么这些索引很重要
 
 Indexes allow a database to be queried without having to examine every row
 with every query, making them run faster and more efficiently. Normally,
@@ -93,6 +131,8 @@ be queried more efficiently. To leverage the major benefit of CouchDB -- the
 ability to perform rich queries against JSON data -- indexes are not required,
 but they are strongly recommended for performance. Also, if sorting is required
 in a query, CouchDB requires an index of the sorted fields.
+索引允许查询数据库，而不必检查每个查询的每一行，使它们运行得更快，更有效。 通常，索引是针对频繁出现的查询条件构建的，允许更有效地查询数据。 要利用CouchDB的主要优势 - 
+能够对JSON数据执行丰富的查询 - 不需要索引，但强烈建议使用它们来提高性能。 此外，如果查询中需要排序，CouchDB需要排序字段的索引。
 
 .. note::
 
@@ -237,7 +277,7 @@ and refreshed every time new records are added to the state database.
 
 
 Add the index to your chaincode folder
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+​~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Once you finalize an index, it is ready to be packaged with your chaincode for
 deployment by being placed alongside it in the appropriate metadata folder.
@@ -295,7 +335,7 @@ Start the network
 .. _cdb-install-instantiate:
 
 Install and instantiate the Chaincode
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+​~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Client applications interact with the blockchain ledger through chaincode. As
 such we need to install the chaincode on every peer that will
@@ -371,7 +411,7 @@ peer log in the Docker container.
 .. _cdb-query:
 
 Query the CouchDB State Database
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+​~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Now that the index has been defined in the JSON file and deployed alongside
 the chaincode, chaincode functions can execute JSON queries against the CouchDB
@@ -498,7 +538,7 @@ The query runs successfully and the index is leveraged with the following result
 .. _cdb-update-index:
 
 Update an Index
-~~~~~~~~~~~~~~~
+​~~~~~~~~~~~~~~~
 
 It may be necessary to update an index over time. The same index may exist in
 subsequent versions of the chaincode that gets installed. In order for an index
@@ -553,7 +593,7 @@ of a curl command which can be used to create the index on the database
 .. _cdb-delete-index:
 
 Delete an Index
-~~~~~~~~~~~~~~~
+​~~~~~~~~~~~~~~~
 
 Index deletion is not managed by Fabric tooling. If you need to delete an index,
 manually issue a curl command against the database or delete it using the
@@ -576,3 +616,5 @@ To delete the index used in this tutorial, the curl command would be:
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
+
+~~~~~~~~~~~~
