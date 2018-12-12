@@ -140,10 +140,15 @@ in a query, CouchDB requires an index of the sorted fields.
    in the CouchDB log that the index was not found. However, if a rich query
    includes a sort specification, then an index on that field is required;
    otherwise, the query will fail and an error will be thrown.
+   没有索引的富查询将起作用，但可能会在CouchDB日志中发出未找到索引的警告。 但是，如果富查询包含排序规范，则需要该字段的索引;否则，查询将失败并将引发错误。
 
 To demonstrate building an index, we will use the data from the `Marbles
 sample <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__.
 In this example, the Marbles data structure is defined as:
+
+为了演示构建索引，我们将使用“Marbles”中的数据
+示例<https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__。
+在此示例中，Marbles数据结构定义为：
 
 .. code:: javascript
 
@@ -164,23 +169,34 @@ recommended to include this ``docType`` attribute to distinguish each type of
 document in the chaincode namespace. (Each chaincode is represented as its own
 CouchDB database, that is, each chaincode has its own namespace for keys.)
 
+在这种结构中，属性（``docType``，``name``，``color``，``size``，``owner``）定义与资产相关的账本数据。属性“docType”是链码中使用的模式，用于区分可能需要单独查询的不同数据类型。 当使用CouchDB时，它建议包含这个``docType``属性来区分chaincode命名空间中的每种类型的文档。 （每个链代码都表示为自己的CouchDB数据库，也就是说，每个链代码都有自己的密钥命名空间。）
+
 With respect to the Marbles data structure, ``docType`` is used to identify
 that this document/asset is a marble asset. Potentially there could be other
 documents/assets in the chaincode database. The documents in the database are
 searchable against all of these attribute values.
 
+关于Marbles数据结构，``docType``用于标识此文档/资产是marble资产。 可能在链代码数据库中可能存在其他文档/资产。 数据库中的文档可以针对所有这些属性值进行搜索。
+
 When defining an index for use in chaincode queries, each one must be defined
 in its own text file with the extension `*.json` and the index definition must
 be formatted in the CouchDB index JSON format.
 
+在定义用于链代码查询的索引时，每个索引必须在其自己的文本文件中定义，扩展名为`* .json`，索引定义必须以CouchDB索引的JSON格式进行格式化。
+
 To define an index, three pieces of information are required:
+要定义索引需要下面三个信息：
 
   * `fields`: these are the frequently queried fields
+  * `fields`: 频繁查询的部分
   * `name`: name of the index
+  * `name`: 索引名称
   * `type`: always json in this context
+  * `type`: 总是json
 
 For example, a simple index named ``foo-index`` for a field named ``foo``.
 
+例如，一个名为``foo-index``的简单索引，用于名为``foo``的字段。
 .. code:: json
 
     {
@@ -196,17 +212,20 @@ definition. A `design document <http://guide.couchdb.org/draft/design.html>`__ i
 CouchDB construct designed to contain indexes. Indexes can be grouped into
 design documents for efficiency but CouchDB recommends one index per design
 document.
+可选地，可以在索引定义上指定设计文档属性“ddoc”。 `设计文档<http://guide.couchdb.org/draft/design.html>`__是用于包含索引的CouchDB构造。 索引可以分组到设计文档中以提高效率，但CouchDB建议每个设计文档使用一个索引。
 
 .. tip:: When defining an index it is a good practice to include the ``ddoc``
          attribute and value along with the index name. It is important to
          include this attribute to ensure that you can update the index later
          if needed. Also it gives you the ability to explicitly specify which
          index to use on a query.
+         定义索引时，最好将``ddoc``属性和值与索引名一起包含在内。 包含此属性非常重要，以确保您可以在以后需要时更新索引。 此外，它还使您能够显式指定要在查询上使用的索引。
 
 
 Here is another example of an index definition from the Marbles sample with
 the index name ``indexOwner`` using multiple fields ``docType`` and ``owner``
 and includes the ``ddoc`` attribute:
+下面是Marbles示例中索引定义的另一个示例，索引名称为``indexOwner``，使用多个字段``docType``和``owner``并包含``ddoc``属性：
 
 .. _indexExample:
 
@@ -230,6 +249,8 @@ only includes the attribute ``owner``, ``index2`` includes the attributes
 ``owner and color`` and ``index3`` includes the attributes ``owner, color and
 size``. Also, notice each index definition has its own ``ddoc`` value, following
 the CouchDB recommended practice.
+
+在上面的示例中，如果设计文档``indexOwnerDoc``尚不存在，则在部署索引时会自动创建它。 可以使用字段列表中指定的一个或多个属性构造索引，并且可以指定任何属性组合。 对于同一docType，属性可以存在于多个索引中。 在下面的例子中，``index1``只包含属性``owner``，``index2``包含属性``owner and color``和``index3``包含属性``owner，color和size``。 另外，请注意每个索引定义都有自己的``ddoc``值，遵循CouchDB建议的做法。
 
 .. code:: json
 
@@ -265,6 +286,8 @@ In general, you should model index fields to match the fields that will be used
 in query filters and sorts. For more details on building an index in JSON
 format refer to the `CouchDB documentation <http://docs.couchdb.org/en/latest/api/database/find.html#db-index>`__.
 
+通常，您应该为索引字段建模以匹配将在查询过滤器和排序中使用的字段。 有关以JSON格式构建索引的更多详细信息，请参阅`CouchDB文档<http://docs.couchdb.org/en/latest/api/database/find.html#db-index>`__。
+
 A final word on indexing, Fabric takes care of indexing the documents in the
 database using a pattern called ``index warming``. CouchDB does not typically
 index new or updated documents until the next query. Fabric ensures that
@@ -273,14 +296,18 @@ committed.  This ensures queries are fast because they do not have to index
 documents before running the query. This process keeps the index current
 and refreshed every time new records are added to the state database.
 
+关于索引的最后一句话，Fabric负责使用名为``index warming``的模式索引数据库中的文档。 在下一个查询之前，CouchDB通常不会索引新文档或更新的文档。 Fabric通过在提交每个数据块之后请求索引更新来确保索引保持“warm”。 这可以确保查询很快，因为它们不必在运行查询之前索引文档。 每次将新记录添加到状态数据库时，此过程都会使索引保持最新并刷新。
+
 .. _cdb-add-index:
 
 
-Add the index to your chaincode folder
+Add the index to your chaincode folder-将索引添加到链码文件夹
 ​~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Once you finalize an index, it is ready to be packaged with your chaincode for
 deployment by being placed alongside it in the appropriate metadata folder.
+
+完成索引后，可以将其与您的链代码打包在一起，以便将其放在相应的元数据文件夹中。
 
 If your chaincode installation and instantiation uses the Hyperledger
 Fabric Node SDK, the JSON index files can be located in any folder as long
@@ -290,13 +317,19 @@ include the attribute (``metadataPath``) in the `installation request <https://f
 The value of the metadataPath is a string representing the absolute path to the
 directory structure containing the JSON index file(s).
 
+如果您的链代码安装和实例化使用Hyperledger Fabric Node SDK，则JSON索引文件可以位于任何文件夹中，只要它符合此目录结构<https://fabric-sdk-node.github.io/tutorial- metadata chaincode.html>`__。在使用client.installChaincode（）API进行链代码安装期间，在`installation request <https：// fabric sdk-node.github.io/中包含属性（``metadataPath``）。global.html＃ChaincodeInstallRequest>`__。 metadataPath的值是一个字符串，表示包含JSON索引文件的目录结构的绝对路径。
+
 Alternatively, if you are using the
 :doc:`peer-commands` to install and instantiate the chaincode, then the JSON
 index files must be located under the path ``META-INF/statedb/couchdb/indexes``
 which is located inside the directory where the chaincode resides.
 
+或者，如果您使用：doc：`peer-commands`来安装和实例化链代码，那么JSON索引文件必须位于目录内的路径``METAINF / statedb / couchdb / indexes``下,就是链码所在的位置。
+
 The `Marbles sample <https://github.com/hyperledger/fabric-samples/tree/master/chaincode/marbles02/go>`__  below illustrates how the index
 is packaged with the chaincode which will be installed using the peer commands.
+
+下面的`Marbles示例<https://github.com/hyperledger/fabric-samples/tree/master/chaincode/marbles02/go>`__说明了索引如何与将使用peer命令安装的chaincode打包在一起。
 
 .. image:: images/couchdb_tutorial_pkg_example.png
   :scale: 100%
@@ -304,7 +337,7 @@ is packaged with the chaincode which will be installed using the peer commands.
   :alt: Marbles Chaincode Index Package
 
 
-Start the network
+Start the network --启动网络
 -----------------
 
  :guilabel:`Try it yourself`
@@ -315,6 +348,8 @@ Start the network
  or stale docker containers and remove previously generated artifacts.
  Therefore let's run the following command to clean up any
  previous environments:
+ 
+ 在安装和实例化marbles链码之前，我们需要启动BYFN网络。 为了本教程的目的，我们希望从已知的初始状态进行操作。 以下命令将终止所有活动或过时的docker容器并删除以前生成的工件。 因此，让我们运行以下命令来清理以前的所有环境：
 
  .. code:: bash
 
@@ -323,6 +358,7 @@ Start the network
 
 
  Now start up the BYFN network with CouchDB by running the following command:
+ 现在用下面的命令来用CouchDB启动BYFN网络：
 
  .. code:: bash
 
@@ -331,10 +367,11 @@ Start the network
  This will create a simple Fabric network consisting of a single channel named
  `mychannel` with two organizations (each maintaining two peer nodes) and an
  ordering service while using CouchDB as the state database.
+ 这将创建一个简单的Fabric网络，其中包含一个名为`mychannel`的通道，其中包含两个组织（每个组织维护两个peer节点）和一个order排序服务，同时使用CouchDB作为状态数据库。
 
 .. _cdb-install-instantiate:
 
-Install and instantiate the Chaincode
+Install and instantiate the Chaincode-安装实例化链码
 ​~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Client applications interact with the blockchain ledger through chaincode. As
@@ -343,16 +380,22 @@ execute and endorse our transactions and and instantiate the chaincode on the
 channel. In the previous section, we demonstrated how to package the chaincode
 so they should be ready for deployment.
 
+客户端应用程序通过链代码与区块链账本交互。 因此，我们需要在每个将执行和背书我们的事务的peer节点上安装链码，并在通道上实例化链代码。 在上一节中，我们演示了如何打包链码，以便它们可以为部署做好准备。
+
 Chaincode is installed onto a peer and then instantiated onto the channel using
 :doc:`peer-commands`.
+链码安装在peer节点上，然后使用:doc:`peer-commands`实例化到通道上。
 
 
 1. Use the `peer chaincode install <http://hyperledger-fabric.readthedocs.io/en/master/commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-install>`__ command to install the Marbles chaincode on a peer.
+
+使用`peer chaincode install <http://hyperledger-fabric.readthedocs.io/en/master/commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-install>`__命令在peer节点上安装Marbles链码。
 
  :guilabel:`Try it yourself`
 
  Assuming you have started the BYFN network, navigate into the CLI
  container using the command:
+ 假设您已启动BYFN网络，请使用以下命令进入到CLI容器：
 
  .. code:: bash
 
@@ -361,6 +404,7 @@ Chaincode is installed onto a peer and then instantiated onto the channel using
  Use the following command to install the Marbles chaincode from the git
  repository onto a peer in your BYFN network. The CLI container defaults
  to using peer0 of org1:
+ 使用以下命令将Marnles链码从git存储库安装到BYFN网络中的peer节点。 CLI容器默认使用org1的peer0：
 
  .. code:: bash
 
@@ -368,18 +412,20 @@ Chaincode is installed onto a peer and then instantiated onto the channel using
 
 2. Issue the `peer chaincode instantiate <http://hyperledger-fabric.readthedocs.io/en/master/commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-instantiate>`__ command to instantiate the
 chaincode on a channel.
+通过`peer chaincode instantiate <http://hyperledger-fabric.readthedocs.io/en/master/commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-instantiate>`__命令来实例化通道上的链码。
 
  :guilabel:`Try it yourself`
 
  To instantiate the Marbles sample on the BYFN channel ``mychannel``
  run the following command:
+ 要在BYFN通道“mychannel”上实例化Marbles示例，请运行以下命令：
 
  .. code:: bash
 
     export CHANNEL_NAME=mychannel
     peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n marbles -v 1.0 -c '{"Args":["init"]}' -P "OR ('Org0MSP.peer','Org1MSP.peer')"
 
-Verify index was deployed
+Verify index was deployed--验证索引已部署
 -------------------------
 
 Indexes will be deployed to each peer's CouchDB state database once the
@@ -387,11 +433,15 @@ chaincode is both installed on the peer and instantiated on the channel. You
 can verify that the CouchDB index was created successfully by examining the
 peer log in the Docker container.
 
+一旦链码安装在peer上并在通道上实例化，索引将被部署到每个peer的CouchDB状态数据库。 您可以通过检查Docker容器中的peer日志来验证是否已成功创建CouchDB索引。
+
  :guilabel:`Try it yourself`
 
  To view the logs in the peer docker container,
  open a new Terminal window and run the following command to grep for message
  confirmation that the index was created.
+ 
+ 要查看peer节点的docker容器中的日志，请打开一个新的终端窗口并运行以下命令以grep查找已创建索引的消息。
 
  ::
 
@@ -399,6 +449,7 @@ peer log in the Docker container.
 
 
  You should see a result that looks like the following:
+ 你会看到类似下面的结果：
 
  ::
 
@@ -407,19 +458,23 @@ peer log in the Docker container.
  .. note:: If Marbles was not installed on the BYFN peer ``peer0.org1.example.com``,
           you may need to replace it with the name of a different peer where
           Marbles was installed.
+          如果在BYFN 的peer ``peer0.org1.example.com``上没有安装Marbles，您可能需要将其替换为安装了Marbles的其他peer节点的名称。
 
 .. _cdb-query:
 
-Query the CouchDB State Database
+Query the CouchDB State Database-查询CouchDB状态数据库
 ​~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Now that the index has been defined in the JSON file and deployed alongside
 the chaincode, chaincode functions can execute JSON queries against the CouchDB
 state database, and thereby peer commands can invoke the chaincode functions.
+现在索引已在JSON文件中定义并与链码一起部署，链码函数可以对CouchDB状态数据库执行JSON查询，因此peer命令可以调用链码函数。
 
 Specifying an index name on a query is optional. If not specified, and an index
 already exists for the fields being queried, the existing index will be
 automatically used.
+
+在查询上指定索引名称是可选的。 如果未指定，并且已查询的字段已存在索引，则将自动使用现有索引。
 
 .. tip:: It is a good practice to explicitly include an index name on a
          query using the ``use_index`` keyword. Without it, CouchDB may pick a
@@ -427,9 +482,9 @@ automatically used.
          may not realize it, at the low volumes during testing. Only upon
          higher volumes you may realize slow performance because CouchDB is not
          using an index and you assumed it was.
+使用``use_index``关键字在查询中显式包含索引名称是一个好习惯。 没有它，CouchDB可能会选择一个不太理想的索引。 此外，CouchDB可能根本不使用索引，您可能没有意识到它，当测试低容量的时候。 只有在较高的容量的时候，您可能会发现性能较慢，因为CouchDB没有使用索引而您认为它使用了。
 
-
-Build the query in chaincode
+Build the query in chaincode-在链码中创建查询
 ----------------------------
 
 You can perform complex rich queries against the chaincode data values using
@@ -437,6 +492,7 @@ the CouchDB JSON query language within chaincode. As we explored above, the
 `marbles02 sample chaincode <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__
 includes an index and rich queries are defined in the functions - ``queryMarbles``
 and ``queryMarblesByOwner``:
+您可以通过链码中的CouchDB JSON查询语言对链码数据值执行复杂的富查询。 正如我们上面所探讨的那样，`marbles02示例链码<https://github.com/hyperledger/fabric samples / blob / master / chaincode / marbles02 / go / marbles_cha ncode.go>`__包含索引，并且富查询定义于 函数 - ``queryMarbles``和``queryMarblesByOwner``：
 
   * **queryMarbles** --
 
@@ -446,7 +502,7 @@ and ``queryMarblesByOwner``:
       their own selectors at runtime. For more information on selectors refer
       to `CouchDB selector syntax <http://docs.couchdb.org/en/latest/api/database/find.html#find-selectors>`__.
 
-
+ad hoc富查询的示例。 这是一个查询，其中（选择器）字符串可以传递给函数。 此查询对于需要在运行时动态构建自己的选择器的客户端应用程序非常有用。 有关选择器的更多信息，请参阅CouchDB选择器语法<http://docs.couchdb.org/en/latest/api/database/find.html#find-selectors>`__。
 
   * **queryMarblesByOwner** --
 
@@ -455,9 +511,10 @@ and ``queryMarblesByOwner``:
       a single argument, the marble owner. It then queries the state database for
       JSON documents matching the docType of “marble” and the owner id using the
       JSON query syntax.
+      参数化查询的示例，其中查询逻辑被复制到链代码中。 在这种情况下，函数接受单个参数，即marble的所有者。 然后，它使用JSON查询语法在状态数据库中查询与“marble”的docType和所有者id匹配的JSON文档。
 
 
-Run the query using the peer command
+Run the query using the peer command-使用peer命令执行查询
 ------------------------------------
 
 In absence of a client application to test rich queries defined in chaincode,
@@ -466,10 +523,13 @@ docker container. We will customize the `peer chaincode query <http://hyperledge
 command to use the Marbles index ``indexOwner`` and query for all marbles owned
 by "tom" using the ``queryMarbles`` function.
 
+如果没有客户端应用程序来测试链码中定义的富查询，则可以使用peer命令。 peer命令从docker容器内的命令行运行。 我们将自定义`peer chaincode query <http：// hyperledger fabric.readthedocs.io/en/master/commands/peerchaincode.html?%20chaincode%20query#peer-chaincode-query>`__命令来使用Marbles索引 `indexOwner``并使用``queryMarbles``函数查询“tom”拥有的marbles。
+
  :guilabel:`Try it yourself`
 
  Before querying the database, we should add some data. Run the following
  command in the peer container to create a marble owned by "tom":
+ 在查询数据库之前，我们应该添加一些数据。 在对等容器中运行以下命令以创建由“tom”拥有的marble：
 
  .. code:: bash
 
@@ -482,6 +542,8 @@ by "tom" using the ``queryMarbles`` function.
  specify the ``use_index`` keyword on the query. The peer command below is an
  example of how to specify the index explicitly in the selector syntax by
  including the ``use_index`` keyword:
+ 
+ 在链码实例化期间部署索引之后，链码查询将自动使用它。 CouchDB可以根据要查询的字段确定要使用的索引。 如果查询条件存在索引，则将使用该索引。 但是，建议的方法是在查询中指定``use_index``关键字。 下面的peer命令是一个如何通过包含``use_index``关键字在选择器语法中显式指定索引的示例：
 
  .. code:: bash
 
@@ -489,11 +551,14 @@ by "tom" using the ``queryMarbles`` function.
    peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}"]}'
 
 Delving into the query command above, there are three arguments of interest:
+深入研究上面的查询命令，有三个感兴趣的参数：
 
 *  ``queryMarbles``
   Name of the function in the Marbles chaincode. Notice a `shim <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim>`__
   ``shim.ChaincodeStubInterface`` is used to access and modify the ledger. The
   ``getQueryResultForQueryString()`` passes the queryString to the shim API ``getQueryResult()``.
+  
+  Marbles链码中函数的名称。 注意一下`shim <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim>`__ ``shim.ChaincodeStubInterface``用于访问和修改账本。该 ``getQueryResultForQueryString（）``将queryString传递给shim API``getQueryResult（）``。
 
 .. code:: bash
 
@@ -517,6 +582,7 @@ Delving into the query command above, there are three arguments of interest:
 *  ``{"selector":{"docType":"marble","owner":"tom"}``
   This is an example of an **ad hoc selector** string which finds all documents
   of type ``marble`` where the ``owner`` attribute has a value of ``tom``.
+  这是一个** ad hoc selector **字符串的示例，它查找所有类型为``marble``的文档，其中``owner``属性的值为``tom``。
 
 
 *  ``"use_index":["_design/indexOwnerDoc", "indexOwner"]``
@@ -527,9 +593,12 @@ Delving into the query command above, there are three arguments of interest:
   ``"ddoc":"indexOwnerDoc"``. With CouchDB, if you plan to explicitly include
   the index name on the query, then the index definition must include the
   ``ddoc`` value, so it can be referenced with the ``use_index`` keyword.
+  
+  指定设计文档名称``indexOwnerDoc``和索引名称``indexOwner``。 在此示例中，选择器查询显式包含使用``use_index``关键字指定的索引名称。 回顾上面的索引定义：ref：`CreateAnIndex`，它包含一个设计文档，``“ddoc”：“indexOwnerDoc”``。 使用CouchDB，如果您计划在查询中明确包含索引名称，那么索引定义必须包含``ddoc``值，因此可以使用``use_index``关键字引用它。
 
 
 The query runs successfully and the index is leveraged with the following results:
+查询成功运行，并利用索引得到以下结果：
 
 .. code:: json
 
@@ -537,7 +606,7 @@ The query runs successfully and the index is leveraged with the following result
 
 .. _cdb-update-index:
 
-Update an Index
+Update an Index-更新索引
 ​~~~~~~~~~~~~~~~
 
 It may be necessary to update an index over time. The same index may exist in
@@ -551,12 +620,14 @@ index definition gets redeployed to the peer’s state database when the chainco
 is installed and instantiated. Changes to the index name or ``ddoc`` attributes
 will result in a new index being created and the original index remains
 unchanged in CouchDB until it is removed.
+随着时间推移可能需要更新索引。 安装的链码的后续版本中可能存在相同的索引。 为了更新索引，原始索引定义必须包含设计文档ddoc属性和索引名称。 要更新索引定义，请使用相同的索引名称，但更改索引定义。 只需编辑索引JSON文件，然后在索引中添加或删除字段。 Fabric仅支持索引类型JSON，不支持更改索引类型。 在安装和实例化链代码时，更新的索引定义将重新部署到对等方的状态数据库。 对索引名称或ddoc属性的更改将导致创建新索引，并且原始索引在CouchDB中保持不变，直到将其删除。
 
 .. note:: If the state database has a significant volume of data, it will take
           some time for the index to be re-built, during which time chaincode
           invokes that issue queries may fail or timeout.
+          如果状态数据库具有大量数据，则重建索引将花费一些时间，在此期间链代码调用查询可能失败或超时。
 
-Iterating on your index definition
+Iterating on your index definition - 迭代索引定义
 ----------------------------------
 
 If you have access to your peer's CouchDB state database in a development
@@ -565,17 +636,20 @@ your chaincode queries. Any changes to chaincode though would require
 redeployment. Use the `CouchDB Fauxton interface <http://docs.couchdb.org/en/latest/fauxton/index.html>`__ or a command
 line curl utility to create and update indexes.
 
+如果您可以在开发环境中访问peer的CouchDB状态数据库，则可以迭代测试各种索引以支持您的链码查询。 但是，对链码的任何更改都需要重新部署。 使用CouchDB Fauxton接口 <http://docs.couchdb.org/en/latest/fauxton/index.html>`__或命令行curl实用程序来创建和更新索引。
+
 .. note:: The Fauxton interface is a web UI for the creation, update, and
           deployment of indexes to CouchDB. If you want to try out this
           interface, there is an example of the format of the Fauxton version
           of the index in Marbles sample. If you have deployed the BYFN network
           with CouchDB, the Fauxton interface can be loaded by opening a browser
           and navigating to ``http://localhost:5984/_utils``.
+Fauxton接口是用于创建，更新和部署CouchDB索引的Web UI。 如果你想试试这个界面，有一个Marbles样本中索引的Fauxton版本格式的例子。 如果已使用CouchDB部署BYFN网络，则可以通过打开浏览器并导航到http：// localhost：5984 / _utils来加载Fauxton接口。
 
 Alternatively, if you prefer not use the Fauxton UI, the following is an example
 of a curl command which can be used to create the index on the database
 ``mychannel_marbles``:
-
+或者，如果您不想使用Fauxton UI，则以下是curl命令的示例，该命令可用于在数据库“mychannel_marbles”上创建索引：
      // Index for docType, owner.
      // Example curl command line to define index in the CouchDB channel_chaincode database
 
@@ -592,14 +666,16 @@ of a curl command which can be used to create the index on the database
 
 .. _cdb-delete-index:
 
-Delete an Index
+Delete an Index-删除索引
 ​~~~~~~~~~~~~~~~
 
 Index deletion is not managed by Fabric tooling. If you need to delete an index,
 manually issue a curl command against the database or delete it using the
 Fauxton interface.
+索引删除不受Fabric工具管理。 如果需要删除索引，请手动向数据库发出curl命令或使用Fauxton接口将其删除。
 
 The format of the curl command to delete an index would be:
+删除索引的curl命令的格式为：
 
 .. code:: bash
 
@@ -607,6 +683,7 @@ The format of the curl command to delete an index would be:
 
 
 To delete the index used in this tutorial, the curl command would be:
+要删除本教程中使用的索引，curl命令将是：
 
 .. code:: bash
 
