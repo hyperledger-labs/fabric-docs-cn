@@ -1,4 +1,4 @@
-Endorsement policies
+Endorsement policies - 背书策略
 ====================
 
 Every chaincode has an endorsement policy which specifies the set of peers on
@@ -7,9 +7,13 @@ order for the transaction to be considered valid. These endorsement policies
 define the organizations (through their peers) who must "endorse" (i.e., approve
 of) the execution of a proposal.
 
+每一个链码都有一个背书策略，用于指定一些执行和背书执行结果的节点，以此来验证一个交易的有效性。这些背书策略定义了组织中（其中的节点）哪些必须“背书”（或者说，同意）一个提案的执行。
+
 .. note :: Recall that **state**, represented by key-value pairs, is separate
            from blockchain data. For more on this, check out our :doc:`ledger/ledger`
            documentation.
+
+.. 注解 :: 重申一下 **状态** 的概念，和区块数据不同，它是由一个键值对表示的。详细信息参考文档 :doc:`ledger/ledger`
 
 As part of the transaction validation step performed by the peers, each validating
 peer checks to make sure that the transaction contains the appropriate **number**
@@ -17,17 +21,23 @@ of endorsements and that they are from the expected sources (both of these are
 specified in the endorsement policy). The endorsements are also checked to make
 sure they're valid (i.e., that they are valid signatures from valid certificates).
 
-Two ways to require endorsement
+作为节点验证交易步骤的一部分，每一个验证节点都会进行检查，以确保交易包含适当的背书数量并且都来源于期望的地方（这些都是在背书策略中定义的）。也会检查背书是否正确（例如，会验证签名是否来源于有效的证书）。
+
+Two ways to require endorsement - 请求背书的两种方法
 -------------------------------
 
 By default, endorsement policies are specified for a channel's chaincode at
 instantiation or upgrade time (that is, one endorsement policy covers all of the
 state associated with a chaincode).
 
+一般地，在通道链码初始化或者更新的时候会指定背书策略（也就是说，一个背书策略覆盖一个链码中所有相关的状态）。
+
 However, there are cases where it may be necessary for a particular state (a
 particular key-value pair, in other words) to have a different endorsement policy.
 This **state-based endorsement** allows the default chaincode-level endorsement
 policies to be overridden by a different policy for the specified keys.
+
+然而，有些情况下一些特殊的状态（或者说，一个特殊的键值对）可能会需要不同的背书策略。这里的 **基于状态的背书** 允许一个指定键的背书策略覆盖默认的背书策略。
 
 To illustrate the circumstances in which these two types of endorsement policies
 might be used, consider a channel on which cars are being exchanged. The "creation"
@@ -35,6 +45,8 @@ might be used, consider a channel on which cars are being exchanged. The "creati
 the key-value pair that represents it into the world state, in other words) would
 have to satisfy the chaincode-level endorsement policy. To see how to set a
 chaincode-level endorsement policy, check out the section below.
+
+为了解释使用这两种类型背书策略的情况，想象一个汽车置换的通道。“创建” ——或者说是“发布”——一辆可以交易的汽车作为资产（换句话说，就是在世界状态中加入一个键值对），需要满足链码级的背书策略。在后边的段落中你可以找到怎么设置链码级背书策略。
 
 If the car requires a specific endorsement policy, it can be defined either when
 the car is created or afterwards. There are a number of reasons why it might
@@ -46,10 +58,14 @@ transaction. In both cases, **an endorsement policy is required for a particular
 asset that is different from the default endorsement policies for the other
 assets associated with that chaincode.**
 
+如果一辆车需要指定一个背书策略，在车辆被创建前和创建后都可以设定。有很多种理由解释为什么指定一个特定状态的背书策略是必要的。这辆车可能具有历史重要性或价值，因此有必要得到持有执照的评估师的认可。车辆的主人也想确认评估师的节点在交易上签了名（如果他们在同一个通道）。在这两种情况下， **一个特殊资产需要一个和其相关链码上的其他资产的背书策略不同的背书策略。** 
+
 We'll show you how to define a state-based endorsement policy in a subsequent
 section. But first, let's see how we set a chaincode-level endorsement policy.
 
-Setting chaincode-level endorsement policies
+我们将在下一节中展示如何定义一个基于状态的背书策略。但是在那之前，我们先看一下如何设置一个链码级背书策略。
+
+Setting chaincode-level endorsement policies - 设置链码级背书策略
 --------------------------------------------
 
 Chaincode-level endorsement policies can be specified at instantiate time using
