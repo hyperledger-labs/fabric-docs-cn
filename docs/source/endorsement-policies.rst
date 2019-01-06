@@ -46,7 +46,7 @@ the key-value pair that represents it into the world state, in other words) woul
 have to satisfy the chaincode-level endorsement policy. To see how to set a
 chaincode-level endorsement policy, check out the section below.
 
-为了解释使用这两种类型背书策略的情况，想象一个汽车置换的通道。“创建” ——或者说是“发布”——一辆可以交易的汽车作为资产（换句话说，就是在世界状态中加入一个键值对），需要满足链码级的背书策略。在后边的段落中你可以找到怎么设置链码级背书策略。
+为了解释使用这两种类型背书策略的情况，想像一个汽车置换的通道。“创建” ——或者说是“发布”——一辆可以交易的汽车作为资产（换句话说，就是在世界状态中加入一个键值对），需要满足链码级的背书策略。在后边的段落中你可以找到怎么设置链码级背书策略。
 
 If the car requires a specific endorsement policy, it can be defined either when
 the car is created or afterwards. There are a number of reasons why it might
@@ -79,7 +79,7 @@ or in the peer CLI using the ``-P`` switch followed by the policy.
 .. note:: Don't worry about the policy syntax (``'Org1.member'``, et all) right
           now. We'll talk more about the syntax in the next section.
 
-          现在不要担心这里的策略语法 （``'Org1.member'`` 等等），我们会砸下一部分介绍相关语法。
+          现在不要担心这里的策略语法 （``'Org1.member'`` 等等），我们会在下一部分介绍相关语法。
 
 For example:
 
@@ -211,7 +211,7 @@ shim API 提供了下边的函数来设置和检索键上的背书策略。
           binary version of the endorsement policy that can be consumed by the
           basic shim API.
           
-          下边的 ``ex`` 代表 "endorsement policy" ，它可以使用上边的语法定义，也可以用下边描述的函数。两种方式都会生成背书策略的二进制版本用来被基础 shim API 消费。
+          下边的 ``ep`` 代表 "endorsement policy" ，它可以使用上边的语法定义，也可以用下边描述的函数。两种方式都会生成背书策略的二进制版本用来被基础 shim API 使用。
 
 .. code-block:: Go
 
