@@ -1,27 +1,39 @@
-Pluggable transaction endorsement and validation
+Pluggable transaction endorsement and validation - 交易背书和验证的插件化
 ================================================
 
-Motivation
+Motivation - 动机
 ----------
 
 When a transaction is validated at time of commit, the peer performs various
 checks before applying the state changes that come with the transaction itself:
 
+当一个交易提交后，在验证的时候，节点会在应用这些状态变更之前进行交易自带的多种检查：
+
 - Validating the identities that signed the transaction.
+- 验证签名该交易的身份信息。
+
 - Verifying the signatures of the endorsers on the transaction.
+- 验证交易背书者的签名。
+
 - Ensuring the transaction satisfies the endorsement policies of the namespaces
   of the corresponding chaincodes.
+- 确定交易满足相关链码命名空间的背书规则。
 
 There are use cases which demand custom transaction validation rules different
 from the default Fabric validation rules, such as:
 
+有一些场景需要不同于 Fbaric 默认验证规则的自定义验证规则，比如：
+
 - **UTXO (Unspent Transaction Output):** When the validation takes into account
   whether the transaction doesn't double spend its inputs.
+- **UTXO （未消费交易输出）：** 当验证账户中的输入是否被双花的时候。
+
 - **Anonymous transactions:** When the endorsement doesn't contain the identity
   of the peer, but a signature and a public key are shared that can't be linked
   to the peer's identity.
+- **匿名交易：** 当背书中不包含节点身份信息，但是共享的签名和公钥没有和节点的身份信息相关联的时候。
 
-Pluggable endorsement and validation logic
+Pluggable endorsement and validation logic - 背书和验证插件化的逻辑
 ------------------------------------------
 
 Fabric allows for the implementation and deployment of custom endorsement and
@@ -30,6 +42,9 @@ pluggable manner. This logic can be either compiled into the peer as built in
 selectable logic, or compiled and deployed alongside the peer as a
 `Golang plugin <https://golang.org/pkg/plugin/>`_.
 
+Fabric 允许以插件的方式在节点上实施和部署自定义的相关链码的背书和验证逻辑。这个逻辑可以是编译进节点的内置可选逻辑，也可以是编译后作为 `Golang 插件 <https://golang.org/pkg/plugin/>`_ 和节点部署在一起的。
+
+
 Recall that every chaincode is associated with its own endorsement and validation
 logic at the time of chaincode instantiation. If the user doesn't select one, the
 default built-in logic is selected implicitly. A peer administrator may alter the
@@ -37,16 +52,22 @@ endorsement/validation logic that is selected by extending the peer's local
 configuration with the customization of the endorsement/validation logic which is
 loaded and applied at peer startup.
 
-Configuration
+重申一下，每一个链码都是在初始化的时候关联它的背书和验证逻辑的。如果用户没有选择，就会选择内置的逻辑。节点管理员可以在节点启动的时候改变背书/验证逻辑，根据扩展节点的本地配置选择自定义的背书/验证逻辑来加载和应用。
+
+Configuration - 配置
 -------------
 
 Each peer has a local configuration (``core.yaml``) that declares a mapping
 between the endorsement/validation logic name and the implementation that is to
 be run.
 
+每一个节点都有一个本地配置文件（``core.yaml``）声明了一个背书/验证逻辑的名字和启用映射。
+
 The default logic are called ``ESCC`` (with the "E" standing for endorsement) and
 ``VSCC`` (validation), and they can be found in the peer local configuration in
 the ``handlers`` section:
+
+默认逻辑被成为 ``ESCC`` （“E”代表 endorsement ）和 ``VSCC`` （validation），你可以在节点本地配置文件中的 ``handlers`` 部分找到他们： 
 
 .. code-block:: YAML
 
@@ -62,10 +83,14 @@ When the endorsement or validation implementation is compiled into the peer, the
 ``name`` property represents the initialization function that is to be run in order
 to obtain the factory that creates instances of the endorsement/validation logic.
 
+当背书和验证被编译到节点中的时候， ``name`` 属性代表要运行的为了包含创建背书/验证逻辑实例的工厂函数的初始化函数。
+
 The function is an instance method of the ``HandlerLibrary`` construct under
 ``core/handlers/library/library.go`` and in order for custom endorsement or
 validation logic to be added, this construct needs to be extended with any
 additional methods.
+
+
 
 Since this is cumbersome and poses a deployment challenge, one can also deploy
 custom endorsement and validation as a Golang plugin by adding another property
