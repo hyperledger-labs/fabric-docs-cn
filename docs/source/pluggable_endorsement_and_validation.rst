@@ -33,7 +33,7 @@ from the default Fabric validation rules, such as:
   to the peer's identity.
 - **匿名交易：** 当背书中不包含节点身份信息，但是共享的签名和公钥没有和节点的身份信息相关联的时候。
 
-Pluggable endorsement and validation logic - 背书和验证插件化的逻辑
+Pluggable endorsement and validation logic - 插件化背书和验证逻辑
 ------------------------------------------
 
 Fabric allows for the implementation and deployment of custom endorsement and
@@ -42,7 +42,7 @@ pluggable manner. This logic can be either compiled into the peer as built in
 selectable logic, or compiled and deployed alongside the peer as a
 `Golang plugin <https://golang.org/pkg/plugin/>`_.
 
-Fabric 允许以插件的方式在节点上实施和部署自定义的相关链码的背书和验证逻辑。这个逻辑可以是编译进节点的内置可选逻辑，也可以是编译后作为 `Golang 插件 <https://golang.org/pkg/plugin/>`_ 和节点部署在一起的。
+Fabric 允许以插件的方式在节点上实现和部署自定义的相关链码的背书和验证逻辑。这个逻辑可以是编译进节点的内置可选逻辑，也可以是编译后作为 `Golang 插件 <https://golang.org/pkg/plugin/>`_ 和节点部署在一起的。
 
 
 Recall that every chaincode is associated with its own endorsement and validation
@@ -67,7 +67,7 @@ The default logic are called ``ESCC`` (with the "E" standing for endorsement) an
 ``VSCC`` (validation), and they can be found in the peer local configuration in
 the ``handlers`` section:
 
-默认逻辑被成为 ``ESCC`` （“E”代表 endorsement ）和 ``VSCC`` （validation），你可以在节点本地配置文件中的 ``handlers`` 部分找到他们： 
+默认逻辑被称为 ``ESCC`` （“E”代表 endorsement ）和 ``VSCC`` （validation），你可以在节点本地配置文件中的 ``handlers`` 部分找到他们： 
 
 .. code-block:: YAML
 
@@ -102,7 +102,7 @@ For example, if we have custom endorsement and validation logic which is
 implemented as a plugin, we would have the following entries in the configuration
 in ``core.yaml``:
 
-例如，如果我们实现了一个插件自定义背书和验证逻辑，我们可以在配置文件 ``core.yaml`` 中增加如下入口：
+例如，如果我们实现了一个自定义背书和验证逻辑的插件，我们可以在配置文件 ``core.yaml`` 中增加如下入口：
 
 .. code-block:: YAML
 
@@ -127,6 +127,8 @@ And we'd have to place the ``.so`` plugin files in the peer's local file system.
 .. note:: Hereafter, custom endorsement or validation logic implementation is
           going to be referred to as "plugins", even if they are compiled into
           the peer.
+
+          从这里往后，实现的自定以背书和验证逻辑将被称为“插件”，包括编译到节点中的。
 
 Endorsement plugin implementation - 背书插件的实现
 ---------------------------------
@@ -157,7 +159,7 @@ file path) is created for each channel by having the peer invoke the ``New``
 method in the ``PluginFactory`` interface which is also expected to be implemented
 by the plugin developer:
 
-一个给定插件类型（通过识别方法名是否为 ``HandlerLibrary`` 的实例方法或者 ``.so`` 插件的路径）的背书插件实例，是通过让节点执行 ``PluginFactory`` 接口中的 ``New`` 方法了来让每一个通道创建的，这个方法需要插件的开发者来实现。
+一个给定插件类型（通过识别方法名是否为 ``HandlerLibrary`` 的实例方法或者 ``.so`` 插件的路径）的背书插件实例，是通过让节点执行 ``PluginFactory`` 接口中的 ``New`` 方法了来为每一个通道创建的，这个方法需要插件的开发者来实现。
 
 .. code-block:: Go
 
@@ -264,7 +266,7 @@ method in the ``PluginFactory`` interface which is also expected to be implement
 by the plugin developer:
 
 
-一个给定插件类型（通过识别方法名是否为 ``HandlerLibrary`` 的实例方法或者 ``.so`` 插件的路径）的验证插件实例，是通过让节点执行 ``PluginFactory`` 接口中的 ``New`` 方法了来让每一个通道创建的，这个方法需要插件的开发者来实现。
+一个给定插件类型（通过识别方法名是否为 ``HandlerLibrary`` 的实例方法或者 ``.so`` 插件的路径）的验证插件实例，是通过让节点执行 ``PluginFactory`` 接口中的 ``New`` 方法了来为每一个通道创建的，这个方法需要插件的开发者来实现。
 
 .. code-block:: Go
 
@@ -350,7 +352,7 @@ Important notes - 重要提醒
   implementations. However, for now it is the sole responsibility of the system
   operators and administrators to ensure this doesn't happen.
 
-- **验证插件的跨节点一致性：** 未来的发布版本中，为了消除可能导致节点突然运行不同实现的状态差异的错误配置的可能性， Fabric 通道基础设施将确保通道中所有节点的给定链码使用同样的验证逻辑。但是，现在系统操作员和管理员唯一的职责就是确保它不会发生。
+- **验证插件的跨节点一致性：** 未来的发布版本中，Fabric 通道基础设施将确保通道中所有节点的给定链码使用同样的验证逻辑，以消除错误配置的可能性，它可能导致意外运行不同实现的节点的状态差异。但是，现在系统操作员和管理员唯一的职责就是确保它不会发生。
 
 - **Validation plugin error handling:** Whenever a validation plugin can't
   determine whether a given transaction is valid or not, because of some transient
@@ -380,7 +382,7 @@ Important notes - 重要提醒
   use the dependencies given to it, and should import the bare minimum other
   than protobufs.
 
-- **将 Fabric 代码导入插件：** 将属于 Fabric 而不是 protobufs 的代码作为插件的一部分是不鼓励的，当不同发布版本的 Fabric 代码不同时会导致问题，或者在运行不同节点版本时导致不可操作的问题。理想情况下，插件代码应该值使用给定的依赖项，最小化导入 protobufs 以外的值。
+- **将 Fabric 代码导入插件：** 不鼓励将属于 Fabric 而不是 protobufs 的代码作为插件的一部分，当不同发布版本的 Fabric 代码不同时会导致问题，或者在运行不同节点版本时导致不可操作的问题。理想情况下，插件代码应该值使用给定的依赖项，最小化导入 protobufs 以外的值。
 
   .. Licensed under Creative Commons Attribution 4.0 International License
      https://creativecommons.org/licenses/by/4.0/
