@@ -237,13 +237,18 @@ If you are using Mac OS and running Mojave, you will need to `install Xcode
 如果你在使用 Mac OS 而且运行的是 Mojava ，你将
 需要 `install Xcode <./tutorial/installxcode.html>`_.
 
-Enrolling the admin user
+Enrolling the admin user - 登记管理员用户
 ------------------------
 
 .. note:: The following two sections involve communication with the Certificate
           Authority. You may find it useful to stream the CA logs when running
           the upcoming programs by opening a new terminal shell and running
           ``docker logs -f ca.example.com``.
+
+.. note:: 下边的部分执行和证书授权服务器通讯。你在运行下边的程序时，你会发现，
+          打开一个新终端，并运行 ``docker logs -f ca.example.com`` 来查看 CA 
+          的日志流，会很有帮助。
+
 
 When we created the network, an admin user --- literally called ``admin`` ---
 was created as the **registrar** for the certificate authority (CA). Our first
@@ -254,10 +259,21 @@ locally and the public key is then sent to the CA which returns an encoded
 certificate for use by the application. These three credentials are then stored
 in the wallet, allowing us to act as an administrator for the CA.
 
+当我们创建网络的时候，一个管理员用户 --- 叫 ``admin`` --- 被证书授权服务器（CA）
+创建成了 **登记员** 。我们第一步要使用 ``enroll.js`` 程序为 ``admin`` 生成私钥、
+公钥和 x.509 证书。这个程序使用一个 **证书签名请求** (CSR) --- 现在本地生层公钥
+和私钥，然后把公钥发送到 CA ，CA 会发布会一个让应用程序使用的证书。这三个证书会
+保存在钱包中，以便于我们以管理员的身份使用 CA 。
+
 We will subsequently register and enroll a new application user which will be
 used by our application to interact with the blockchain.
 
+我们接下来会注册和登记一个新的应用程序用户，我们将使用这个用户来通过应用程序和
+区块链交互。
+
 Let's enroll user ``admin``:
+
+我们登记一个 ``admin`` 用户：
 
 .. code:: bash
 
@@ -266,11 +282,16 @@ Let's enroll user ``admin``:
 This command has stored the CA administrator's credentials in the ``wallet``
 directory.
 
-Register and enroll ``user1``
+这个命令将 CA 管理员的证书保存在 ``wallet`` 目录。
+
+Register and enroll ``user1`` - 注册和登记 ``user1``
 -----------------------------
 
 Now that we have the administrator's credentials in a wallet, we can enroll a
 new user --- ``user1`` --- which will be used to query and update the ledger:
+
+注意我们在钱包里存放了管理原的证书，我们可以登记一个新用户 --- ``user1`` ---
+他将被用来查询和更新账本：
 
 .. code:: bash
 
@@ -281,16 +302,27 @@ store its credentials alongside those of ``admin`` in the wallet. We now have
 identities for two separate users --- ``admin`` and ``user1`` --- and these are
 used by our application.
 
+和管理员的登记类似，这个程序使用一个 CSR 来登记 ``user1`` 并把他的证书保存到 ``admin`` 
+所在的钱包里。我们现在有了两个独立的用户 --- ``admin`` 和 ``user1`` --- 他们将用于
+我们的应用程序。
+
 Time to interact with the ledger...
 
-Querying the ledger
+账本交互时间。。。
+
+Querying the ledger - 查询账本
 -------------------
 
 Each peer in a blockchain network hosts a copy of the ledger, and an application
 program can query the ledger by invoking a smart contract which queries the most
 recent value of the ledger and returns it to the application.
 
+区块链网络中的每个节点都拥有一个账本的副本，应用程序可以通过执行智能合约查询账本
+上最新的数据来实现来查询账本，并将查询结果返回给应用程序。
+
 Here is a simplified representation of how a query works:
+
+这里是一个查询工作如何进行的简单说明：
 
 .. image:: tutorial/write_first_app.diagram.1.png
 
@@ -304,15 +336,27 @@ are modeled as JSON data. This can be very helpful when looking for all assets
 that match certain keywords with particular values; all cars with a particular
 owner, for example.
 
+应用程序使用查询从 `ledger <./ledger/ledger.html>`_ 读取数据。最常用的查询是查
+寻账本中询当前的值 -- 也就是 `world state <./ledger/ledger.html#world-state>`_ 。
+世界状态是一个键值对的集合，应用程序可以根据一个键或者多个键来查询数据。而且，
+当键值对是以 JSON 值模式组织的时候，世界状态可以通过配置使用数据库（如 CouchDB ） 
+来支持富查询。这对于查询所有资产来匹配特定的键的值是很有用的，比如查询一个人的所
+有汽车。
+
 First, let's run our ``query.js`` program to return a listing of all the cars on
 the ledger. This program uses our second identity -- ``user1`` -- to access the
 ledger:
+
+首先，我们来运行我们的 ``query.js`` 程序来返回账本上所有汽车的侦听。这个程序使用
+我们的第二个身份 -- ``user1`` -- 来操作账本。
 
 .. code:: bash
 
   node query.js
 
 The output should look like this:
+
+输入结果应该类似下边：
 
 .. code:: json
 
@@ -332,16 +376,25 @@ The output should look like this:
 Let's take a closer look at this program. Use an editor (e.g. atom or visual
 studio) and open ``query.js``.
 
+让我们更进一步看一下这个程序。使用一个编辑器（比如， atom 或 visual studio）
+打开 ``query.js`` 。
+
 The application starts by bringing in scope two key classes from the
 ``fabric-network`` module; ``FileSystemWallet`` and ``Gateway``. These classes
 will be used to locate the ``user1`` identity in the wallet, and use it to
 connect to the network:
+
+应用程序开始的时候就从 ``fabric-network`` 模块引入了两个关键的类
+``FileSystemWallet`` 和 ``Gateway`` 。这两个类将用于定位钱包中 ``user1`` 
+的身份,这个身份将用于连接网络。
 
 .. code:: bash
 
   const { FileSystemWallet, Gateway } = require('fabric-network');
 
 The application connects to the network using a gateway:
+
+应用通过网关连接网络：
 
 .. code:: bash
 
@@ -353,6 +406,10 @@ the network. ``ccp`` describes the network that the gateway will access with the
 identity ``user1`` from ``wallet``. See how the ``ccp`` has been loaded from
 ``../../basic-network/connection.json`` and parsed as a JSON file:
 
+这段代码创建了一个新网关，然后通过它让应用程序连接到网络。 ``cpp`` 描述了网关将
+通过 ``wallet`` 中的 ``user1`` 来使用网络。打开 ``../../basic-network/connection.json`` 
+来查看 ``cpp`` 是如何解析一个 JSON 文件的：
+
 .. code:: bash
 
   const ccpPath = path.resolve(__dirname, '..', '..', 'basic-network', 'connection.json');
@@ -363,9 +420,16 @@ If you'd like to understand more about the structure of a connection profile,
 and how it defines the network, check out
 `the connection profile topic <./developapps/connectionprofile.html>`_. 
 
+如果你想了解更多关于连接配置文件的结构，和它是怎么定义网络的，请查阅
+`the connection profile topic <./developapps/connectionprofile.html>`_ 。
+
+
 A network can be divided into multiple channels, and the next important line of
 code connects the application to a particular channel within the network,
 ``mychannel``:
+
+一个网络可以被差分成很多通道，代码中下一个很重的一行是将应用程序连接到网络
+中特定的通道 ``mychannel`` 上：
 
 .. code:: bash
   const network = await gateway.getNetwork('mychannel');
@@ -375,6 +439,8 @@ code connects the application to a particular channel within the network,
 Within this channel, we can access the smart contract ``fabcar`` to interact
 with the ledger:
 
+在这个通道中，我们可以通过 ``fabcar`` 智能合约来和账本进行交互：
+
 .. code:: bash
 
   const contract = network.getContract('fabcar');
@@ -382,6 +448,9 @@ with the ledger:
 Within ``fabcar`` there are many different **transactions**, and our application
 initially uses the ``queryAllCars`` transaction to access the ledger world state
 data:
+
+在 ``fabcar`` 中有许多不同的 **交易** ，我们的应用程序先使用 ``queryAllCars`` 交
+易来查询账本世界状态的值：
 
 .. code:: bash
 
@@ -393,6 +462,11 @@ the connection profile and sends the request to it, where it is evaluated. The
 smart contract queries all the cars on the peer's copy of the ledger and returns
 the result to the application. This interaction does not result in an update the
 ledger.
+
+``evaluateTransaction`` 方法代表了一种区块链网络中和智能合约最简单的交互。它只是
+的根据配置文件中的定义连接一个节点，然后向节点发送请求，请求内容将在节点中执行。
+智能合约查询节点账本上的所有汽车，然后把结果返回给应用。这次交互没有导致账本的更
+新。
 
 The FabCar smart contract
 -------------------------
