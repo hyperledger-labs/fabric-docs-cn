@@ -579,7 +579,6 @@ present working directory:
 
 接下来，我们需要告诉 ``configtxgen`` 工具去哪儿去寻找它需要提取内容的 ``configtx.yaml`` 文件。
 我们会告诉它在我们当前所在工作目录：
->>>>>>> dd88286b9aa7cafbea76eec85b71e2b5a5c68f39
 
 .. code:: bash
 
