@@ -30,7 +30,7 @@ which interact with a permissioned blockchain.
 本教程我们将通过手动开发一个简单的示例程序来演示 Fabric 应用是如何工作的。
 使用的这些应用和智能合约统称为 ``FabCar`` 。他们提供了理解 Hyperledger Fabric 
 区块链的一个很好的起点。我们将学习怎么写一个应用程序和智能合约来查询和更新账本，
-还有如何使用证书授权服务来生成一个 X.509 证书，应用将使用这个证书和授权区块链
+还有如何使用证书授权服务来生成一个 X.509 证书，应用程序将使用这个证书和授权区块链
 进行交互。
 
 We will use the application SDK --- described in detail in the
@@ -43,7 +43,7 @@ detail in section :doc:`/developapps/smartcontract`.
 
 We’ll go through three principle steps:
 
-我们将按照一下三个步骤进行：
+我们将按照以下三个步骤进行：
 
   **1. Setting up a development environment.** Our application needs a network
   to interact with, so we'll get a basic network our smart contracts and
@@ -67,7 +67,7 @@ We’ll go through three principle steps:
   We'll get into the code of the apps and the transactions they create,
   including querying a car, querying a range of cars, and creating a new car.
 
-  **3. 使用 FabCar 开发一个简单的应用。** 我们的应用将使用 FabCar 智能合约来查询和
+  **3. 使用 FabCar 开发一个简单的应用程序。** 我们的应用程序将使用 FabCar 智能合约来查询和
   更新账本上的汽车资产。我们将进入到应用程序的代码和他们创建的交易，包括查询一辆汽车，
   查询一批汽车和创建一辆新车。
 
@@ -91,7 +91,7 @@ Set up the blockchain network - 设置区块链网络
 .. note:: This next section requires you to be in the ``first-network``
           subdirectory within your local clone of the ``fabric-samples`` repo.
 
-.. note:: 下边的部分需要你进入你克隆到本地的 ``fabric-samples`` 仓库的
+.. note:: 下边的部分需要进入你克隆到本地的 ``fabric-samples`` 仓库的
           ``first-network`` 子目录。
 
 If you've already run through :doc:`build_network`, you will have downloaded
@@ -129,8 +129,8 @@ the provided instructions. Return to this tutorial once you have cloned the
 ``fabric-samples`` repository, and downloaded the latest stable Fabric images
 and available utilities.
 
-下一步，如果已经完成了，访问 :doc:`install` 页面，跟着上边的说明操作。当你克隆
-了 ``fabric-samples`` 后仓库返回本教程，然后下载最新的稳定版 Fabric 镜像和相关
+然后，如果已经完成了这些，访问 :doc:`install` 页面，跟着上边的说明操作。当你克隆
+了 ``fabric-samples`` 仓库后返回本教程，然后下载最新的稳定版 Fabric 镜像和相关
 工具。
 
 If you are using Mac OS and running Mojave, you will need to `install Xcode
@@ -144,7 +144,7 @@ Launch the network - 启动网络
 .. note:: This next section requires you to be in the ``fabcar``
           subdirectory within your local clone of the ``fabric-samples`` repo.
 
-.. note:: 下边的章节需要你进入你克隆到本地的 ``fabric-samples`` 仓库的 ``fabcar`` 
+.. note:: 下边的章节需要进入你克隆到本地的 ``fabric-samples`` 仓库的 ``fabcar`` 
           子目录。
 
 Launch your network using the ``startFabric.sh`` shell script. This command will
@@ -178,7 +178,7 @@ Install the application - 安装应用程序
           ``fabcar/javascript`` subdirectory within your local clone of the
           ``fabric-samples`` repo.
 
-.. note:: 下边的章节需要你进入你克隆到本地的 ``fabric-samples`` 仓库的 
+.. note:: 下边的章节需要进入你克隆到本地的 ``fabric-samples`` 仓库的 
           ``fabcar/javascript`` 子目录。
 
 Run the following command to install the Fabric dependencies for the
@@ -208,7 +208,7 @@ For this tutorial, you'll primarily be using the application JavaScript files in
 the ``fabcar/javascript`` directory. Let's take a look at what's inside:
 
 一旦 ``npm install`` 完成了，运行应用程序所需要的一切就准备好了。在这个教程中，
-你将主要使用 ``fabcar'/javascript`` 目录下的 JavaScript 文件来操作应用程序。
+你将主要使用 ``fabcar/javascript`` 目录下的 JavaScript 文件来操作应用程序。
 让我们来看一眼它里边有什么吧：
 
 .. code:: bash
@@ -229,7 +229,7 @@ There are files for other program languages, for example in the
 JavaScript example -- the principles are the same.
 
 里边也有一些其他编程语言的文件，比如在 ``fabcar/typescript`` 目录中。当你使用
-过 JavaScript 示例之后，你可以看一下他们，主要的内容都是一样的。
+过 JavaScript 示例之后，你可以看一下它们，主要的内容都是一样的。
 
 If you are using Mac OS and running Mojave, you will need to `install Xcode
 <./tutorial/installxcode.html>`_.
@@ -261,7 +261,7 @@ in the wallet, allowing us to act as an administrator for the CA.
 
 当我们创建网络的时候，一个管理员用户 --- 叫 ``admin`` --- 被证书授权服务器（CA）
 创建成了 **登记员** 。我们第一步要使用 ``enroll.js`` 程序为 ``admin`` 生成私钥、
-公钥和 x.509 证书。这个程序使用一个 **证书签名请求** (CSR) --- 现在本地生层公钥
+公钥和 x.509 证书。这个程序使用一个 **证书签名请求** (CSR) --- 现在本地生成公钥
 和私钥，然后把公钥发送到 CA ，CA 会发布会一个让应用程序使用的证书。这三个证书会
 保存在钱包中，以便于我们以管理员的身份使用 CA 。
 
@@ -290,7 +290,7 @@ Register and enroll ``user1`` - 注册和登记 ``user1``
 Now that we have the administrator's credentials in a wallet, we can enroll a
 new user --- ``user1`` --- which will be used to query and update the ledger:
 
-注意我们在钱包里存放了管理原的证书，我们可以登记一个新用户 --- ``user1`` ---
+注意我们在钱包里存放了管理员的证书，我们可以登记一个新用户 --- ``user1`` ---
 他将被用来查询和更新账本：
 
 .. code:: bash
@@ -386,7 +386,7 @@ connect to the network:
 
 应用程序开始的时候就从 ``fabric-network`` 模块引入了两个关键的类
 ``FileSystemWallet`` 和 ``Gateway`` 。这两个类将用于定位钱包中 ``user1`` 
-的身份,这个身份将用于连接网络。
+的身份，这个身份将用于连接网络。
 
 .. code:: bash
 
@@ -394,7 +394,7 @@ connect to the network:
 
 The application connects to the network using a gateway:
 
-应用通过网关连接网络：
+应用程序通过网关连接网络：
 
 .. code:: bash
 
@@ -465,8 +465,8 @@ ledger.
 
 ``evaluateTransaction`` 方法代表了一种区块链网络中和智能合约最简单的交互。它只是
 的根据配置文件中的定义连接一个节点，然后向节点发送请求，请求内容将在节点中执行。
-智能合约查询节点账本上的所有汽车，然后把结果返回给应用。这次交互没有导致账本的更
-新。
+智能合约查询节点账本上的所有汽车，然后把结果返回给应用程序。这次交互没有导致账本
+的更新。
 
 The FabCar smart contract - FabCar 智能合约
 -------------------------
@@ -531,7 +531,7 @@ these APIs in `detail
 <https://fabric-shim.github.io/master/index.html?redirect=true>`_.
 
 下边将展示应用程序如何调用智能合约中的不同交易。每一个交易都使用一组 API 比如
-``getStateByRange`` 来和账本进行交互。 了解更多 API 请阅读 `detail
+``getStateByRange`` 来和账本进行交互。了解更多 API 请阅读 `detail
 <https://fabric-shim.github.io/master/index.html?redirect=true>`_.
 
 .. image:: images/RunningtheSample.png
@@ -629,10 +629,10 @@ ordering service coordinates transactions for a network; it creates blocks
 containing transactions in a well-defined sequence originating from all the
 different applications connected to the network.
 
-上图中，我们可以蛋刀完成这项工作的主要组件。同时，多个节点中每一个都拥有一份账
-本的副本，并可选的拥有一份智能合约的副本，网络中也有一个排序服务。排序服务保证
-网络中交易的一致性；它也将连接到网络中不同的应用程序的交易以定义好的顺序生成区
-块。
+上图中，我们可以看到完成这项工作的主要组件。同时，多个节点中每一个节点都拥有一
+份账本的副本，并可选的拥有一份智能合约的副本，网络中也有一个排序服务。排序服务
+保证网络中交易的一致性；它也将连接到网络中不同的应用程序的交易以定义好的顺序生
+成区块。
 
 Our first update to the ledger will create a new car. We have a separate program
 called ``invoke.js`` that we will use to make updates to the ledger. Just as with
@@ -701,7 +701,7 @@ notified, allowing it to return control to the application.
 响应并返回给 SDK 。SDK 将所有经过签名的交易响应收集到一个交易中，这个交易将会
 被发送到排序节点。排序节点搜集并排序每个应用的交易，并把这些交易放入到一个交易
 区块。然后排序节点将这些区块分发到网络中的节点，每一笔交易都会在节点中进行验证
-和提交。最终，SDK 会被告知，并把控制权返回给应用程序。
+和提交。最后，SDK 会后到提醒，并把控制权返回给应用程序。
 
 
 ``submitTransaction`` does all this for the application! The process by which
@@ -760,7 +760,7 @@ ledger!
 So now that we’ve done that, let’s say that Tom is feeling generous and he
 wants to give his Honda Accord to someone named Dave.
 
-现在我们已经完成了，我们假设 Tom 很大方，他想把他的 Honda Accord 送给一个
+现在我们已经完成了，我们假设 Tom 很大方，想把他的 Honda Accord 送给一个
 叫 Dave 的人。
 
 To do this, go back to ``invoke.js`` and change the smart contract transaction
