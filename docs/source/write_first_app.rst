@@ -468,14 +468,19 @@ ledger.
 智能合约查询节点账本上的所有汽车，然后把结果返回给应用。这次交互没有导致账本的更
 新。
 
-The FabCar smart contract
+The FabCar smart contract - FabCar 智能合约
 -------------------------
 
 Let's take a look at the transactions within the ``FabCar`` smart contract.
 Navigate to the ``chaincode/fabcar/javascript/lib`` subdirectory at the root of
 ``fabric-samples`` and open ``fabcar.js`` in your editor.
 
+让我们看一看 ``FabCar`` 智能合约里的交易。进入 ``fabric-samples`` 下的子目录
+``chaincode/fabcar/javascript/lib`` ，然后用你的编辑器打开 ``fabcar.js`` 。
+
 See how our smart contract is defined using the ``Contract`` class:
+
+看一下我们的智能合约是如何通过 ``Contract`` 类来定义的：
 
 .. code:: bash
 
@@ -485,6 +490,8 @@ Within this class structure, you'll see that we have the following
 transactions defined: ``initLedger``, ``queryCar``, ``queryAllCars``,
 ``createCar``, and ``changeCarOwner``. For example:
 
+在这个类结构中，你将看到定义了以下交易： ``initLedger``, ``queryCar``, 
+``queryAllCars``, ``createCar``, and ``changeCarOwner`` 。例如：
 
 .. code:: bash
 
@@ -493,6 +500,8 @@ transactions defined: ``initLedger``, ``queryCar``, ``queryAllCars``,
 
 Let's take a closer look at the ``queryAllCars`` transaction to see how it
 interacts with the ledger.
+
+让我们更进一步看一下 ``queryAllCars`` ，看一下它是怎么和账本交互的。
 
 .. code:: bash
 
@@ -510,10 +519,19 @@ every key has been tagged properly -- will be returned by the query. The
 remainder of the code iterates through the query results and packages them into
 JSON for the application.
 
+这段代码定义了 ``queryAllCars`` 将要从账本获取的汽车的范围。从 ``CAR0`` 到 ``CAR999`` 
+的每一辆车 -- 一共 1000 辆车，假定每个键都被合适地锚定了 -- 将会作为查询结果被返回。
+代码中剩下的部分，通过迭代将查询结果打包成 JSON 并返回给应用。
+
+
 Below is a representation of how an application would call different
 transactions in a smart contract. Each transaction uses a broad set of APIs such
 as ``getStateByRange`` to interact with the ledger. You can read more about
 these APIs in `detail
+<https://fabric-shim.github.io/master/index.html?redirect=true>`_.
+
+下边将展示应用程序如何调用智能合约中的不同交易。每一个交易都使用一组 API 比如
+``getStateByRange`` 来和账本进行交互。 了解更多 API 请阅读 `detail
 <https://fabric-shim.github.io/master/index.html?redirect=true>`_.
 
 .. image:: images/RunningtheSample.png
@@ -522,9 +540,16 @@ We can see our ``queryAllCars`` transaction, and another called ``createCar``.
 We will use this later in the tutorial to update the ledger, and add a new block
 to the blockchain.
 
+你可以看到我们的 ``queryAllCars`` 交易，还有另一个叫做 ``createCar`` 。我们稍后将
+在教程中使用他们来更细账本，和添加新的区块。
+
 But first, go back to the ``query`` program and change the
 ``evaluateTransaction`` request to query ``CAR4``. The ``query`` program should
 now look like this:
+
+但是在那之前，返回到 ``query`` 程序，更改 ``evaluateTransaction`` 的请求来查询
+``CAR4`` 。 ``query`` 程序现在看起来应该是这个样子：
+
 
 .. code:: bash
 
@@ -533,11 +558,15 @@ now look like this:
 Save the program and navigate back to your ``fabcar/javascript`` directory.
 Now run the ``query`` program again:
 
+保存程序，然后返回到 ``fabcar/javascript`` 目录。现在，再次运行 ``query`` 程序：
+
 .. code:: bash
 
   node query.js
 
 You should see the following:
+
+你应该会看到如下：
 
 .. code:: json
 
@@ -549,21 +578,34 @@ If you go back and look at the result from when the transaction was
 ``queryAllCars``, you can see that ``CAR4`` was Adriana’s black Tesla model S,
 which is the result that was returned here.
 
+如果你回头去看一下 ``queryAllCars`` 的交易结果，你会看到 ``CAR4`` 是 Adriana 的
+黑色 Tesla model S，也就是这里返回的结果。
+
 We can use the ``queryCar`` transaction to query against any car, using its
 key (e.g. ``CAR0``) and get whatever make, model, color, and owner correspond to
 that car.
 
+我们可以使用 ``queryCar`` 交易来查询任意汽车，使用它的键 （比如 ``CAR0`` ）得到车
+辆的制造商、型号、颜色和车主等相关信息。
+
 Great. At this point you should be comfortable with the basic query transactions
 in the smart contract and the handful of parameters in the query program.
 
+很棒。现在你应该已经了解了智能合约中基础的查询交易，也手动修改了查询程序中的参数。
+
 Time to update the ledger...
 
-Updating the ledger
+账本更新时间。。。
+
+Updating the ledger - 更新账本
 -------------------
 
 Now that we’ve done a few ledger queries and added a bit of code, we’re ready to
 update the ledger. There are a lot of potential updates we could make, but
 let's start by creating a **new** car.
+
+现在我们已经完成一些账本的查询和添加了一些代码，我们已经准备好更新账本了。有很多
+的更新操作我们可以做，但是我们从创建一个 **新** 车开始。
 
 From an application perspective, updating the ledger is simple. An application
 submits a transaction to the blockchain network, and when it has been
@@ -572,6 +614,11 @@ the transaction has been successful. Under the covers this involves the process
 of **consensus** whereby the different components of the blockchain network work
 together to ensure that every proposed update to the ledger is valid and
 performed in an agreed and consistent order.
+
+从一个应用程序的角度来说，更新一个账本很简单。应用程序向区块链网络提交一个交易，
+当交易被验证和提交后，应用程序会收到一个交易成功的提醒。但是在底层，区块链网络中
+各组件中不同的 **共识** 程序协同工作，来保证账本的每一个更新提案都是合法的，而且
+有一个大家一致认可的顺序。
 
 .. image:: tutorial/write_first_app.diagram.2.png
 
@@ -582,10 +629,19 @@ ordering service coordinates transactions for a network; it creates blocks
 containing transactions in a well-defined sequence originating from all the
 different applications connected to the network.
 
+上图中，我们可以蛋刀完成这项工作的主要组件。同时，多个节点中每一个都拥有一份账
+本的副本，并可选的拥有一份智能合约的副本，网络中也有一个排序服务。排序服务保证
+网络中交易的一致性；它也将连接到网络中不同的应用程序的交易以定义好的顺序生成区
+块。
+
 Our first update to the ledger will create a new car. We have a separate program
 called ``invoke.js`` that we will use to make updates to the ledger. Just as with
 queries, use an editor to open the program and navigate to the code block where
 we construct our transaction and submit it to the network:
+
+我们对账本的的第一个更新是创建一辆新车。我们有一个单独的程序叫做 ``invoke.js`` ，
+用来更新账本。和查询一样，使用一个编辑器打开程序定位到我们构建和提交交易到网络的
+代码段：
 
 .. code:: bash
 
@@ -595,13 +651,21 @@ See how the applications calls the smart contract transaction ``createCar`` to
 create a black Honda Accord with an owner named Tom. We use ``CAR12`` as the
 identifying key here, just to show that we don't need to use sequential keys.
 
+看一下应用程序如何调用智能合约的交易 ``createCar`` 来创建一量车主为 Tom 的黑
+色 Honda Accord 汽车。我们使用 ``CAR12`` 作为这里的键，这也说明了我们不必使用
+连续的键。
+
 Save it and run the program:
+
+保存并运行程序：
 
 .. code:: bash
 
   node invoke.js
 
 If the invoke is successful, you will see output like this:
+
+如果执行成功，你将看到类似输出：
 
 .. code:: bash
 
@@ -611,6 +675,9 @@ If the invoke is successful, you will see output like this:
 
 Notice how the ``invoke`` application interacted with the blockchain network
 using the ``submitTransaction`` API, rather than ``evaluateTransaction``.
+
+注意 ``inovke`` 程序是怎样使用 ``submitTransaction`` API 和区块链网络交互的，
+而不是 ``evaluateTransaction`` 。
 
 .. code:: bash
 
@@ -628,15 +695,32 @@ transactions. It then distributes these blocks to every peer in the network,
 where every transaction is validated and committed. Finally, the SDK is
 notified, allowing it to return control to the application.
 
+``submitTransaction`` 比 ``evaluateTransaction`` 要复杂的多。不只是和单个节点
+交互，SDK 将把 ``submitTransaction`` 提案发送到区块链网络中每一个必要的组织的
+节点。每一个节点都将根据这个提案执行请求的智能合约，并生成一个该节点签名的交易
+响应并返回给 SDK 。SDK 将所有经过签名的交易响应收集到一个交易中，这个交易将会
+被发送到排序节点。排序节点搜集并排序每个应用的交易，并把这些交易放入到一个交易
+区块。然后排序节点将这些区块分发到网络中的节点，每一笔交易都会在节点中进行验证
+和提交。最终，SDK 会被告知，并把控制权返回给应用程序。
+
+
 ``submitTransaction`` does all this for the application! The process by which
 the application, smart contract, peers and ordering service work together to
 keep the ledger consistent across the network is called consensus, and it is
 explained in detail in this `section <./peers/peers.html>`_.
 
+应用程序中的这些工作由 ``submitTransaction`` 完成！应用程序、智能合约、节点和
+排序服务一起工作来保证网络中账本一致性的程序被称为共识，它的详细解释在这里
+`section <./peers/peers.html>`_ 。
+
 To see that this transaction has been written to the ledger, go back to
 ``query.js`` and change the argument from ``CAR4`` to ``CAR12``.
 
+为了查看这个被写入账本的交易，返回到 ``query.js`` 并将参数 ``CAR4`` 更改为 ``CAR12`` 。
+
 In other words, change this:
+
+就是说，将：
 
 .. code:: bash
 
@@ -644,17 +728,23 @@ In other words, change this:
 
 To this:
 
+改为：
+
 .. code:: bash
 
   const result = await contract.evaluateTransaction('queryCar', 'CAR12');
 
 Save once again, then query:
 
+再次保存，然后查询：
+
 .. code:: bash
 
   node query.js
 
 Which should return this:
+
+应该返回这些：
 
 .. code:: bash
 
@@ -665,12 +755,20 @@ Which should return this:
 Congratulations. You’ve created a car and verified that its recorded on the
 ledger!
 
+恭喜。你创建了一辆汽车并验证了它记录在账本上！
+
 So now that we’ve done that, let’s say that Tom is feeling generous and he
 wants to give his Honda Accord to someone named Dave.
+
+现在我们已经完成了，我们假设 Tom 很大方，他想把他的 Honda Accord 送给一个
+叫 Dave 的人。
 
 To do this, go back to ``invoke.js`` and change the smart contract transaction
 from ``createCar`` to ``changeCarOwner`` with a corresponding change in input
 arguments:
+
+为了完成这个，返回到 ``invoke.js`` 然后利用输入的参数，将智能合约的交易从
+``createCar`` 改为 ``changeCarOwner`` ：
 
 .. code:: bash
 
@@ -679,7 +777,12 @@ arguments:
 The first argument --- ``CAR12`` --- identifies the car that will be changing
 owners. The second argument --- ``Dave`` --- defines the new owner of the car.
 
+第一个参数 --- ``CAR12`` --- 表示将要易主的车。第二个参数 --- ``Dave`` --- 表示 
+车的新主人。
+
 Save and execute the program again:
+
+再次保存并执行程序：
 
 .. code:: bash
 
@@ -688,11 +791,15 @@ Save and execute the program again:
 Now let’s query the ledger again and ensure that Dave is now associated with the
 ``CAR12`` key:
 
+现在我们来再次查询账本，以确定 Dave 和 ``CAR12`` 键已经关联起来了：
+
 .. code:: bash
 
   node query.js
 
 It should return this result:
+
+将返回如下结果：
 
 .. code:: bash
 
@@ -702,12 +809,14 @@ It should return this result:
 
 The ownership of ``CAR12`` has been changed from Tom to Dave.
 
+``CAR12`` 的主人已经从 Tom 变成了 Dave。
+
 .. note:: In a real world application the smart contract would likely have some
           access control logic. For example, only certain authorized users may
           create new cars, and only the car owner may transfer the car to
           somebody else.
 
-Summary
+Summary - 总结
 -------
 
 Now that we’ve done a few queries and a few updates, you should have a pretty
@@ -717,7 +826,11 @@ smart contracts, APIs, and the SDK play in queries and updates and you should
 have a feel for how different kinds of applications could be used to perform
 other business tasks and operations.
 
-Additional resources
+现在我们完成了一些查询和跟新，你应该已经比较了解如何通过智能合约和区块链网络进
+行交互来查询和更新账本。我们已经看过了查询和更新的基本角智能合约、API 和 SDK ，
+你也应该对如何在其他的商业场景和操作中使用不同应用有了一些认识。
+
+Additional resources - 其他资源
 --------------------
 
 As we said in the introduction, we have a whole section on
@@ -725,6 +838,10 @@ As we said in the introduction, we have a whole section on
 smart contracts, process and data design, a tutorial using a more in-depth
 Commercial Paper `tutorial <./tutorial/commercial_paper.html>`_ and a large
 amount of other material relating to the development of applications.
+
+就像我们在介绍中说的，我们有一整套文章在 :doc:`developapps/developing_applications` 
+包含了关于智能合约、程序和数据设计的更多信息，一个更深入的使用商业票据的教程
+`tutorial <./tutorial/commercial_paper.html>`_ 和大量应用开发的相关资料。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
