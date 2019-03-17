@@ -45,7 +45,7 @@ Table of Contents - 总目录
       1. `Docker Hub - Docker Hub`_
       2. `Building Your Own Docker image - 构建你自己的 Docker 镜像`_
 
-   5. `Explore the Fabric CA CLI - 探讨 Fabric CA CLI`_
+   5. `Explore the Fabric CA CLI - 探索 Fabric CA CLI`_
    6. `Configuration Settings - 配置设置`_
 
       1. `A word on file paths - 文件路径的简单说明`_
@@ -126,23 +126,23 @@ overall Hyperledger Fabric architecture.
 There are two ways of interacting with a Hyperledger Fabric CA server:
 via the Hyperledger Fabric CA client or through one of the Fabric SDKs.
 All communication to the Hyperledger Fabric CA server is via REST APIs.
-See `fabric-ca/swagger/swagger-fabric-ca.json` for the swagger documentation
+See `../../swagger/swagger-fabric-ca.json` for the swagger documentation
 for these REST APIs.
-You may view this documentation via the http://editor2.swagger.io online editor.
+You may view this documentation via the http://editor.swagger.io online editor.
 
 有两种和 Hyperledger Fabric CA 服务端交互的方式：
 通过 Hyperledger Fabric CA 客户端或者通过 Fabric SDK。
 与 Hyperledger Fabric CA 服务端的所有通信都是通过 REST APIs 来做的。
-查看swagger文档 `fabric-ca/swagger/swagger-fabric-ca.json` ，这里面记录了通信使用的 REST APIs。
+查看swagger文档 `../../swagger/swagger-fabric-ca.json` ，这里面记录了通信使用的 REST APIs。
 
-你可以使用在线编辑器 http://editor2.swagger.io 阅读文档.
+你可以使用在线编辑器 http://editor.swagger.io 阅读文档.
 
 The Hyperledger Fabric CA client or SDK may connect to a server in a cluster
 of Hyperledger Fabric CA servers.   This is illustrated in the top right section
 of the diagram. The client routes to an HA Proxy endpoint which load balances
 traffic to one of the fabric-ca-server cluster members.
 
-Hyperledger Fabric CA 客户端或者 SDK 可能连接到 Hyperledger Fabric CA 服务集群中到一个。
+Hyperledger Fabric CA 客户端或者 SDK 可能连接到 Hyperledger Fabric CA 服务集群中的一个。
 这在图上的右上部分说明了。客户端被路由到HA高可用代理端点，该端点将流量负载均衡给
 fabric-ca-server集群成员之一。
 
@@ -187,7 +187,8 @@ The following installs the libtool dependencies on MacOSX:
    brew install libtool
 
 .. note:: libtldl-dev is not necessary on MacOSX if you install
-          libtool via Homebrew。如果你通过Homebrew安装了libtool，那么在MacOSX上不需要安装libtldl-dev
+          libtool via Homebrew。
+          如果你通过Homebrew安装了libtool，那么在MacOSX上不需要安装libtldl-dev
 
 For more information on libtool, see https://www.gnu.org/software/libtool.
 
@@ -236,6 +237,8 @@ Start Server Natively - 在本地启动服务
 
 The following starts the `fabric-ca-server` with default settings.
 
+下面的命令是使用默认配置启动 `fabric-ca-server` 。
+
 .. code:: bash
 
     fabric-ca-server start -b admin:adminpw
@@ -244,8 +247,12 @@ The `-b` option provides the enrollment ID and secret for a bootstrap
 administrator; this is required if LDAP is not enabled with the "ldap.enabled"
 setting.
 
+命令中的 `-b` 选项后面跟着引导管理员用户的登记ID和密码; 如果设置里面没有启用"ldap.enabled"，则LDAP未启用，这时 `-b` 选项就是必需的。
+
 A default configuration file named `fabric-ca-server-config.yaml`
 is created in the local directory which can be customized.
+
+在本地目录下有一个名称为 `fabric-ca-server-config.yaml` 的默认配置文件，可以定制化修改其配置。
 
 Start Server via Docker - 通过Docker启动服务
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -258,11 +265,19 @@ Go to: https://hub.docker.com/r/hyperledger/fabric-ca/tags/
 Find the tag that matches the architecture and version of fabric-ca
 that you want to pull.
 
+去这里: https://hub.docker.com/r/hyperledger/fabric-ca/tags/
+
+找到符合你想拉取的架构和fabric-ca版本的tag。
+
 Navigate to `$GOPATH/src/github.com/hyperledger/fabric-ca/docker/server`
 and open up docker-compose.yml in an editor.
 
+进入 `$GOPATH/src/github.com/hyperledger/fabric-ca/docker/server` 目录并且在一个编辑器内打开 docker-compose.yml。
+
 Change the `image` line to reflect the tag you found previously. The file
 may look like this for an x86 architecture for version beta.
+
+将 `image` 那一行改成你前面找到的tag。本文件的tag是一个x86架构的beta版。
 
 .. code:: yaml
 
@@ -280,6 +295,8 @@ may look like this for an x86 architecture for version beta.
 Open up a terminal in the same directory as the docker-compose.yml file
 and execute the following:
 
+在 docker-compose.yml 文件所在的目录打开一个终端并且执行下面的命令：
+
 .. code:: bash
 
     # docker-compose up -d
@@ -288,10 +305,14 @@ This will pull down the specified fabric-ca image in the compose file
 if it does not already exist, and start an instance of the fabric-ca
 server.
 
+如果docker-compose.yaml文件里指定的 fabric-ca 镜像事先不存在，则会拉取，然后再启动 fabric-ca 服务。
+
 Building Your Own Docker image - 构建你自己的 Docker 镜像
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 You can build and start the server via docker-compose as shown below.
+
+你可以通过下面写的命令构建并且使用 docker-compose 启动服务。
 
 .. code:: bash
 
@@ -303,6 +324,8 @@ You can build and start the server via docker-compose as shown below.
 The hyperledger/fabric-ca docker image contains both the fabric-ca-server and
 the fabric-ca-client.
 
+Docker 镜像 hyperledger/fabric-ca 包含 fabric-ca-server 和 fabric-ca-client。
+
 .. code:: bash
 
     # cd $GOPATH/src/github.com/hyperledger/fabric-ca
@@ -310,14 +333,18 @@ the fabric-ca-client.
     # cd docker/server
     # docker-compose up -d
 
-Explore the Fabric CA CLI - 探讨 Fabric CA CLI
+Explore the Fabric CA CLI - 探索 Fabric CA CLI
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This section simply provides the usage messages for the Fabric CA server and client
 for convenience.  Additional usage information is provided in following sections.
 
+简便起见，本段落简单提供了 Fabric CA server 和 client使用信息。附加的使用信息在后面的部分提供了。
+
 The following links shows the :doc:`Server Command Line <servercli>` and
 :doc:`Client Command Line <clientcli>`.
+
+这两个链接显示了 :doc:`Server 命令行 <servercli>` 和 :doc:`Client 命令行 <clientcli>` 的使用信息。
 
 .. note:: Note that command line options that are string slices (lists) can be
           specified either by specifying the option with comma-separated list
@@ -328,7 +355,15 @@ The following links shows the :doc:`Server Command Line <servercli>` and
           ``--csr.hosts host1 --csr.hosts host2``. When using the former format,
           please make sure there are no space before or after any commas.
 
+          注意，命令行选项是字符串切片(列表)，可以通过使用逗号分隔的列表元素指定该选项，
+          也可以通过多次指定该选项，每个选项都有一个字符串值，这多个选项和字符串值组成
+          列表（空格分割）。 例如，指定 ``csr.hosts`` 的 ``host1`` 和 ``host2`` 两个值，
+          你可以通过 ``--csr.hosts 'host1,host2'`` 或者 ``--csr.hosts host1 --csr.hosts host2``
+          两种方式皆可。使用前一种格式时，请确保逗号前后没有空格。
+
+
 `Back to Top`_
+`回到顶部`_
 
 Configuration Settings - 配置设置
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -382,13 +417,16 @@ A word on file paths - 文件路径的简单说明
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 All the properties in the Fabric CA server and client configuration file
 that specify file names support both relative and absolute paths.
+
 Fabric CA 服务端和客户端配置文件里面的所有指定文件名的属性都支持相对路径和绝对路径。
+
 Relative paths are relative to the config directory, where the
 configuration file is located. For example, if the config directory is
 ``~/config`` and the tls section is as shown below, the Fabric CA server
 or client will look for the ``root.pem`` file in the ``~/config``
 directory, ``cert.pem`` file in the ``~/config/certs`` directory and the
 ``key.pem`` file in the ``/abs/path`` directory
+
 相对路径和配置的目录有关，相对的是配置文件所在的位置。例如，如果配置目录是
 ``~/config`` 并且 tls 部分就像下面展示的那样，Fabric CA 服务器或者客户端将会在
 ``~/config`` 目录寻找``root.pem`` 文件，``cert.pem`` 文件在 ``~/config/certs``
@@ -1713,8 +1751,8 @@ before 2017-09-21T16:39:57-08:00, and that expire after 2017-09-13T16:39:57-08:0
     export FABRIC_CA_CLIENT_HOME=~/clientconfig
     fabric-ca-client gencrl --caname "" --expireafter 2017-09-13T16:39:57-08:00 --expirebefore 2018-09-13T16:39:57-08:00  --revokedafter 2017-09-13T16:39:57-08:00 --revokedbefore 2017-09-21T16:39:57-08:00 -M ~/msp
 
-Enabling TLS
-~~~~~~~~~~~~
+Enabling TLS - 启用 TLS
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 This section describes in more detail how to configure TLS for a Fabric CA client.
 
@@ -1816,8 +1854,8 @@ value of the affiliation (which is 'org1') must be the same in both the
 For information on the chaincode library API for Attribute-Based Access Control,
 see `https://github.com/hyperledger/fabric/blob/release-1.4/core/chaincode/lib/cid/README.md <https://github.com/hyperledger/fabric/blob/release-1.4/core/chaincode/lib/cid/README.md>`_
 
-Dynamic Server Configuration Update
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Dynamic Server Configuration Update - 动态服务配置更新
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This section describes how to use fabric-ca-client to dynamically update portions
 of the fabric-ca-server's configuration without restarting the server.
