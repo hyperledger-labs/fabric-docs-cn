@@ -126,14 +126,14 @@ overall Hyperledger Fabric architecture.
 There are two ways of interacting with a Hyperledger Fabric CA server:
 via the Hyperledger Fabric CA client or through one of the Fabric SDKs.
 All communication to the Hyperledger Fabric CA server is via REST APIs.
-See `../../swagger/swagger-fabric-ca.json` for the swagger documentation
+See `https://github.com/hyperledger/fabric-ca/blob/v1.4.0/swagger/swagger-fabric-ca.json` for the swagger documentation
 for these REST APIs.
 You may view this documentation via the http://editor.swagger.io online editor.
 
 有两种和 Hyperledger Fabric CA 服务端交互的方式：
 通过 Hyperledger Fabric CA 客户端或者通过 Fabric SDK。
 与 Hyperledger Fabric CA 服务端的所有通信都是通过 REST APIs 来做的。
-查看swagger文档 `../../swagger/swagger-fabric-ca.json` ，这里面记录了通信使用的 REST APIs。
+查看swagger文档 `https://github.com/hyperledger/fabric-ca/blob/v1.4.0/swagger/swagger-fabric-ca.json` ，这里面记录了通信使用的 REST APIs。
 
 你可以使用在线编辑器 http://editor.swagger.io 阅读文档.
 
@@ -188,6 +188,7 @@ The following installs the libtool dependencies on MacOSX:
 
 .. note:: libtldl-dev is not necessary on MacOSX if you install
           libtool via Homebrew。
+
           如果你通过Homebrew安装了libtool，那么在MacOSX上不需要安装libtldl-dev
 
 For more information on libtool, see https://www.gnu.org/software/libtool.
@@ -371,15 +372,21 @@ Configuration Settings - 配置设置
 The Fabric CA provides 3 ways to configure settings on the Fabric CA server
 and client. The precedence order is:
 
-  1. CLI flags
-  2. Environment variables
-  3. Configuration file
+Fabric CA 提供3个方法来配置Fabric CA server 和 client的设置。它们的优先级顺序是:
+
+  1. CLI flags - CLI命令行flags变量输入
+  2. Environment variables - 环境变量
+  3. Configuration file - 配置文件
 
 In the remainder of this document, we refer to making changes to
 configuration files. However, configuration file changes can be
 overridden through environment variables or CLI flags.
 
+在本文档的其余部分中，我们更多是对配置文件的修改。但是，配置文件的更改是可以被环境变量或 CLI flags 覆盖的。
+
 For example, if we have the following in the client configuration file:
+
+例如，如果我们在client配置文件中有如下内容：
 
 .. code:: yaml
 
@@ -396,12 +403,16 @@ For example, if we have the following in the client configuration file:
 The following environment variable may be used to override the ``cert.pem``
 setting in the configuration file:
 
+下面的这个环境变量会覆盖配置文件里面的 ``cert.pem`` 这个设置：
+
 .. code:: bash
 
   export FABRIC_CA_CLIENT_TLS_CLIENT_CERTFILE=cert2.pem
 
 If we wanted to override both the environment variable and configuration
 file, we can use a command line flag.
+
+如果我们想同时覆盖环境变量和配置文件，我们可以使用命令行flag。
 
 .. code:: bash
 
@@ -410,6 +421,9 @@ file, we can use a command line flag.
 The same approach applies to fabric-ca-server, except instead of using
 ``FABIRC_CA_CLIENT`` as the prefix to environment variables,
 ``FABRIC_CA_SERVER`` is used.
+
+对于 fabric-ca-server 来说，除了需要把环境变量前缀 ``FABIRC_CA_CLIENT``
+替换成 ``FABRIC_CA_SERVER`` ，其他用法相同。
 
 .. _server:
 
@@ -452,9 +466,13 @@ Fabric CA Server - Fabric CA Server
 
 This section describes the Fabric CA server.
 
+这部分描述 Fabric CA server.
+
 You may initialize the Fabric CA server before starting it. This provides an
 opportunity for you to generate a default configuration file that can be
 reviewed and customized before starting the server.
+
+你可能需要在启动 Fabric CA server 之前先初始化它。这给你提供了一个机会去生成一个默认的配置文件，你可以在启动之前审核配置，并且根据需要定制配置项。
 
 The Fabric CA server's home directory is determined as follows:
   - if the --home command line option is set, use its value
@@ -466,12 +484,23 @@ The Fabric CA server's home directory is determined as follows:
     its value
   - otherwise, use current working directory
 
+Fabric CA server的home目录路径由以下决定：
+  - 如果命令行设置了，则使用该值
+  - 否则，如果设置了环境变量 ``FABRIC_CA_SERVER_HOME`` ，使用该值
+  - 否则，如果设置了环境变量 ``FABRIC_CA_HOME`` ，使用该值
+  - 否则，如果设置了环境变量 ``CA_CFG_PATH`` ，使用该值
+  - 否则，使用当前目录
+
 For the remainder of this server section, we assume that you have set
 the ``FABRIC_CA_HOME`` environment variable to
 ``$HOME/fabric-ca/server``.
 
+在本章节剩下的部分，我们假设你已经设置了环境变量 ``FABRIC_CA_HOME`` 的值为 ``$HOME/fabric-ca/server``。
+
 The instructions below assume that the server configuration file exists
 in the server's home directory.
+
+下面的指令基于假设server home目录下存在server配置文件的情况。
 
 .. _initialize:
 
@@ -479,6 +508,8 @@ Initializing the server - 初始化server
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Initialize the Fabric CA server as follows:
+
+初始化 Fabric CA server：
 
 .. code:: bash
 
