@@ -166,7 +166,7 @@ Getting Started - 快速开始
 Prerequisites - 先决条件
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  Go 1.9+ installation - 安装Go 1.9+ 的版本
+-  Go 1.10+ installation - 安装Go 1.10+ 的版本
 -  ``GOPATH`` environment variable is set correctly - 正确的设置了 ``GOPATH`` 环境变量
 - libtool and libtdhl-dev packages are installed - 安装了 libtool 和 libtdhl-dev
 
@@ -1713,13 +1713,8 @@ before 2017-09-21T16:39:57-08:00, and that expire after 2017-09-13T16:39:57-08:0
     export FABRIC_CA_CLIENT_HOME=~/clientconfig
     fabric-ca-client gencrl --caname "" --expireafter 2017-09-13T16:39:57-08:00 --expirebefore 2018-09-13T16:39:57-08:00  --revokedafter 2017-09-13T16:39:57-08:00 --revokedbefore 2017-09-21T16:39:57-08:00 -M ~/msp
 
-The `fabric-samples/fabric-ca <https://github.com/hyperledger/fabric-samples/blob/master/fabric-ca/scripts/run-fabric.sh>`_
-sample demonstrates how to generate a CRL that contains certificate of a revoked user and update the channel
-msp. It will then demonstrate that querying the channel using the revoked user credentials will result
-in an authorization error.
-
-Enabling TLS - 启用 TLS
-~~~~~~~~~~~~~~~~~~~~~~~~
+Enabling TLS
+~~~~~~~~~~~~
 
 This section describes in more detail how to configure TLS for a Fabric CA client.
 
@@ -1819,13 +1814,10 @@ value of the affiliation (which is 'org1') must be the same in both the
     fabric-ca-client register --id.name user1 --id.secret user1pw --id.type user --id.affiliation org1 --id.attrs 'hf.Affiliation=org1:ecert'
 
 For information on the chaincode library API for Attribute-Based Access Control,
-see `https://github.com/hyperledger/fabric/tree/release-1.1/core/chaincode/lib/cid/README.md <https://github.com/hyperledger/fabric/tree/release-1.1/core/chaincode/lib/cid/README.md>`_
+see `https://github.com/hyperledger/fabric/blob/release-1.4/core/chaincode/lib/cid/README.md <https://github.com/hyperledger/fabric/blob/release-1.4/core/chaincode/lib/cid/README.md>`_
 
-For an end-to-end sample which demonstrates Attribute-Based Access Control and more,
-see `https://github.com/hyperledger/fabric-samples/tree/release-1.1/fabric-ca/README.md <https://github.com/hyperledger/fabric-samples/tree/release-1.1/fabric-ca/README.md>`_
-
-Dynamic Server Configuration Update - 动态服务配置更新
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Dynamic Server Configuration Update
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This section describes how to use fabric-ca-client to dynamically update portions
 of the fabric-ca-server's configuration without restarting the server.
@@ -2293,8 +2285,21 @@ Configuring Fabric CA server to use softhsm2 - 配置 Fabric CA server 使用sof
 This section shows how to configure the Fabric CA server or client to use a software version
 of PKCS11 called softhsm (see https://github.com/opendnssec/SoftHSMv2).
 
-After installing softhsm, create a token, label it “ForFabric”, set the pin to ‘98765432’
+After installing softhsm, make sure to set your SOFTHSM2_CONF environment variable to
+point to the location where the softhsm2 configuration file is stored. The config file looks like
+
+.. code::
+
+  directories.tokendir = /tmp/
+  objectstore.backend = file
+  log.level = INFO
+
+You can find example configuration file named softhsm2.conf under testdata directory.
+
+Create a token, label it “ForFabric”, set the pin to ‘98765432’
 (refer to softhsm documentation).
+
+
 
 You can use both the config file and environment variables to configure BCCSP
 For example, set the bccsp section of Fabric CA server configuration file as follows.
@@ -2320,10 +2325,12 @@ Note that the default field’s value is PKCS11.
 
 And you can override relevant fields via environment variables as follows:
 
-FABRIC_CA_SERVER_BCCSP_DEFAULT=PKCS11
-FABRIC_CA_SERVER_BCCSP_PKCS11_LIBRARY=/usr/local/Cellar/softhsm/2.1.0/lib/softhsm/libsofthsm2.so
-FABRIC_CA_SERVER_BCCSP_PKCS11_PIN=98765432
-FABRIC_CA_SERVER_BCCSP_PKCS11_LABEL=ForFabric
+.. code:: bash
+
+  FABRIC_CA_SERVER_BCCSP_DEFAULT=PKCS11
+  FABRIC_CA_SERVER_BCCSP_PKCS11_LIBRARY=/usr/local/Cellar/softhsm/2.1.0/lib/softhsm/libsofthsm2.so
+  FABRIC_CA_SERVER_BCCSP_PKCS11_PIN=98765432
+  FABRIC_CA_SERVER_BCCSP_PKCS11_LABEL=ForFabric
 
 `Back to Top`_
 
