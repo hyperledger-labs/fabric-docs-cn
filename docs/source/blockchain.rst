@@ -220,7 +220,7 @@ all transactions which have resulted in the current value of the world state;
 it’s the update history for the world state. The ledger, then, is a combination
 of the world state database and the transaction log history.
 
-世界状态组件描述了在给定时间点的账本的状态。它是账本的数据库。交易日志组件记录产生世界状态当前值的所有交易；这是世界各州的更新历史。然后，账本是世界状态数据库和交易日志历史记录的组合。
+世界状态组件描述了在给定时间点的账本的状态。它是账本的数据库。交易日志组件记录产生世界状态当前值的所有交易，它是世界状态的更新历史。然后，账本是世界状态数据库和交易日志历史记录的组合。
 
 The ledger has a replaceable data store for the world state. By default, this
 is a LevelDB key-value store database. The transaction log does not need to be
@@ -237,7 +237,7 @@ interact with the ledger. In most cases, chaincode interacts only with the
 database component of the ledger, the world state (querying it, for example), and
 not the transaction log.
 
-Hyperledger Fabric智能合约以**链码**编写，当该应用程序需要与账本交互时，由区块链外部的应用程序调用。在大多数情况下，链码只与账本的数据库、世界状态（例如，查询）交互，而不与交易日志交互。
+Hyperledger Fabric智能合约以**链码**编写，当该应用程序需要与账本交互时，由区块链外部的应用程序调用。在大多数情况下，链码只与账本的数据库、世界状态（例如查询）交互，而不与交易日志交互。
 
 Chaincode can be implemented in several programming languages. Currently, Go and
 Node are supported.
@@ -275,7 +275,7 @@ of corruption. Alternatively, in Bitcoin, ordering happens through a process
 called mining where competing computers race to solve a cryptographic puzzle
 which defines the order that all processes subsequently build upon.
 
-这是一个彻底的计算机科学研究领域，且有很多方法可以实现它，每个方法都有不同的权衡。例如，PBFT（实用拜占庭容错算法）可以为文件副本提供一种机制，使其能够保持各个副本的一致性，即使在发生损坏的情况下也是如此。或者，在比特币中，通过称为挖掘的过程进行排序，其中竞争计算机竞相解决加密难题，该难题定义所有过程随后构建的顺序。
+这是一个彻底的计算机科学研究领域，且有很多方法可以实现它，每个方法都有不同的权衡。例如，PBFT（实用拜占庭容错算法）可以为文件副本提供一种机制，使其能够保持各个副本的一致性，即使在发生损坏的情况下也是如此。或者，在比特币中，通过称为挖矿的过程进行排序，其中竞争计算机竞相解决加密难题，该难题定义所有过程随后构建的顺序。
 
 Hyperledger Fabric has been designed to allow network starters to choose a
 consensus mechanism that best represents the relationships that exist between
