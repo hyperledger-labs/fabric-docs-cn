@@ -742,9 +742,8 @@ in the database name. Please refer to the following Postgres documentation
 for more information: https://www.postgresql.org/docs/current/static/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
 
 为了连接进 PostgreSQL 数据库，下面的示例可能被添加到服务的配置文件里面。
-来保证适当地定制各种变量。 There are limitations on what characters are allowed
-in the database name. Please refer to the following Postgres documentation
-for more information: https://www.postgresql.org/docs/current/static/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
+来保证适当地定制各种变量。数据库名称中允许使用哪些字符是有限制的。有关更多信息，
+请参考以下Postgres文档: https://www.postgresql.org/docs/current/static/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
 
 .. code:: yaml
 
@@ -754,6 +753,8 @@ for more information: https://www.postgresql.org/docs/current/static/sql-syntax-
 
 Specifying *sslmode* configures the type of SSL authentication. Valid
 values for sslmode are:
+
+指定 *sslmode* 配置SSL身份验证的类型。有效的sslmode的值为:
 
 |
 
@@ -799,6 +800,10 @@ on the PostgreSQL server, then the client certificate and key file must also be
 specified in the ``db.tls.client`` section. The following is an example
 of the ``db.tls`` section:
 
+如果您想使用TLS，那么必须指定Fabric CA服务器配置文件中的 ``db.tls`` 部分。
+如果在PostgreSQL服务器上启用了SSL客户机身份验证，那么还必须在 ``db.tls.client``
+的部分指定客户机证书和密钥文件。下面是 ``db.tls`` 部分的示例:
+
 .. code:: yaml
 
     db:
@@ -814,22 +819,38 @@ of the ``db.tls`` section:
 | **certfiles** - A list of PEM-encoded trusted root certificate files.
 | **certfile** and **keyfile** - PEM-encoded certificate and key files that are used by the Fabric CA server to communicate securely with the PostgreSQL server
 
+| **certfiles** - 可信任的PEM编码的根证书文件列表
+| **certfile** 和 **keyfile** - Fabric CA服务用于跟PostgreSQL服务安全通信的PEM编码的证书和密钥文件
+
 PostgreSQL SSL Configuration - PostgreSQL SSL 配置
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 **Basic instructions for configuring SSL on the PostgreSQL server:**
 
+**在PostgreSQL服务中配置SSL的基本事项:**
+
 1. In postgresql.conf, uncomment SSL and set to "on" (SSL=on)
 
 2. Place certificate and key files in the PostgreSQL data directory.
 
+1. 在 postgresql.conf 中，不要注释SSL，并且要设置为 "on" (SSL=on)
+
+2. 把证书和密钥文件放在 PostgreSQL 的data目录.
+
 Instructions for generating self-signed certificates for:
+https://www.postgresql.org/docs/9.5/static/ssl-tcp.html
+
+生成自签名的证书的方法指引:
 https://www.postgresql.org/docs/9.5/static/ssl-tcp.html
 
 Note: Self-signed certificates are for testing purposes and should not
 be used in a production environment
 
+注意: 自签名的证书可以用于测试目的，在生产环境不要使用
+
 **PostgreSQL Server - Require Client Certificates**
+
+**PostgreSQL 服务 - 要求客户机证书**
 
 1. Place certificates of the certificate authorities (CAs) you trust in the file root.crt in the PostgreSQL data directory
 
@@ -837,8 +858,17 @@ be used in a production environment
 
 3. Set the clientcert parameter to 1 on the appropriate hostssl line(s) in pg\_hba.conf.
 
+1. 把在root.crt文件中信任的证书颁发机构(CAs)的证书放在 PostgreSQL 的data目录。
+
+2. 在 postgresql.conf 中，设置 "ssl\_ca\_file" 指向client的根证书。
+
+3. 在 pg\_hba.conf 中的 hostssl 这一行设置 clientcert 参数为 1。
+
 For more details on configuring SSL on the PostgreSQL server, please refer
 to the following PostgreSQL documentation:
+https://www.postgresql.org/docs/9.4/static/libpq-ssl.html
+
+关于在PostgreSQL服务上配置SSL的更多细节，请参考下面的PostgreSQL文档:
 https://www.postgresql.org/docs/9.4/static/libpq-ssl.html
 
 MySQL - MySQL
@@ -850,16 +880,28 @@ values appropriately. There are limitations on what characters are allowed
 in the database name. Please refer to the following MySQL documentation
 for more information: https://dev.mysql.com/doc/refman/5.7/en/identifiers.html
 
+下面的示例可能添加到Fabric CA服务的配置文件中，目的是为了连接 MySQL 数据库。确保能够适当的定制多个变量。
+数据库名称中允许使用哪些字符是有限制的。有关更多信息，请参考以下MySQL文档:
+https://dev.mysql.com/doc/refman/5.7/en/identifiers.html
+
 On MySQL 5.7.X, certain modes affect whether the server permits '0000-00-00' as a valid date.
 It might be necessary to relax the modes that MySQL server uses. We want to allow
 the server to be able to accept zero date values.
 
+在 MySQL 5.7.X，某些模式会影响服务器是否允许 '0000-00-00' 作为有效日期。
+可能有必要放松MySQL服务器使用的模式。我们希望允许服务器能够接受零日期值。
+
 In my.cnf, find the configuration option *sql_mode* and remove *NO_ZERO_DATE* if present.
 Restart MySQL server after making this change.
+
+在my.cnf中，找到配置选项 *sql_mode* ，如果存在，则删除 *NO_ZERO_DATE* 。
+进行此更改后重新启动MySQL服务器。
 
 Please refer to the following MySQL documentation on different modes available
 and select the appropriate settings for the specific version of MySQL that is
 being used.
+
+请参考下面关于不同模式的MySQL文档，并为正在使用的特定MySQL版本选择适当的设置。
 
 https://dev.mysql.com/doc/refman/5.7/en/sql-mode.html
 
@@ -872,21 +914,32 @@ https://dev.mysql.com/doc/refman/5.7/en/sql-mode.html
 If connecting over TLS to the MySQL server, the ``db.tls.client``
 section is also required as described in the **PostgreSQL** section above.
 
-MySQL SSL Configuration
-""""""""""""""""""""""""
+如果通过TLS连接到MySQL服务器，则使用 ``db.tls.client`` 部分也是必需的，如上面的**PostgreSQL**部分所述。
+
+MySQL SSL Configuration - MySQL SSL 配置
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 **Basic instructions for configuring SSL on MySQL server:**
+
+**在MySQL服务中配置SSL的基本事项:**
 
 1. Open or create my.cnf file for the server. Add or uncomment the
    lines below in the [mysqld] section. These should point to the key and
    certificates for the server, and the root CA cert.
 
+   为服务打开或创建文件 my.cnf。在[mysqld]部分中添加或取消注释下面的行。这些应该指向服务器的密钥和证书，以及根CA证书。
+
    Instructions on creating server and client-side certficates:
+   http://dev.mysql.com/doc/refman/5.7/en/creating-ssl-files-using-openssl.html
+
+   关于创建服务器和客户端证书的说明:
    http://dev.mysql.com/doc/refman/5.7/en/creating-ssl-files-using-openssl.html
 
    [mysqld] ssl-ca=ca-cert.pem ssl-cert=server-cert.pem ssl-key=server-key.pem
 
    Can run the following query to confirm SSL has been enabled.
+
+   可以运行以下查询来确认SSL已启用。
 
    mysql> SHOW GLOBAL VARIABLES LIKE 'have\_%ssl';
 
@@ -904,20 +957,28 @@ MySQL SSL Configuration
    to create a user who has a privilege to access the MySQL server over
    SSL. For that, log in to the MySQL server, and type:
 
+   服务器端SSL配置完成后，下一步是创建一个用户，该用户有权通过SSL访问MySQL服务器。为此，登录到MySQL服务器，输入:
+
    mysql> GRANT ALL PRIVILEGES ON *.* TO 'ssluser'@'%' IDENTIFIED BY
    'password' REQUIRE SSL; mysql> FLUSH PRIVILEGES;
 
-   If you want to give a specific IP address from which the user will
-   access the server change the '%' to the specific IP address.
+   如果你希望提供一个特定的IP地址，用户将从该地址访问服务器，请将'%'更改为特定的IP地址。
 
 **MySQL Server - Require Client Certificates**
 
+**MySQL 服务 - 要求客户机证书**
+
 Options for secure connections are similar to those used on the server side.
+
+安全连接的选项类似于服务器端使用的选项。
 
 -  ssl-ca identifies the Certificate Authority (CA) certificate. This
    option, if used, must specify the same certificate used by the server.
+   ssl-ca指证书颁发机构(CA)证书。如果使用此选项，则必须指定服务器使用的相同证书。
 -  ssl-cert identifies MySQL server's certificate.
+   ssl-cert指MySQL服务端的证书。
 -  ssl-key identifies MySQL server's private key.
+   ssl-key指MySQL服务端的私钥。
 
 Suppose that you want to connect using an account that has no special
 encryption requirements or was created using a GRANT statement that
@@ -926,6 +987,10 @@ secure-connection options, start the MySQL server with at least
 --ssl-cert and --ssl-key options. Then set the ``db.tls.certfiles`` property
 in the server configuration file and start the Fabric CA server.
 
+假设你希望使用没有特殊加密要求的帐户连接，或者使用包含REQUIRE SSL选项的GRANT语句创建的帐户连接。
+作为推荐的一组安全连接选项，使用至少 --ssl-cert和--ssl-key 选项启动MySQL服务器。
+然后配置文件里设置 ``db.tls.certfiles`` 属性，并启动Fabric CA服务器。
+
 To require that a client certificate also be specified, create the
 account using the REQUIRE X509 option. Then the client must also specify
 proper client key and certificate files; otherwise, the MySQL server
@@ -933,19 +998,31 @@ will reject the connection. To specify client key and certificate files
 for the Fabric CA server, set the ``db.tls.client.certfile``,
 and ``db.tls.client.keyfile`` configuration properties.
 
+为了要求指定客户端证书，请使用REQUIRE X509选项创建帐户。然后客户端还必须
+指定正确的客户端密钥和证书文件；否则，MySQL服务将拒绝连接。要为Fabric CA服务
+指定客户端密钥和证书文件，通过配置文件中 ``db.tls.client.certfile`` 、
+``db.tls.client.keyfile`` 两个属性进行配置。
+
 Configuring LDAP - 配置LDAP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The Fabric CA server can be configured to read from an LDAP server.
 
+Fabric CA服务可以配置为从LDAP服务读取数据。
+
 In particular, the Fabric CA server may connect to an LDAP server to do
 the following:
+具体来说，Fabric CA服务可以连接到LDAP服务来执行以下操作：
 
 -  authenticate an identity prior to enrollment
+   enroll前验证身份
 -  retrieve an identity's attribute values which are used for authorization.
+   检索用于授权的身份的属性值
 
 Modify the LDAP section of the Fabric CA server's configuration file to configure the
 server to connect to an LDAP server.
+
+修改 Fabric CA 服务配置文件的 LDAP 部分，将Fabric CA服务配置为连接到LDAP服务。
 
 .. code:: yaml
 
