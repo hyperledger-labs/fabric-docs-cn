@@ -974,10 +974,13 @@ Options for secure connections are similar to those used on the server side.
 
 -  ssl-ca identifies the Certificate Authority (CA) certificate. This
    option, if used, must specify the same certificate used by the server.
+
    ssl-ca指证书颁发机构(CA)证书。如果使用此选项，则必须指定服务器使用的相同证书。
 -  ssl-cert identifies MySQL server's certificate.
+
    ssl-cert指MySQL服务端的证书。
 -  ssl-key identifies MySQL server's private key.
+
    ssl-key指MySQL服务端的私钥。
 
 Suppose that you want to connect using an account that has no special
@@ -1015,8 +1018,10 @@ the following:
 具体来说，Fabric CA服务可以连接到LDAP服务来执行以下操作：
 
 -  authenticate an identity prior to enrollment
+
    enroll前验证身份
 -  retrieve an identity's attribute values which are used for authorization.
+
    检索用于授权的身份的属性值
 
 Modify the LDAP section of the Fabric CA server's configuration file to configure the
@@ -1074,19 +1079,29 @@ server to connect to an LDAP server.
 Where:
 
   * ``scheme`` is one of *ldap* or *ldaps*;
+  * ``scheme`` 是一个 *ldap* 或者是一个 *ldaps*;
   * ``adminDN`` is the distinquished name of the admin user;
+  * ``adminDN`` 是管理员用户的唯一名称;
   * ``pass`` is the password of the admin user;
+  * ``pass`` 是管理员用户的密码;
   * ``host`` is the hostname or IP address of the LDAP server;
+  * ``host`` 是LDAP服务的主机名或者IP地址;
   * ``port`` is the optional port number, where default 389 for *ldap*
     and 636 for *ldaps*;
+  * ``port`` 是可选的端口号，默认情况是 *ldap* 为389，*ldaps* 为636;
   * ``base`` is the optional root of the LDAP tree to use for searches;
+  * ``base`` 是可选的，是用于搜索的LDAP树结构的根;
   * ``filter`` is a filter to use when searching to convert a login
     user name to a distinguished name. For example, a value of
     ``(uid=%s)`` searches for LDAP entries with the value of a ``uid``
     attribute whose value is the login user name. Similarly,
     ``(email=%s)`` may be used to login with an email address.
+  * ``filter`` 是搜索一个登陆用户名转化成唯一名称时使用的过滤器。例如，当值为 ``(uid=%s)``
+    时，将搜索 ``uid`` 的属性值为登陆用户名的LDAP实体。相似地，当值为 ``(email=%s)``
+    时，可能是使用一个电子邮箱地址登陆的。
   * ``LDAPAttrs`` is an array of LDAP attribute names to request from the
     LDAP server on a user's behalf;
+  * ``LDAPAttrs`` 是代表用户从LDAP服务请求的LDAP属性名称数组;
   * the attribute.converters section is used to convert LDAP attributes to fabric
     CA attributes, where
     * ``fcaAttrName`` is the name of a fabric CA attribute;
@@ -1097,9 +1112,17 @@ Where:
     then given a value of 'true' for the 'hf.Revoker' attribute if the value of
     the user's 'uid' LDAP attribute begins with 'revoker'; otherwise, the user
     is given a value of 'false' for the 'hf.Revoker' attribute.
+  * attribute.converters 的部分是用于将LDAP属性转化为 fabric CA 属性，这里
+    * ``fcaAttrName`` 是fabric CA 属性的名称;
+    * ``fcaExpr`` 是一个表达式，相应的计算值会赋值给fabric CA 属性。
+    例如，假设 <LDAPAttrs> 的值是 ["uid"]，<fcaAttrName> 是 'hf.Revoker'，
+    并且 <fcaExpr> 是 'attr("uid") =~ "revoker*"'。这个意思就是，
+    代表一个用户从LDAP服务请求一个名称为"uid"的属性。如果用户的LDAP属性'uid'的值
+    是以'revoker'为前缀的，则'hf.Revoker'的属性为 'true'；否则，'hf.Revoker'的属性为 'false'。
   * the attribute.maps section is used to map LDAP response values.  The typical
     use case is to map a distinguished name associated with an LDAP group to an
     identity type.
+  * attribute.maps 的部分是用来对应LDAP 的响应值。典型使用场景是将和一个唯一名称关联的LDAP组对应成一个身份类型。
 
 The LDAP expression language uses the govaluate package as described at
 https://github.com/Knetic/govaluate/blob/master/MANUAL.md.  This defines
@@ -1107,29 +1130,48 @@ operators such as "=~" and literals such as "revoker*", which is a regular
 expression.  The LDAP-specific variables and functions which extend the
 base govaluate language are as follows:
 
+LDAP 的表达式语言使用govaluate包 这个链接有描述：
+https://github.com/Knetic/govaluate/blob/master/MANUAL.md.
+这里定义了 "=~" 这样的操作符和 "revoker*" 这样的符号，这属于正则表达式。
+LDAP专有的变量和方法是基于govaluate语言扩展的，如下:
+
   * ``DN`` is a variable equal to the user's distinguished name.
+  * ``DN`` 是一个变量，等于用户的唯一性名称。
   * ``affiliation`` is a variable equal to the user's affiliation.
+  * ``affiliation`` 是一个变量，等于用户的affiliation。
   * ``attr`` is a function which takes 1 or 2 arguments.  The 1st argument
     is an LDAP attribute name.  The 2nd argument is a separator string which is
     used to join multiple values into a single string; the default separator
     string is ",". The ``attr`` function always returns a value of type
     'string'.
+  * ``attr`` 是一个方法，需要一个或二个参数。第一个参数是一个LDAP属性名。第二个参数是一个
+    分隔符，用于将多个值连接到一个字符串中; 默认的分隔符是 ","。 ``attr`` 方法总是返回一个'string'的值。
   * ``map`` is a function which takes 2 arguments.  The 1st argument
     is any string.  The second argument is the name of a map which is used to
     perform string substitution on the string from the 1st argument.
+  * ``map`` 是一个需要两个参数的方法。第一个参数是任意的字符串。第二个参数是map的名称，
+    用于对第一个参数中的字符串执行字符串替换。
   * ``if`` is a function which takes a 3 arguments where the first argument
     must resolve to a boolean value.  If it evaluates to true, the second
     argument is returned; otherwise, the third argument is returned.
+  * ``if`` 是一个需要三个参数的方法，第一个参数必须解析为boolean值。如果第一个Boolean值为true，
+    则返回第二个参数; 否则，返回第三个参数。
 
 For example, the following expression evaluates to true if the user has
 a distinguished name ending in "O=org1,C=US", or if the user has an affiliation
 beginning with "org1.dept2." and also has the "admin" attribute of "true".
+
+例如，如果用户有一个后缀为"O=org1,C=US"的唯一性名称，或者如果用户有一个affiliation前缀为
+"org1.dept2."并且有一个属性名为"admin" 值为"true"，下面的表达式计算结果是true。
 
   **DN =~ "*O=org1,C=US" || (affiliation =~ "org1.dept2.*" && attr('admin') = 'true')**
 
 NOTE: Since the ``attr`` function always returns a value of type 'string',
 numeric operators may not be used to construct expressions.
 For example, the following is NOT a valid expression:
+
+注意: 由于 ``attr`` 方法总是返回字符串类型的值， 数值类操作符可能不能用于构造表达式。
+例如，下面就不是可用的表达式:
 
 .. code:: yaml
 
@@ -1138,6 +1180,8 @@ For example, the following is NOT a valid expression:
 Alternatively, a regular expression enclosed in quotes as shown below may be used
 to return an equivalent result:
 
+或者，可以使用下面所示的引号括起来的正则表达式返回等效的结果:
+
 .. code:: yaml
 
      value: attr("gidNumber") =~ "1000[0-5]$" || attr("mail") == "root@example.com"
@@ -1145,6 +1189,9 @@ to return an equivalent result:
 The following is a sample configuration section for the default setting
 for the OpenLDAP server whose docker image is at
 ``https://github.com/osixia/docker-openldap``.
+
+下面是一个示例的配置部分，用于OpenLDAP服务的默认设置，docker镜像在：
+``https://github.com/osixia/docker-openldap`` 。
 
 .. code:: yaml
 
@@ -1158,17 +1205,28 @@ OpenLDAP docker image, configures it, runs the LDAP tests in
 ``FABRIC_CA/cli/server/ldap/ldap_test.go``, and stops the OpenLDAP
 server.
 
+参见 ``FABRIC_CA/scripts/run-ldap-tests`` 用于启动 OpenLDAP docker 镜像的脚本，配置它，
+在 ``FABRIC_CA/cli/server/ldap/ldap_test.go`` 运行LDAP示例，和停止 OpenLDAP 服务。
+
 When LDAP is configured, enrollment works as follows:
+
+当LDAP配置好之后，enrollment 的工作如下:
 
 
 -  The Fabric CA client or client SDK sends an enrollment request with a
    basic authorization header.
+
+   Fabric CA 客户端或者客户端 SDK发送一个enrollment请求，请求头里面包含基本认证。
 -  The Fabric CA server receives the enrollment request, decodes the
    identity name and password in the authorization header, looks up the DN (Distinguished
    Name) associated with the identity name using the "userfilter" from the
    configuration file, and then attempts an LDAP bind with the identity's
    password. If the LDAP bind is successful, the enrollment processing is
    authorized and can proceed.
+
+   Fabric CA 服务接收到enrollment请求，在请求头里找出基本认证内容然后解码出身份名称和密码，
+   使用配置文件中的 "userfilter"寻找和身份名称关联的DN (唯一性名称)，然后尝试使用身份的密码
+   进行LDAP绑定。如果LDAP绑定成功，enrollment处理就得到授权并可以继续。
 
 Setting up a cluster - 设置一个集群
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
