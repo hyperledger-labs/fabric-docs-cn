@@ -1236,6 +1236,9 @@ servers. This section provides an example of how to set up Haproxy to
 route to a Fabric CA server cluster. Be sure to change hostname and port
 to reflect the settings of your Fabric CA servers.
 
+你可能需要使用一个IP sprayer来给一个Fabric CA服务的集群做负载均衡。本章节提供了一个示例
+来展示如何设置高可用代理来给Fabric CA服务集群做路由。确保将主机名和端口修改为与你的Fabric CA服务设置的值。
+
 haproxy.conf
 
 .. code::
@@ -1261,6 +1264,8 @@ haproxy.conf
 
 Note: If using TLS, need to use ``mode tcp``.
 
+注意: 如果使用 TLS，需要使用 ``mode tcp``。
+
 Setting up multiple CAs - 设置多CA
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1268,12 +1273,17 @@ The fabric-ca server by default consists of a single default CA. However, additi
 can be added to a single server by using `cafiles` or `cacount` configuration options.
 Each additional CA will have its own home directory.
 
+fabric-ca服务在默认情况下由一个默认CA组成。但是，可以通过使用`cafiles`或`cacount`配置选项将其他CA添加到单个服务。
+每个额外的CA都有自己的主目录。
+
 cacount:
 ^^^^^^^^
 
 The `cacount` provides a quick way to start X number of default additional
 CAs. The home directory will be relative to the server directory. With this option,
 the directory structure will be as follows:
+
+`cacount` 提供了一种快速启动X个默认额外CAs的方法。主目录将是与服务目录的相对路径。使用此选项，目录结构如下:
 
 .. code:: yaml
 
