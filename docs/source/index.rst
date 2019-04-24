@@ -1,6 +1,8 @@
 Welcome to Hyperledger Fabric CA (Certificate Authority) - 欢迎来到 Hyperledger Fabric CA
 ===========================================================================================
 
+This build of the docs is from the "|version|" branch
+
 .. toctree::
    :maxdepth: 2
    :caption: Getting Started - 快速开始
