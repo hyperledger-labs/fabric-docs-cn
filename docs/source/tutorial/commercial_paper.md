@@ -1,9 +1,7 @@
-# Commercial paper tutorial  商业票据教程
+# Commercial paper tutorial
 
 **Audience:** Architects, application and smart contract developers,
 administrators
-
-**受众**: 架构师，应用和智能合约开发者，管理员
 
 This tutorial will show you how to install and use a commercial paper sample
 application and smart contract. It is a task-oriented topic, so it emphasizes
@@ -11,25 +9,15 @@ procedures above concepts. When you’d like to understand the concepts in more
 detail, you can read the
 [Developing Applications](../developapps/developing_applications.html) topic.
 
-本教程将向你展示如何安装和使用商业票据样例应用程序和智能合约。这是一个面向任务的主题，
-因此它强调了上述概念的过程。如果你想更详细地了解这些概念，可以阅读[开发应用程序](../developapps/developing_applications.html)主题。
-
 ![commercialpaper.tutorial](./commercial_paper.diagram.1.png) *In this tutorial
 two organizations, MagnetoCorp and DigiBank, trade commercial paper with each
 other using PaperNet, a Hyperledger Fabric blockchain network.*
-
-*在本教程中，MagnetoCorp 和 DigiBank 这两个组织使用 Hyperledger Fabric 区块链网络 PaperNet
-相互交易商业票据。*
 
 Once you've set up a basic network, you'll act as Isabella, an employee of
 MagnetoCorp, who will issue a commercial paper on its behalf. You'll then switch
 hats to take the role of Balaji, an employee of DigiBank, who will buy this
 commercial paper, hold it for a period of time, and then redeem it with
 MagnetoCorp for a small profit.
-
-一旦建立了一个基本的网络，你就将扮演 MagnetoCorp 的员工 Isabella，她将代表其发行商业票据。
-然后，你将转换角色，担任 DigiBank 员工 Balaji，他将购买此商业票据，持有一段时间，然后将
-其与 MagnetoCorp 以小额利润进行兑换。
 
 You'll act as an developer, end user, and administrator, each in different
 organizations, performing the following steps designed to help you understand
@@ -54,30 +42,13 @@ network.
 * As Digibank, [run](#run-as-digibank) applications that
   [buy](#buy-application) and [redeem](#redeem-application) commercial paper
 
-作为开发人员，最终用户和管理员，每个角色都在不同的组织中执行以下步骤，旨在帮助你了解作为两个
-不同组织独立工作的协作方式，但根据 Hyperledger Fabric 网络中的双方同意的规则。
-
- * [配置机器](#prerequisites)和[下载样例](#download-samples)
- * [创建网络](#create-network)
- * 理解[智能合约](#smart-contract)的结构
- * 作为组织 [MagnetoCorp](#working-as-magnetocorp) 去[安装](#install-contract)和[实例化](#instantiate-contract)智能合约
- * 理解 MagnetoCorp [应用](#application-structure)的结构，包括它的[依赖](#application-dependencies)
- * 配置并使用[钱包和身份](#wallet)
- * 启动 MagnetoCorp 的应用程序[发行商业票据](#issue-application)
- * 理解第二个组织 [Digibank](#working-as-digibank) 在它们的[应用](#digibank-applications)中使用智能合约
- * 作为 Digibank [启动](#run-as-digibank)应用购买和兑换商业票据
-
 This tutorial has been tested on MacOS and Ubuntu, and should work on other
 Linux distributions. A Windows version is under development.
 
-本教程已经在 MacOS 和 Ubuntu 上进行了测试，并且可以在其他 Linux 发行版上运行。Windows版本正在开发中。
-
-## Prerequisites  预备知识
+## Prerequisites
 
 Before you start, you must install some prerequisite technology required by the
 tutorial. We've kept these to a minimum so that you can get going quickly.
-
-在开始之前，你必须安装本教程所需的一些必备技术。我们将这些保持在最低限度，以便你可以快速前进。
 
 You **must** have the following technologies installed:
 
@@ -86,22 +57,13 @@ You **must** have the following technologies installed:
     contracts. You are recommended to use the LTS (Long Term Support) version
     of node. Install node [here](https://nodejs.org/en/).
 
-    
+
   * [**Docker**](https://www.docker.com/get-started) version 18.06, or higher.
     Docker help developers and administrators create standard environments for
     building and running applications and smart contracts. Hyperledger Fabric is
     provided as a set of Docker images, and the PaperNet smart contract will run
     in a docker container. Install Docker
     [here](https://www.docker.com/get-started).
-
-你**必须**确保安装了以下软件：
-  
-  * [**Node**](https://nodejs.org/en/about/) 版本 8.9.0 或更高。Node 是一个 Javascript
-    运行时，可用于运行应用程序和智能合约。推荐使用 node 的 TLS 版本。安装 node 看[这里](https://nodejs.org/en/)
-
-  * [**Docker**](https://www.docker.com/get-started) 版本 18.06 或更高。Docker 帮助开发
-    人员和管理员创建标准环境，以构建和运行应用程序和智能合约。Hyperledger Fabric 作为一组Docker
-    镜像提供，PaperNet 智能合约将在 docker 容器中运行。安装 Docker 看[这里](https://www.docker.com/get-started)。
 
 You **will** find it helpful to install the following technologies:
 
@@ -114,14 +76,6 @@ You **will** find it helpful to install the following technologies:
     [Atom](https://atom.io/), [Sublime Text](http://www.sublimetext.com/) and
     [Brackets](http://www.sublimetext.com/).
 
-
-你**会**发现安装以下软件很有帮助：
-
-  * 源码编辑器，如 [**Visual Studio Code**](https://code.visualstudio.com/) 版本 1.28，或者更高。
-    VS Code 将会帮助你开发和测试应用程序和智能合约。安装 VS Code 看[这里](https://code.visualstudio.com/Download)。
-
-    许多优秀的代码编辑器都可以使用，包括 [Atom](https://atom.io/), [Sublime Text](http://www.sublimetext.com/) 和 [Brackets](http://www.sublimetext.com/)。
-
 You **may** find it helpful to install the following technologies as you become
 more experienced with application and smart contract development. There's no
 requirement to install these when you first run the tutorial:
@@ -131,13 +85,7 @@ requirement to install these when you first run the tutorial:
     if you're working on multiple projects at the same time. Install NVM
     [here](https://github.com/creationix/nvm#installation).
 
-你**可能**会发现，随着你在应用程序和智能合约开发方面的经验越来越丰富，安装以下软件会很有帮助。 
-首次运行教程时无需安装这些：
-
-  * [**Node Version Manager**](https://github.com/creationix/nvm)。NVM 帮助你轻松切换不同版本的 node -- 如果你同时处理多个项目，
-    那将非常有用。安装 NVM 看[这里](https://github.com/creationix/nvm#installation)。
-
-## Download samples 下载样例
+## Download samples
 
 The commercial paper tutorial is one of the Hyperledger Fabric
 [samples](https://github.com/hyperledger/fabric-samples) held in a public
@@ -145,21 +93,13 @@ The commercial paper tutorial is one of the Hyperledger Fabric
 going to run the tutorial on your machine, your first task is to download the
 `fabric-samples` repository.
 
-商业票据教程是在名为 `fabric-samples` 的公共 [Github](https://www.github.com) 仓库中保存的 Hyperledger Fabric [示例](https://github.com/hyperledger/fabric-samples)之一。当你要在你的机器上运行教程时，
-你的第一个任务是下载 `fabric-samples` 仓库。
-
 ![commercialpaper.download](./commercial_paper.diagram.2.png) *Download the
 `fabric-samples` GitHub repository to your local machine.*
-
-*下载 `fabric-samples` GitHub 仓库到你的本地机器*
 
 `$GOPATH` is an important environment variable in Hyperledger Fabric; it
 identifies the root directory for installation. It is important to get right no
 matter which programming language you're using! Open a new terminal window and
 check your `$GOPATH` is set using the `env` command:
-
-`$GOPATH` 是一个在 Hyperledger Fabric 中重要的环境变量；它来定位安装的根目录。无论您使用哪种
-编程语言，都必须正确行事！打开一个新的终端窗口，然后使用 `env` 命令检查一下 `$GOPATH`：
 
 ```
 $ env
@@ -174,12 +114,8 @@ Use the following
 [instructions](https://github.com/golang/go/wiki/SettingGOPATH) if your
 `$GOPATH` is not set.
 
-如果 `$GOPATH` 没有设置，使用这个[说明](https://github.com/golang/go/wiki/SettingGOPATH)。
-
 You can now create a directory relative to `$GOPATH `where `fabric-samples` will
 be installed:
-
-你可以为 `$GOPATH ` 创建一个相对路径来安装 `fabric-samples`：
 
 ```
 $ mkdir -p $GOPATH/src/github.com/hyperledger/
@@ -190,15 +126,11 @@ Use the [`git clone`](https://git-scm.com/docs/git-clone) command to copy
 [`fabric-samples`](https://github.com/hyperledger/fabric-samples) repository to
 this location:
 
-使用 [`git clone`](https://git-scm.com/docs/git-clone) 命令复制 [`fabric-samples`](https://github.com/hyperledger/fabric-samples) 仓库：
-
 ```
 $ git clone https://github.com/hyperledger/fabric-samples.git
 ```
 
 Feel free to examine the directory structure of `fabric-samples`:
-
-随意检查 `fabric-samples` 的目录结构：
 
 ```
 $ cd fabric-samples
@@ -214,8 +146,6 @@ fabcar
 
 Notice the `commercial-paper` directory -- that's where our sample is located!
 
-注意 `commercial-paper` 目录 -- 我们的示例就在这里！
-
 You've now completed the first stage of the tutorial! As you proceed, you'll
 open multiple command windows open for different users and components. For
 example:
@@ -226,16 +156,8 @@ example:
   DigiBank, including installing and instantiating smart contracts
 * to show peer, orderer and CA log output
 
-现在你已经完成了教程的第一个阶段！继续操作时，你将为不同用户和组件打开多个命令窗口。例如：
-
-* 以 Isabella 和 Balaji 的身份启动应用程序，他们将相互交易商业票据
-* 以 MagnetoCorp 和 DigiBank 管理员的身份执行发行等命令，包括安装和实例化智能合约
-* 查看 peer， orderer 和 CA 的日志输出
-
 We'll make it clear when you should run a command from particular command
 window; for example:
-
-我们将在你应该从特定命令窗口运行命令时明确说明。例如：
 
 ```
 (isabella)$ ls
@@ -243,40 +165,26 @@ window; for example:
 
 indicates that you should run the `ls` command from Isabella's window.
 
-表示你应该在 Isabella 的窗口中执行 `ls` 命令。
-
-## Create network 创建网络
+## Create network
 
 The tutorial currently uses the basic network; it will be updated soon to a
 configuration which better reflects the multi-organization structure of
 PaperNet. For now, this network is sufficient to show you how to develop an
 application and smart contract.
 
-这个教程目前使用的是基础网络；很快将会更新配置，从而更好的反映出 PaperNet 的多组织结构。
-目前，这个网络已经能够满足向你展示如何开发应用程序和智能合约。
-
 ![commercialpaper.network](./commercial_paper.diagram.3.png) *The Hyperledger
 Fabric basic network comprises a peer and its ledger database, an orderer and a
 certificate authority (CA). Each of these components runs as a docker
 container.*
-
-*The Hyperledger Fabric 基础网络由一个节点及账本数据库，一个排序服务和一个证书中心组成。
-每个组件都在 Docker 容器中运行。*
 
 The peer, its [ledger](../ledger/ledger.html#world-state-database-options), the
 orderer and the CA each run in the their own docker container. In production
 environments, organizations typically use existing CAs that are shared with
 other systems; they're not dedicated to the Fabric network.
 
-节点及[账本](../ledger/ledger.html#world-state-database-options)，排序服务和 CA 都运行
-在自己的 docker 容器中。在生产环境中，组织通常使用与其他系统共享的现有 CA；它们不是专门用于 Fabric 网络的。
-
 You can manage the basic network using the commands and configuration included
 in the `fabric-samples\basic-network` directory. Let's start the network on your
 local machine with the `start.sh` shell script:
-
-你可以使用 `fabric-samples\basic-network` 目录下的命令和配置管理基础网络。在你自己的机器上使用 `start.sh`
-脚本启动网络：
 
 ```
 $ cd fabric-samples/basic-network
@@ -320,14 +228,8 @@ have the most up-to-date version of the software for these Hyperledger Fabric
 components. Feel free to explore the `basic-network` directory -- we'll use
 much of its contents during this tutorial.
 
-注意 `docker-compose -f docker-compose.yml up -d ca.example.com...` 命令从[DockerHub](https://hub.docker.com/)拉取了
- 4 个 Hyperledger Fabric 容器镜像，然后启动。这些容器都使用了 Hyperledger Fabric 组件的最新版本。
-随意浏览 `basic-network` 目录 -- 在本教程中，我们将使用它的大部分内容。
-
 You can list the docker containers that are running the basic-network components
 using the `docker ps` command:
-
-你可以使用 `docker ps` 命令列出运行基本网络组件的 docker 容器：
 
 ```
 $ docker ps
@@ -347,17 +249,8 @@ horizontally scroll to locate the information):
 * A CouchDB database `couchdb` is running in container `53fe614274f7`
 * A CA `ca.example.com` is running in container `469201085a20`
 
-查看是否可以将这些容器映射到基本网络(可能需要水平滚动才能找到信息)：
-
-* 节点 `peer0.org1.example.com` 运行在容器 `ada3d078989b` 中
-* 排序服务 `orderer.example.com` 运行在容器 `1fa1fd107bfb` 中
-* CouchDB 数据库 `couchdb` 运行在容器 `53fe614274f7` 中
-* CA `ca.example.com` 运行在容器 `469201085a20` 中
-
 These containers all form a [docker network](https://docs.docker.com/network/)
 called `net_basic`. You can view the network with the `docker network` command:
-
-所有的容器构成了被称作 `net_basic` 的 [docker 网络](https://docs.docker.com/network/)。你可以使用 `docker network` 命令查看网络：
 
 ```
 $ docker network inspect net_basic
@@ -391,14 +284,9 @@ $ docker network inspect net_basic
 See how the four containers use different IP addresses, while being part of a
 single docker network. (We've abbreviated the output for clarity.)
 
-这 4 个容器使用了不同的 IP 地址，同时也是docker网络的一部分。（为了清晰起见，我们简化了输出。）
-
 To recap: you've downloaded the Hyperledger Fabric samples repository from
 GitHub and you've got the basic network running on your local machine. Let's now
 start to play the role of MagnetoCorp, who wish to trade commercial paper.
-
-回顾一下: 你已经从 GitHub 下载了 Hyperledger Fabric samples 仓库，并且已经在本地机器上运行了基本的网络。
-现在让我们开始扮演 MagnetoCorp 的角色，它希望交易商业票据。
 
 ## Working as MagnetoCorp
 
@@ -410,18 +298,10 @@ from a single window. This can be really helpful for administrators when
 installing smart contracts or for developers when invoking smart contracts, for
 example.
 
-为了监控 PaperNet 网络中 MagnetoCorp 公司的服务组件，管理员可以使用 `logspout` [工具](https://github.com/gliderlabs/logspout#logspout)
-查看 docker 容器日志的聚合结果。它可以采集不同输出流到一个地方，在一个窗口中就可以轻松看到
-正在发生的事情。比如，管理员在安装智能合约或者开发者执行智能合约时确实很有帮助。
-
 Let's now monitor PaperNet as a MagnetoCorp administrator. Open a new window in
 the `fabric-samples` directory, and locate and run the `monitordocker.sh`
 script to start the `logspout` tool for the PaperNet docker containers
 associated with the docker network `net_basic`:
-
-现在我们作为 MagnetoCorp 的管理员来监控 PaperNet 网络。在 `fabric-samples` 目录下打开一个窗口，
-找到并运行 `monitordocker.sh` 脚本，启动与 docker 网络 `net_basic` 关联的 PaperNet docker 容器的
- `logspout` 工具
 
 ```
 (magnetocorp admin)$ cd commercial-paper/organization/magnetocorp/configuration/cli/
@@ -436,7 +316,6 @@ b7f3586e5d0233de5a454df369b8eadab0613886fc9877529587345fc01a3582
 ```
 
 Note that you can pass a port number to the above command if the default port in `monitordocker.sh` is already in use.
-注意如果 `monitordocker.sh` 中的默认端口已经使用，你可以在上面的命令中传一个端口号进去。
 ```
 (magnetocorp admin)$ ./monitordocker.sh net_basic <port_number>
 ```
@@ -445,26 +324,16 @@ This window will now show output from the docker containers, so let's start
 another terminal window which will allow the MagnetoCorp administrator to
 interact with the network.
 
-这个窗口将会显示 docker 容器的输出，所以我们启动另一个终端窗口来让 MagnetoCorp 的管理员和
-网络交互。
-
 ![commercialpaper.workmagneto](./commercial_paper.diagram.4.png) *A MagnetoCorp
 administrator interacts with the network via a docker container.*
-
-*MagnetoCorp 管理员通过一个 docker 容器和网络交互。*
 
 To interact with PaperNet, a MagnetoCorp administrator needs to use the
 Hyperledger Fabric `peer` commands. Conveniently, these are available pre-built
 in the `hyperledger/fabric-tools`
 [docker image](https://hub.docker.com/r/hyperledger/fabric-tools/).
 
-为了和 PaperNet 交互，MagnetoCorp 管理员需要使用 Hyperledger Fabric `peer` 命令。而这些命令
-可以很方便地在 `hyperledger/fabric-tools` docker 镜像中获得。
-
 Let's start a MagnetoCorp-specific docker container for the administrator using
 the `docker-compose` [command](https://docs.docker.com/compose/overview/):
-
-让我们使用 `docker-compose` [命令](https://docs.docker.com/compose/overview/)为管理员启动一个特定于 MagnetoCorp 的 docker 容器：
 
 ```
 (magnetocorp admin)$ cd commercial-paper/organization/magnetocorp/configuration/cli/
@@ -481,8 +350,6 @@ Creating cliMagnetoCorp ... done
 
 Again, see how the `hyperledger/fabric-tools` docker image was retrieved from
 Docker Hub and added to the network:
-
-再次查看如何从 Docker Hub 检索 `hyperledger/fabric-tools` docker 镜像并将其添加到网络中:
 
 ```
 (magnetocorp admin)$ docker ps
@@ -501,13 +368,8 @@ The MagnetoCorp administrator will use the command line in container
 `b7f3586e5d02`; this is capturing the output of all other docker containers for
 the `monitordocker.sh` command.
 
-MagnetoCorp 管理员在容器 `562a88b25149` 中使用命令行和 PaperNet 交互。同样也注意 `logspout` 
-容器 `b7f3586e5d02`；它将捕获来自其他所有容器的输出。
-
 Let's now use this command line to interact with PaperNet as the MagnetoCorp
 administrator.
-
-现在让我们作为 MagnetoCorp 的管理员使用命令行和 PaperNet 交互吧。
 
 ## Smart contract
 
@@ -516,15 +378,9 @@ smart contract. It is used by applications to submit transactions which
 correspondingly issue, buy and redeem commercial paper on the ledger. Our next
 task is to examine this smart contract.
 
-`issue`, `buy` 和 `redeem` 是 PaperNet 智能合约的三个核心功能。它用于应用提交交易，这些交
-易相应地发行、购买和赎回账本上的商业票据。我们接下来的任务就是检查这个智能合约。
-
 Open a new terminal window to represent a MagnetoCorp developer and change to
 the directory that contains MagnetoCorp's copy of the smart contract to view it
 with your chosen editor (VS Code in this tutorial):
-
-作为 MagnetoCorp 的开发者角色，打开一个终端窗口，然后切换到包含 MagnetoCorp 的智能合约拷贝的目录，
-使用你选择的编辑器查看它（这个教程用的是 VS Code）。
 
 ```
 (magnetocorp developer)$ cd commercial-paper/organization/magnetocorp/contract
@@ -534,17 +390,11 @@ with your chosen editor (VS Code in this tutorial):
 In the `lib` directory of the folder, you'll see `papercontract.js` file -- this
 contains the commercial paper smart contract!
 
-在这个文件夹的 `lib` 目录下，你将看到 `papercontract.js` 文件 -- 这个文件包含了商业票据智能合约！
-
 ![commercialpaper.vscode1](./commercial_paper.diagram.10.png) *An example code
 editor displaying the commercial paper smart contract in `papercontract.js`*
 
-*一个代码编辑器展示的在 `papercontract.js` 文件中的商业票据智能合约*
-
 `papercontract.js` is a JavaScript program designed to run in the node.js
 environment. Note the following key program lines:
-
-`papercontract.js` 是一个可以运行在 node.js 环境中的 JavaScript 程序。注意下面的关键代码：
 
 * `const { Contract, Context } = require('fabric-contract-api');`
 
@@ -552,9 +402,6 @@ environment. Note the following key program lines:
   be used extensively by the smart contract  -- `Contract` and `Context`. You
   can learn more about these classes in the
   [`fabric-shim` JSDOCS](https://fabric-shim.github.io/).
-
-  这个语句引入了两个关键的 Hyperledger Fabric 类，这些类被智能合约广泛使用 -- `Contract` 和 `Context`。
-  你可以在 [`fabric-shim` JSDOCS](https://fabric-shim.github.io/) 中了解到这些类。
 
 
 * `class CommercialPaperContract extends Contract {`
@@ -564,9 +411,6 @@ environment. Note the following key program lines:
   transactions to `issue`, `buy` and `redeem` commercial paper are defined
   within this class.
 
-  这里基于内置的 Fabric `Contract` 类定义了智能合约类 `CommercialPaperContract` 。实现了
-  `issue`, `buy` 和 `redeem` 商业票据关键交易的方法被定义在类的内部。
-
 
 * `async issue(ctx, issuer, paperNumber, issueDateTime, maturityDateTime...) {`
 
@@ -574,12 +418,8 @@ environment. Note the following key program lines:
   parameters that are passed to this method will be used to create the new
   commercial paper.
 
-  这个方法为 PaperNet 定义了商业票据 `issue` 交易。传入的参数用于创建新的商业票据。
-
   Locate and examine the `buy` and `redeem` transactions within the smart
   contract.
-
-  找到并检查在智能合约内的 `buy` 和 `redeem` 交易。
 
 
 * `let paper = CommercialPaper.createInstance(issuer, paperNumber, issueDateTime...);`
@@ -589,9 +429,6 @@ environment. Note the following key program lines:
   inputs. Examine the `buy` and `redeem` transactions to see how they similarly
   use this class.
 
-  在 `issue` 交易内部，这个语句根据提供的交易输入使用 `CommercialPaper` 类在内存中创建了一个新的商业票据。
-  检查 `buy` 和 `redeem` 交易看如何做了相似的事情。
-
 
 * `await ctx.paperList.addPaper(paper);`
 
@@ -600,24 +437,16 @@ environment. Note the following key program lines:
   smart contract context `CommercialPaperContext` was initialized. Again,
   examine the `buy` and `redeem` methods to see how they use this class.
 
-  这个语句使用 `ctx.paperList` 添加了一个新的商业票据到账本中，当智能合约上下文 `CommercialPaperContext`
-  初始化时，`PaperList` 类的实例会被创建。再次检查 `buy` 和 `redeem` 方法是如何在类中使用的。
-
 
 * `return paper.toBuffer();`
 
   This statement returns a binary buffer as response from the `issue`
   transaction for processing by the caller of the smart contract.
 
-  该语句返回一个二进制缓冲区，作为来自 `issue` 交易的响应，供智能合约的调用者处理。
-
 
 Feel free to examine other files in the `contract` directory to understand how
 the smart contract works, and read in detail how `papercontract.js` is
 designed in the smart contract [topic](../developapps/smartcontract.html).
-
-随意检查 `contract` 目录下的其他文件，理解智能合约时如何工作的，仔细阅读在智能合约主题中 `papercontract.js`
-是如何设计的。
 
 ## Install contract
 
@@ -626,13 +455,8 @@ the appropriate peer nodes in PaperNet.  MagnetoCorp and DigiBank administrators
 are able to install `papercontract` onto peers over which they respectively have
 authority.
 
-在 `papercontract` 合约被应用执行之前，它必须先在 PaperNet 中合适的节点上安装。MagnetoCorp 
-和 DigiBank 的管理员有权限将 `papercontract` 安装到他们各自拥有权限的节点上。
-
 ![commercialpaper.install](./commercial_paper.diagram.6.png) *A MagnetoCorp
 administrator installs a copy of the `papercontract` onto a MagnetoCorp peer.*
-
-*MagnetoCorp 的管理员将 `papercontract` 的副本安装在 MagnetoCorp 的节点上。*
 
 Smart contracts are the focus of application development, and are contained
 within a Hyperledger Fabric artifact called [chaincode](../chaincode.html). One
@@ -640,10 +464,6 @@ or more smart contracts can be defined within a single chaincode, and installing
 a chaincode will allow them to be consumed by the different organizations in
 PaperNet.  It means that only administrators need to worry about chaincode;
 everyone else can think in terms of smart contracts.
-
-智能合约是应用开发的重点，它包含在一个名为[链码](../chaincode.html)的 Hyperledger Fabric 组件中。
-一个或者多个智能合约可以被定义在单独的链码中，安装链码将允许 PaperNet 中的不同组织使用他们。
-这意味着只有管理员需要关注链码；其他人都可以用智能合约来思考。
 
 The MagnetoCorp administrator uses the `peer chaincode install` command to copy
 the `papercontract` smart contract from their local machine's file system to the
@@ -657,17 +477,9 @@ and
 Fabric APIs. Examine how these APIs are used by `StateList` class within
 `ledger-api\statelist.js`.
 
-MagnetoCorp 的管理员使用 `peer chaincode install` 命令将 `papercontract` 智能合约从本地机器
-的文件系统复制到目标节点的 docker 容器中。一旦智能合约被安装在节点上且在通道上进行实例化，`papercontract` 
-就可以被应用调用，然后通过 Fabric 的 API [putState()](https://fabric-shim.github.io/release-1.3/fabric-shim.ChaincodeStub.html#putState__anchor) 和 [getState()](https://fabric-shim.github.io/release-1.3/fabric-shim.ChaincodeStub.html#getState__anchor) 与账本数据库进行交互。
-看一下这些 API 是如何在 `ledger-api\statelist.js` 里的 `StateList` 类中使用的。
-
 Let's now install `papercontract` as the MagnetoCorp administrator. In the
 MagnetoCorp administrator's command window, use the `docker exec` command to run
 the `peer chaincode install` command in the `cliMagnetCorp` container:
-
-现在让我们以 MagnetoCorp 的管理员安装 `papercontract`。在 MagnetoCorp 管理员的命令窗口中，
-使用 `docker exec` 命令在 `cliMagnetCorp` 容器中运行 `peer chaincode install` 命令：
 
 ```
 (magnetocorp admin)$ docker exec cliMagnetoCorp peer chaincode install -n papercontract -v 0 -p /opt/gopath/src/github.com/contract -l node
@@ -684,19 +496,11 @@ The `cliMagnetCorp` container has set
 MagnetoCorp administrator only has to install a copy of `papercontract` on a
 single MagentoCorp peer.
 
-`cliMagnetCorp` 容器设置了 `CORE_PEER_ADDRESS=peer0.org1.example.com:7051` 来将其命令指向
- `peer0.org1.example.com`，`INFO 003 Installed remotely...` 表示 `papercontract` 已经
- 成功安装在节点上。现在，MagnetoCorp 的管理员只在 MagentoCorp 的节点上安装了 `papercontract` 的副本。
-
 Note how `peer chaincode install` command specified the smart contract path,
 `-p`, relative to the `cliMagnetoCorp` container's file system:
 `/opt/gopath/src/github.com/contract`. This path has been mapped to the local
 file system path `.../organization/magnetocorp/contract` via the
 `magnetocorp/configuration/cli/docker-compose.yml` file:
-
-注意 `peer chaincode install` 命令是如何指定智能合约的路径的，`-p` 参数是相对于 `cliMagnetoCorp` 
-容器的文件系统：`/opt/gopath/src/github.com/contract`。这个路径已经通过 `magnetocorp/configuration/cli/docker-compose.yml` 
-映射到本地主机的文件系统 `.../organization/magnetocorp/contract` 上。
 
 ```yaml
 volumes:
@@ -709,15 +513,9 @@ See how the `volume` directive maps `organization/magnetocorp` to
 `/opt/gopath/src/github.com/` providing this container access to your local file
 system where MagnetoCorp's copy of the `papercontract` smart contract is held.
 
-看一下 `volume` 指令是如何将 `organization/magnetocorp` 映射到 `/opt/gopath/src/github.com/`
-以提供容器可以访问本地文件系统上存储的 MagnetoCorp 的 `papercontract` 智能合约副本。
-
 You can read more about `docker compose`
 [here](https://docs.docker.com/compose/overview/) and `peer chaincode install`
 command [here](../commands/peerchaincode.html).
-
-你可以在[这里](https://docs.docker.com/compose/overview/)阅读更多关于 `docker compose` 命令和
-[这里](../commands/peerchaincode.html)关于 `peer chaincode install` 命令。
 
 ## Instantiate contract
 

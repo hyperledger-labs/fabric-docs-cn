@@ -1,4 +1,4 @@
-# Connection Options - 连接选项
+# Connection Options
 
 **Audience**: Architects, administrators, application and smart contract
 developers
