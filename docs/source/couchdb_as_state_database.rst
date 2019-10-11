@@ -1,7 +1,7 @@
-CouchDB as the State Database - 使用 CouchDB 作为状态数据库
+CouchDB as the State Database
 =============================
 
-State Database options - 状态数据库选项
+State Database options
 ----------------------
 
 State database options include LevelDB and CouchDB. LevelDB is the default key-value state
@@ -11,22 +11,12 @@ Like the LevelDB key-value store, CouchDB can store any binary data that is mode
 document store, CouchDB additionally enables rich query against the chaincode data, when chaincode
 values (e.g. assets) are modeled as JSON data.
 
-状态数据库选项包括 LevelDB 和 CouchDB 。LevelDB 是默认嵌入在节点（peer）程序中的键-值数据库。
-CouchDB 是一个可选的额外扩展的状态数据库。就像 LevelDB 键-值存储一样，CouchDB 可以存储任何在
-链码中建模的二进制数据（CouchDB 附件功能在内部用于非 JSON 二进制数据）。但是作为一个 JSON 文
-档存储数据库，当链码值（比如，资产）以 JSON 数据建模时， CouchDB 额外支持链码数据的富查询。
-
 Both LevelDB and CouchDB support core chaincode operations such as getting and setting a key
 (asset), and querying based on keys. Keys can be queried by range, and composite keys can be
 modeled to enable equivalence queries against multiple parameters. For example a composite
 key of ``owner,asset_id`` can be used to query all assets owned by a certain entity. These key-based
 queries can be used for read-only queries against the ledger, as well as in transactions that
 update the ledger.
-
-LevelDB 和 CouchDB 都支持链码操作，比如获取或者设置一个键（资产），以及基于键查询。键可以按范
-围查询，以复合键建模就可以支持针对多个参数的等效查询。比如一个复合键 ``owner， asset_id`` 就可
-以查询一个实体的所有资产。这些基于键的查询可以用来在账本上做只读查询，同样可以用于在交易中更新
-账本。
 
 If you model assets as JSON and use CouchDB, you can also perform complex rich queries against the
 chaincode data values, using the CouchDB JSON query language within chaincode. These types of
@@ -47,8 +37,12 @@ default embedded LevelDB, and move to CouchDB if you require the additional comp
 It is a good practice to model chaincode asset data as JSON, so that you have the option to perform
 complex rich queries if needed in the future.
 
-.. note:: The key for a CouchDB JSON document cannot begin with an underscore ("_").  Also, a JSON
-   document cannot use the following field names at the top level.  These are reserved for internal use.
+.. note:: The key for a CouchDB JSON document can only contain valid UTF-8 strings and cannot begin
+   with an underscore ("_"). Whether you are using CouchDB or LevelDB, you should avoid using
+   U+0000 (nil byte) in keys.
+
+   JSON documents in CouchDB cannot use the following values as top level field names. These values
+   are reserved for internal use.
 
    - ``Any field beginning with an underscore, "_"``
    - ``~version``
@@ -114,16 +108,6 @@ An example using pagination is included in the :doc:`couchdb_tutorial` tutorial.
 
 CouchDB indexes
 ~~~~~~~~~~~~~~~
-
-.. note:: The Fabric chaincode lifecycle that is being introduced in the v2.0
-          Alpha release does not support using indexes with CouchDB. As a
-          result, the `previous lifecycle process <https://hyperledger-fabric.readthedocs.io/en/release-1.4/chaincode4noah.html>`_  is required to
-          install and instantiate a chaincode that includes CouchDB indexes. You
-          can only use CouchDB indexes with the Fabric v2.0 Alpha if the channel
-          capabilities are set with V1_4 as the highest version enabled in the
-          Application Capabilities section of the `configtx.yaml file <https://github.com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml>`_.
-          CouchDB indexes will not work on channels with v2_0 capabilities
-          enabled.
 
 Indexes in CouchDB are required in order to make JSON queries efficient and are required for
 any JSON query with a sort. Indexes can be packaged alongside chaincode in a
