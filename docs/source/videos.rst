@@ -1,9 +1,7 @@
-Videos - 视频
+Videos
 ======
 
 Refer to the Hyperledger Fabric channel on YouTube
-
-参考 YouTube 上的 Hyperledger Fabric 频道
 
 .. raw:: html
 
@@ -13,8 +11,6 @@ Refer to the Hyperledger Fabric channel on YouTube
 This collection contains developers demonstrating various v1 features and
 components such as: ledger, channels, gossip, SDK, chaincode, MSP, and
 more...
-
-本集合包括各种开发者演示 v1 的特征和组件，比如：账本、通道、gossip、SDK、链码、MSP 等。。。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

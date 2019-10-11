@@ -28,6 +28,7 @@ below, the loggers ``ledgermgmt``, ``kvledger``, and ``peer`` are
 generating logs.
 
 ::
+
    2018-11-01 15:32:38.268 UTC [ledgermgmt] initialize -> INFO 002 Initializing ledger mgmt
    2018-11-01 15:32:38.268 UTC [kvledger] NewProvider -> INFO 003 Initializing ledger provider
    2018-11-01 15:32:38.342 UTC [kvledger] NewProvider -> INFO 004 ledger provider Initialized
@@ -40,7 +41,7 @@ no "master list" of loggers, and logging control constructs can not check
 whether logging loggers actually do or will exist.
 
 Logging specification
----------------------
+----
 
 The logging levels of the ``peer`` and ``orderer`` commands are controlled
 by a logging specification, which is set via the ``FABRIC_LOGGING_SPEC``
@@ -76,7 +77,7 @@ syntax. Examples of specifications:
     chaincode=info:msp,gossip=warning:warning   - Same as above
 
 Logging format
---------------
+----
 
 The logging format of the ``peer`` and ``orderer`` commands is controlled
 via the ``FABRIC_LOGGING_FORMAT`` environment variable. This can be set to
