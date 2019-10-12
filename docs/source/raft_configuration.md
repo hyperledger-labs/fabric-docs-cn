@@ -161,10 +161,6 @@ is done by:
 
 关于维护服务收集的指标列表，参考我们的[指标参考文档](metrics_reference.html)。
 
-While the metrics you prioritize will have a lot to do with your particular use
-case and configuration, there are two metrics in particular you might want to
-monitor:
-
 当你为特定的用例为指标排列优先级而做大量配置工作的时候，有两个特别的指标你可能想要监控：
 
 * `consensus_etcdraft_is_leader`：识别集群中的哪个节点是当前的 leader。如果没有设置任何节点，你就是丢失了法定人数。
