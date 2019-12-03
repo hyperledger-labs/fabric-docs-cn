@@ -24,14 +24,14 @@
 
 .. code:: bash
 
-  curl -sSL http://bit.ly/2ysbOFE | bash -s
+  curl -sSL https://bit.ly/2ysbOFE | bash -s
 
 .. note:: 如果你想使用特定的发布版本，请加一个 Fabric、Fabric-ca 和第三方 Docker 镜像的版本号，下边的命令演示了如何下载  **Fabric v1.4.2** 。
 
 .. code:: bash
 
-  curl -sSL http://bit.ly/2ysbOFE | bash -s -- <fabric_version> <fabric-ca_version> <thirdparty_version>
-  curl -sSL http://bit.ly/2ysbOFE | bash -s -- 1.4.2 1.4.2 0.4.15
+  curl -sSL https://bit.ly/2ysbOFE | bash -s -- <fabric_version> <fabric-ca_version> <thirdparty_version>
+  curl -sSL https://bit.ly/2ysbOFE | bash -s -- 1.4.2 1.4.2 0.4.15
 
 .. note:: 如果运行上述curl命令时出错，则可能是旧版本的 curl 不能处理重定向或环境不支持。请访问 :doc:`prereqs` 页面获取有有关在哪里可以找到最新版的 curl 并获得正确环境的其他信息。或者，你可以访问完整的 URL： https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh
 
