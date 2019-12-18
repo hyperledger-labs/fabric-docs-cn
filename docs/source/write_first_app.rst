@@ -307,7 +307,7 @@ FabCar 智能合约
 .. image:: images/RunningtheSample.png
 
 你可以看到我们的 ``queryAllCars`` 交易，还有另一个叫做 ``createCar`` 。我们稍后将
-在教程中使用他们来更细账本，和添加新的区块。
+在教程中使用他们来更新账本，和添加新的区块。
 
 但是在那之前，返回到 ``query`` 程序，更改 ``evaluateTransaction`` 的请求来查询
 ``CAR4`` 。 ``query`` 程序现在看起来应该是这个样子：
