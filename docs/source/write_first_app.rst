@@ -307,7 +307,7 @@ FabCar 智能合约
 .. image:: images/RunningtheSample.png
 
 你可以看到我们的 ``queryAllCars`` 交易，还有另一个叫做 ``createCar`` 。我们稍后将
-在教程中使用他们来更新账本，和添加新的区块。
+在教程中使用他们来更细账本，和添加新的区块。
 
 但是在那之前，返回到 ``query`` 程序，更改 ``evaluateTransaction`` 的请求来查询
 ``CAR4`` 。 ``query`` 程序现在看起来应该是这个样子：
@@ -350,6 +350,7 @@ FabCar 智能合约
 当交易被验证和提交后，应用程序会收到一个交易成功的提醒。但是在底层，区块链网络中
 各组件中不同的 **共识** 程序协同工作，来保证账本的每一个更新提案都是合法的，而且
 有一个大家一致认可的顺序。
+
 .. image:: tutorial/write_first_app.diagram.2.png
 
 上图中，我们可以看到完成这项工作的主要组件。同时，多个节点中每一个节点都拥有一
@@ -365,7 +366,7 @@ FabCar 智能合约
 
   await contract.submitTransaction('createCar', 'CAR12', 'Honda', 'Accord', 'Black', 'Tom');
 
-看一下应用程序如何调用智能合约的交易 ``createCar`` 来创建一量车主为 Tom 的黑
+看一下应用程序如何调用智能合约的交易 ``createCar`` 来创建一辆车主为 Tom 的黑
 色 Honda Accord 汽车。我们使用 ``CAR12`` 作为这里的键，这也说明了我们不必使用
 连续的键。
 
