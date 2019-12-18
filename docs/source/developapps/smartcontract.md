@@ -210,7 +210,7 @@ async buy(ctx, issuer, paperNumber, currentOwner, newOwner, price, purchaseDateT
 在使用 `paper.setOwner(newOwner)` 更改拥有者之前，理解交易如何检查 `currentOwner` 并检查该 `paper` 应该是 `TRADING` 状态的。基本流程很简单：检查一些前提条件，设置新拥有者，
 更新账本上的商业票据，并将更新的商业票据（序列化为 buffer ）作为交易响应返回。
 
-你为什么不看一下你否能理解**兑换**交易的逻辑？
+你为什么不看一下你是否能理解**兑换**交易的逻辑？
 
 ## 表示对象
 
