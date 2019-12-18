@@ -70,7 +70,7 @@ const issueResponse = await contract.submitTransaction('issue', 'MagnetoCorp', '
 被定义在链码内的第一个智能合约被成为*默认*合约。这个默认是有用的，因为链码内往往有一个被定义的智能合约；这个默认的智能合约允许应用程序直接地访问这些交易，而不需要特殊指定合约名称。
 
 ![default.contract](./develop.diagram.21.png)
-*一个默认地智能合约是第一个被定义在链码的智能合约。*
+*一个默认的智能合约是第一个被定义在链码的智能合约。*
 
 在这个图表中，`CommercialPaperContract` 就是那个默认的智能合约。即使我们有两个智能合约，默认的智能合约让我们[当前](#应用程序)的例子更加容易去编写。
 
