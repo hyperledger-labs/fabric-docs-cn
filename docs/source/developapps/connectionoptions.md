@@ -37,7 +37,7 @@ application more readable, and less error prone.
 ## Usage
 
 We'll describe the [full set](#options) of connection options available to an
-application in a moment; let's first see see how they are specified by the
+application in a moment; let's first see how they are specified by the
 sample MagnetoCorp `issue` application:
 
 ```javascript
@@ -214,7 +214,7 @@ connection options.
   application's organization to commit the transaction. This is a good default
   because applications can be sure that all their peers have an up-to-date copy
   of the ledger, minimizing concurrency
-  [issues](../arch-deep-dive.html#the-endorsing-peer-simulates-a-transaction-and-produces-an-endorsement-signature).
+  issues <!-- Add a link with more information explaining this topic-->
 
   However, as the number of peers in an organization grows, it becomes a little
   unnecessary to wait for all peers, in which case using a pluggable event

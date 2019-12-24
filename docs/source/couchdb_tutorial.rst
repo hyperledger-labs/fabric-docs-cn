@@ -6,6 +6,11 @@ This tutorial will describe the steps required to use the CouchDB as the state
 database with Hyperledger Fabric. By now, you should be familiar with Fabric
 concepts and have explored some of the samples and tutorials.
 
+.. note:: These instructions use the new Fabric chaincode lifecycle introduced
+          in the Fabric v2.0 release. If you would like to use the previous
+          lifecycle model to use indexes with chaincode, visit the v1.4
+          version of the `Using CouchDB <https://hyperledger-fabric.readthedocs.io/en/release-1.4/couchdb_tutorial.html>`__.
+
 The tutorial will take you through the following steps:
 
 #. :ref:`cdb-enable-couch`
@@ -13,6 +18,7 @@ The tutorial will take you through the following steps:
 #. :ref:`cdb-add-index`
 #. :ref:`cdb-install-instantiate`
 #. :ref:`cdb-query`
+#. :ref:`cdb-best`
 #. :ref:`cdb-pagination`
 #. :ref:`cdb-update-index`
 #. :ref:`cdb-delete-index`
@@ -246,13 +252,13 @@ deployment by being placed alongside it in the appropriate metadata folder.
 If your chaincode installation and instantiation uses the Hyperledger
 Fabric Node SDK, the JSON index files can be located in any folder as long
 as it conforms to this `directory structure <https://fabric-sdk-node.github.io/tutorial-metadata-chaincode.html>`__.
-During the chaincode installation using the client.installChaincode() API,
+During the chaincode installation using the ``client.installChaincode()`` API,
 include the attribute (``metadataPath``) in the `installation request <https://fabric-sdk-node.github.io/global.html#ChaincodeInstallRequest>`__.
 The value of the metadataPath is a string representing the absolute path to the
 directory structure containing the JSON index file(s).
 
 Alternatively, if you are using the
-:doc:`peer-commands` to install and instantiate the chaincode, then the JSON
+:doc:`commands/peercommand` command to install and instantiate the chaincode, then the JSON
 index files must be located under the path ``META-INF/statedb/couchdb/indexes``
 which is located inside the directory where the chaincode resides.
 
@@ -264,11 +270,17 @@ is packaged with the chaincode which will be installed using the peer commands.
   :align: center
   :alt: Marbles Chaincode Index Package
 
+This sample includes one index named indexOwnerDoc:
+
+.. code:: json
+
+  {"index":{"fields":["docType","owner"]},"ddoc":"indexOwnerDoc", "name":"indexOwner","type":"json"}
+
 
 Start the network
 -----------------
 
- :guilabel:`Try it yourself`
+:guilabel:`Try it yourself`
 
  Before installing and instantiating the marbles chaincode, we need to start
  up the BYFN network. For the sake of this tutorial, we want to operate
@@ -295,77 +307,192 @@ Start the network
 
 .. _cdb-install-instantiate:
 
-Install and instantiate the Chaincode
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Install and define the Chaincode
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Client applications interact with the blockchain ledger through chaincode. As
-such we need to install the chaincode on every peer that will
-execute and endorse our transactions and instantiate the chaincode on the
-channel. In the previous section, we demonstrated how to package the chaincode
-so they should be ready for deployment.
+Client applications interact with the blockchain ledger through chaincode.
+Therefore we need to install a chaincode on every peer that will execute and
+endorse our transactions. However, before we can interact with our chaincode,
+the members of the channel need to agree on a chaincode definition that
+establishes chaincode governance. In the previous section, we demonstrated how
+to add the index to the chaincode folder so that it is ready for deployment.
 
-Chaincode is installed onto a peer and then instantiated onto the channel using
-:doc:`peer-commands`.
+The chaincode needs to be packaged before it can be installed on our peers.
+We can use the `peer lifecycle chaincode package <http://hyperledger-fabric.readthedocs.io/en/latest/commands/peerlifecycle.html#peer-lifecycle-chaincode-package>`__ command
+to package the marbles chaincode.
 
+:guilabel:`Try it yourself`
 
-1. Use the `peer chaincode install <http://hyperledger-fabric.readthedocs.io/en/master/commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-install>`__ command to install the Marbles chaincode on a peer.
+Assuming you have started the BYFN network, enter the CLI container:
 
- :guilabel:`Try it yourself`
+.. code:: bash
 
- Assuming you have started the BYFN network, navigate into the CLI
- container using the command:
+    docker exec -it cli bash
 
- .. code:: bash
+Your command prompt will change to something similar to:
 
-      docker exec -it cli bash
+.. code:: bash
 
- Use the following command to install the Marbles chaincode from the git
- repository onto a peer in your BYFN network. The CLI container defaults
- to using peer0 of org1:
+   bash-4.4#
 
- .. code:: bash
+1. Use the following command to package the marbles chaincode from the git
+repository inside your local container.
 
-      peer chaincode install -n marbles -v 1.0 -p github.com/chaincode/marbles02/go
+.. code:: bash
 
-2. Issue the `peer chaincode instantiate <http://hyperledger-fabric.readthedocs.io/en/master/commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-instantiate>`__ command to instantiate the
-chaincode on a channel.
+    peer lifecycle chaincode package marbles.tar.gz --path github.com/hyperledger/fabric-samples/chaincode/marbles02/go --lang golang --label marbles_1
 
- :guilabel:`Try it yourself`
+This command will create a chaincode package named marbles.tar.gz.
 
- To instantiate the Marbles sample on the BYFN channel ``mychannel``
- run the following command:
+2. Use the following command to install the chaincode package onto the peer
+``peer0.org1.example.com`` in your BYFN network. By default, after starting
+the BYFN network, the active peer is set to:
+``CORE_PEER_ADDRESS=peer0.org1.example.com:7051``:
 
- .. code:: bash
+.. code:: bash
 
-    export CHANNEL_NAME=mychannel
-    peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n marbles -v 1.0 -c '{"Args":["init"]}' -P "OR ('Org0MSP.peer','Org1MSP.peer')"
+    peer lifecycle chaincode install marbles.tar.gz
+
+A successful install command will return the chaincode identifier, similar to
+the response below:
+
+.. code:: bash
+
+    2019-04-22 18:47:38.312 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 001 Installed remotely: response:<status:200 payload:"\nJmarbles_1:0907c1f3d3574afca69946e1b6132691d58c2f5c5703df7fc3b692861e92ecd3\022\tmarbles_1" >
+    2019-04-22 18:47:38.312 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 002 Chaincode code package identifier: marbles_1:0907c1f3d3574afca69946e1b6132691d58c2f5c5703df7fc3b692861e92ecd3
+
+After installing the chaincode on our peer, we need to approve a chaincode
+definition for our organization, and commit the chaincode definition to the
+channel. The chaincode definition includes the package identifier that was
+returned by the install command. We can also use the `peer lifecycle chaincode queryinstalled <http://hyperledger-fabric.readthedocs.io/en/latest/commands/peerlifecycle.html#peer-lifecycle-chaincode-queryinstalled>`__
+command to find the package ID of ``marbles.tar.gz``.
+
+3. Use the following command to query your peer for the package ID of the
+installed chaincode.
+
+.. code:: bash
+
+    peer lifecycle chaincode queryinstalled
+
+The command will return the same package identifier as the install command.
+You should see output similar to the following:
+
+.. code:: bash
+
+    Installed chaincodes on peer:
+    Package ID: marbles_1:0907c1f3d3574afca69946e1b6132691d58c2f5c5703df7fc3b692861e92ecd3, Label: marbles_1
+    Package ID: mycc_1:27ef99cb3cbd1b545063f018f3670eddc0d54f40b2660b8f853ad2854c49a0d8, Label: mycc_1
+
+4. Declare the package ID as an environment variable. Paste the package ID of
+marbles_1 returned by the ``peer lifecycle chaincode queryinstalled`` command
+into the command below. The package ID may not be the same for all users, so
+you need to complete this step using the package ID returned from your console.
+
+.. code:: bash
+
+    export CC_PACKAGE_ID=marbles_1:0907c1f3d3574afca69946e1b6132691d58c2f5c5703df7fc3b692861e92ecd3
+
+5. Use the following command to approve a definition of the marbles chaincode
+for Org1. The approval is distributed within each organization, so the command
+does not need to target every peer of an organization.
+
+.. code:: bash
+
+    export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+    peer lifecycle chaincode approveformyorg --channelID mychannel --name marbles --version 1.0 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --package-id $CC_PACKAGE_ID --sequence 1 --tls true --cafile $ORDERER_CA
+
+When the command completes successfully you should see something similar to :
+
+.. code:: bash
+
+    2019-03-18 16:04:09.046 UTC [cli.lifecycle.chaincode] InitCmdFactory -> INFO 001 Retrieved channel (mychannel) orderer endpoint: orderer.example.com:7050
+    2019-03-18 16:04:11.253 UTC [chaincodeCmd] ClientWait -> INFO 002 txid [efba188ca77889cc1c328fc98e0bb12d3ad0abcda3f84da3714471c7c1e6c13c] committed with status (VALID) at
+
+6. We need a majority of organizations to approve a chaincode definition before
+it can be committed to the channel. This implies that we need Org2 to approve
+the chaincode definition as well. Because we do not need Org2 to endorse the
+chaincode and did not install the package on any Org2 peers, we do not need to
+provide a packageID as part of the chaincode definition.
+
+Use the CLI to switch to Org2. Copy and paste the following block of commands
+as a group into the peer container and run them all at once.
+
+.. code:: bash
+
+    export CORE_PEER_ADDRESS=peer0.org2.example.com:9051
+    export CORE_PEER_LOCALMSPID=Org2MSP
+    export PEER0_ORG2_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG2_CA
+    export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+
+7. You can now approve the chaincode definition for Org2:
+
+.. code:: bash
+
+    peer lifecycle chaincode approveformyorg --channelID mychannel --name marbles --version 1.0 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --sequence 1 --tls true --cafile $ORDERER_CA
+
+Once a sufficient number of organizations (in this case, a majority) have
+approved a chaincode definition, one organization can commit the definition to
+the channel using the `peer lifecycle chaincode commit <http://hyperledger-fabric.readthedocs.io/en/latest/commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__ command.
+
+We are ready to use the chaincode after the chaincode definition has been
+committed to the channel. Because the marbles chaincode contains an
+initialization function, we need to use the `peer chaincode invoke <http://hyperledger-fabric.readthedocs.io/en/master/commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-instantiate>`__ command
+to invoke ``Init()`` before we can use other functions in the chaincode.
+
+8. Run the following commands to commit the definition of the marbles private
+data chaincode to the BYFN channel ``mychannel``. This command needs to target
+peers in Org1 and Org2 to collect endorsements for the commit transaction.
+
+.. code:: bash
+
+    export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+    export ORG1_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+    export ORG2_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+    peer lifecycle chaincode commit -o orderer.example.com:7050 --channelID mychannel --name marbles --version 1.0 --sequence 1 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --tls true --cafile $ORDERER_CA --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles $ORG1_CA --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles $ORG2_CA
+
+When the commit transaction completes successfully you should see something
+similar to:
+
+.. code:: bash
+
+    2019-04-22 18:57:34.274 UTC [chaincodeCmd] ClientWait -> INFO 001 txid [3da8b0bb8e128b5e1b6e4884359b5583dff823fce2624f975c69df6bce614614] committed with status (VALID) at peer0.org2.example.com:9051
+    2019-04-22 18:57:34.709 UTC [chaincodeCmd] ClientWait -> INFO 002 txid [3da8b0bb8e128b5e1b6e4884359b5583dff823fce2624f975c69df6bce614614] committed with status (VALID) at peer0.org1.example.com:7051
+
+9. Use the following command to invoke the ``Init`` function to initialize
+the chaincode. This will start the chaincode on ``peer0.org1.example.com:7051``.
+
+.. code:: bash
+
+    peer chaincode invoke -o orderer.example.com:7050 --channelID mychannel --name marbles --isInit --tls true --cafile $ORDERER_CA --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles $ORG1_CA -c '{"Args":["Init"]}'
+
 
 Verify index was deployed
 -------------------------
 
 Indexes will be deployed to each peer's CouchDB state database once the
-chaincode is both installed on the peer and instantiated on the channel. You
+chaincode is both installed on the peer and started on the channel. You
 can verify that the CouchDB index was created successfully by examining the
 peer log in the Docker container.
 
- :guilabel:`Try it yourself`
+:guilabel:`Try it yourself`
 
- To view the logs in the peer docker container,
- open a new Terminal window and run the following command to grep for message
- confirmation that the index was created.
+To view the logs in the peer docker container, open a new Terminal window and
+run the following command to grep for message confirmation that the index was
+created.
 
- ::
+::
 
    docker logs peer0.org1.example.com  2>&1 | grep "CouchDB index"
 
 
- You should see a result that looks like the following:
+You should see a result that looks like the following:
 
- ::
+::
 
-    [couchdb] CreateIndex -> INFO 0be Created CouchDB index [indexOwner] in state database [mychannel_marbles] using design document [_design/indexOwnerDoc]
+   [couchdb] CreateIndex -> INFO 0be Created CouchDB index [indexOwner] in state database [mychannel_marbles] using design document [_design/indexOwnerDoc]
 
- .. note:: If Marbles was not installed on the BYFN peer ``peer0.org1.example.com``,
+.. note:: If Marbles was not installed on the BYFN peer ``peer0.org1.example.com``,
           you may need to replace it with the name of a different peer where
           Marbles was installed.
 
@@ -408,7 +535,6 @@ and ``queryMarblesByOwner``:
       to `CouchDB selector syntax <http://docs.couchdb.org/en/latest/api/database/find.html#find-selectors>`__.
 
 
-
   * **queryMarblesByOwner** --
 
       Example of a parameterized query where the
@@ -427,16 +553,21 @@ docker container. We will customize the `peer chaincode query <http://hyperledge
 command to use the Marbles index ``indexOwner`` and query for all marbles owned
 by "tom" using the ``queryMarbles`` function.
 
- :guilabel:`Try it yourself`
+:guilabel:`Try it yourself`
 
- Before querying the database, we should add some data. Run the following
- command in the peer container to create a marble owned by "tom":
+Before querying the database, we should add some data. Run the following
+command in the peer container as Org1 to create a marble owned by "tom":
 
- .. code:: bash
+.. code:: bash
 
-   peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n marbles -c '{"Args":["initMarble","marble1","blue","35","tom"]}'
+    export CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+    export CORE_PEER_LOCALMSPID=Org1MSP
+    export PEER0_ORG1_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG1_CA
+    export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+    peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marbles -c '{"Args":["initMarble","marble1","blue","35","tom"]}'
 
- After an index has been deployed during chaincode instantiation, it will
+ After an index has been deployed when the chaincode is initialized, it will
  automatically be utilized by chaincode queries. CouchDB can determine which
  index to use based on the fields being queried. If an index exists for the
  query criteria it will be used. However the recommended approach is to
@@ -447,12 +578,13 @@ by "tom" using the ``queryMarbles`` function.
  .. code:: bash
 
    // Rich Query with index name explicitly specified:
-   peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}"]}'
+   peer chaincode query -C mychannel -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}"]}'
 
 Delving into the query command above, there are three arguments of interest:
 
 *  ``queryMarbles``
-  Name of the function in the Marbles chaincode. Notice a `shim <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim>`__
+
+  Name of the function in the Marbles chaincode. Notice a `shim <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`__
   ``shim.ChaincodeStubInterface`` is used to access and modify the ledger. The
   ``getQueryResultForQueryString()`` passes the queryString to the shim API ``getQueryResult()``.
 
@@ -476,11 +608,13 @@ Delving into the query command above, there are three arguments of interest:
   }
 
 *  ``{"selector":{"docType":"marble","owner":"tom"}``
+
   This is an example of an **ad hoc selector** string which finds all documents
   of type ``marble`` where the ``owner`` attribute has a value of ``tom``.
 
 
 *  ``"use_index":["_design/indexOwnerDoc", "indexOwner"]``
+
   Specifies both the design doc name  ``indexOwnerDoc`` and index name
   ``indexOwner``. In this example the selector query explicitly includes the
   index name, specified by using the ``use_index`` keyword. Recalling the
@@ -496,8 +630,125 @@ The query runs successfully and the index is leveraged with the following result
 
   Query Result: [{"Key":"marble1", "Record":{"color":"blue","docType":"marble","name":"marble1","owner":"tom","size":35}}]
 
-.. _cdb-pagination:
+.. _cdb-best:
 
+Use best practices for queries and indexes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Queries that use indexes will complete faster, without having to scan the full
+database in couchDB. Understanding indexes will allow you to write your queries
+for better performance and help your application handle larger amounts
+of data or blocks on your network.
+
+It is also important to plan the indexes you install with your chaincode. You
+should install only a few indexes per chaincode that support most of your queries.
+Adding too many indexes, or using an excessive number of fields in an index, will
+degrade the performance of your network. This is because the indexes are updated
+after each block is committed. The more indexes need to be updated through
+"index warming", the longer it will take for transactions to complete.
+
+The examples in this section will help demonstrate how queries use indexes and
+what type of queries will have the best performance. Remember the following
+when writing your queries:
+
+* All fields in the index must also be in the selector or sort sections of your query
+  for the index to be used.
+* More complex queries will have a lower performance and will be less likely to
+  use an index.
+* You should try to avoid operators that will result in a full table scan or a
+  full index scan such as ``$or``, ``$in`` and ``$regex``.
+
+In the previous section of this tutorial, you issued the following query against
+the marbles chaincode:
+
+.. code:: bash
+
+  // Example one: query fully supported by the index
+  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
+
+The marbles chaincode was installed with the ``indexOwnerDoc`` index:
+
+.. code:: json
+
+  {"index":{"fields":["docType","owner"]},"ddoc":"indexOwnerDoc", "name":"indexOwner","type":"json"}
+
+Notice that both the fields in the query, ``docType`` and ``owner``, are
+included in the index, making it a fully supported query. As a result this
+query will be able to use the data in the index, without having to search the
+full database. Fully supported queries such as this one will return faster than
+other queries from your chaincode.
+
+If you add extra fields to the query above, it will still use the index.
+However, the query will additionally have to scan the indexed data for the
+extra fields, resulting in a longer response time. As an example, the query
+below will still use the index, but will take a longer time to return than the
+previous example.
+
+.. code:: bash
+
+  // Example two: query fully supported by the index with additional data
+  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\",\"color\":\"red\"}, \"use_index\":[\"/indexOwnerDoc\", \"indexOwner\"]}"]}'
+
+A query that does not include all fields in the index will have to scan the full
+database instead. For example, the query below searches for the owner, without
+specifying the the type of item owned. Since the ownerIndexDoc contains both
+the ``owner`` and ``docType`` fields, this query will not be able to use the
+index.
+
+.. code:: bash
+
+  // Example three: query not supported by the index
+  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"owner\":\"tom\"}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
+
+In general, more complex queries will have a longer response time, and have a
+lower chance of being supported by an index. Operators such as ``$or``, ``$in``,
+and ``$regex`` will often cause the query to scan the full index or not use the
+index at all.
+
+As an example, the query below contains an ``$or`` term that will search for every
+marble and every item owned by tom.
+
+.. code:: bash
+
+  // Example four: query with $or supported by the index
+  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{"\$or\":[{\"docType\:\"marble\"},{\"owner\":\"tom\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
+
+This query will still use the index because it searches for fields that are
+included in ``indexOwnerDoc``. However, the ``$or`` condition in the query
+requires a scan of all the items in the index, resulting in a longer response
+time.
+
+Below is an example of a complex query that is not supported by the index.
+
+.. code:: bash
+
+  // Example five: Query with $or not supported by the index
+  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{"\$or\":[{\"docType\":\"marble\",\"owner\":\"tom\"},{"\color\":"\yellow\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
+
+The query searches for all marbles owned by tom or any other items that are
+yellow. This query will not use the index because it will need to search the
+entire table to meet the ``$or`` condition. Depending the amount of data on your
+ledger, this query will take a long time to respond or may timeout.
+
+While it is important to follow best practices with your queries, using indexes
+is not a solution for collecting large amounts of data. The blockchain data
+structure is optimized to validate and confirm transactions and is not suited
+for data analytics or reporting. If you want to build a dashboard as part
+of your application or analyze the data from your network, the best practice is
+to query an off chain database that replicates the data from your peers. This
+will allow you to understand the data on the blockchain without degrading the
+performance of your network or disrupting transactions.
+
+You can use block or chaincode events from your application to write transaction
+data to an off-chain database or analytics engine. For each block received, the block
+listener application would iterate through the block transactions and build a data
+store using the key/value writes from each valid transaction's ``rwset``. The
+:doc:`peer_event_services` provide replayable events to ensure the integrity of
+downstream data stores. For an example of how you can use an event listener to write
+data to an external database, visit the `Off chain data sample <https://github.com/hyperledger/fabric-samples/tree/master/off_chain_data>`__
+in the Fabric Samples.
+
+.. _cdb-pagination:
 
 Query the CouchDB State Database With Pagination
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -511,7 +762,7 @@ chaincode that executes the query until no more results are returned. For more i
 this `topic on pagination with CouchDB <http://hyperledger-fabric.readthedocs.io/en/master/couchdb_as_state_database.html#couchdb-pagination>`__.
 
 
-We will use the  `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__
+We will use the `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__
 function ``queryMarblesWithPagination`` to  demonstrate how
 pagination can be implemented in chaincode and the client application.
 
@@ -543,10 +794,11 @@ specifies the number of records to return per query.  The ``bookmark`` is an
 a unique bookmark.)
 
 *  ``queryMarblesWithPagination``
-  Name of the function in the Marbles chaincode. Notice a `shim <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim>`__
+
+  Name of the function in the Marbles chaincode. Notice a `shim <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`__
   ``shim.ChaincodeStubInterface`` is used to access and modify the ledger. The
   ``getQueryResultForQueryStringWithPagination()`` passes the queryString along
-    with the pagesize and bookmark to the shim API ``GetQueryResultWithPagination()``.
+  with the pagesize and bookmark to the shim API ``GetQueryResultWithPagination()``.
 
 .. code:: bash
 

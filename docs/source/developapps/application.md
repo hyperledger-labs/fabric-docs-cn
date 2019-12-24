@@ -2,10 +2,10 @@
 
 **Audience**: Architects, Application and smart contract developers
 
-An application can interact with a blockhain network by submitting transactions
+An application can interact with a blockchain network by submitting transactions
 to a ledger or querying ledger content. This topic covers the mechanics of how
 an application does this; in our scenario, organizations access PaperNet using
-applications which invoke **issue**, **sell** and **redeem** transactions
+applications which invoke **issue**, **buy** and **redeem** transactions
 defined in a commercial paper smart contract. Even though MagnetoCorp's
 application to issue a commercial paper is basic, it covers all the major points
 of understanding.
@@ -23,9 +23,8 @@ In this topic, we're going to cover:
 To help your understanding, we'll make reference to the commercial paper sample
 application provided with Hyperledger Fabric. You can [download
 it](../install.html) and [run it locally](../tutorial/commercial_paper.html). It
-is written in JavaScript, but the logic is quite language independent, so you'll
-be easily able to see what's going on! (The sample will become available for
-Java and GOLANG as well.)
+is written in both JavaScript and Java, but the logic is quite language independent, so you'll
+easily be able to see what's going on! (The sample will become available for  Go as well.)
 
 ## Basic Flow
 
@@ -247,13 +246,13 @@ access this smart contract:
 const contract = await network.getContract('papercontract', 'org.papernet.commercialpaper');
 ```
 
-Note how the application provides a name -- `papercontract` -- and the optional
-namespace of a contract: `org.papernet.commercialpaper`! We see how a
-[namespace](./namespace.html) picks out a particular contract from a chaincode
-file such as `papercontract.js` that contains many contracts. In PaperNet,
-`papercontract.js` was installed and instantiated with the name `papercontract`,
-and if you're interested, [read how](../chaincode4noah.html) to install and
-instantiate a chaincode containing multiple smart contracts.
+Note how the application provides a name -- `papercontract` -- and an explicit
+contract name: `org.papernet.commercialpaper`! We see how a [contract
+name](./contractname.html) picks out one contract from the `papercontract.js`
+chaincode file that contains many contracts. In PaperNet, `papercontract.js` was
+installed and instantiated with the name `papercontract`, and if you're
+interested, read [how](../chaincode4noah.html) to install and instantiate a
+chaincode containing multiple smart contracts.
 
 If our application simultaneously required access to another contract in
 PaperNet or BondNet this would be easy:
@@ -264,8 +263,9 @@ const euroContract = await network.getContract('EuroCommercialPaperContract');
 const bondContract = await network2.getContract('BondContract');
 ```
 
-In these examples, note how we didn't use a qualifying namespace -- we assumed
-only one smart contract per file.
+In these examples, note how we didn't use a qualifying contract name -- we have
+only one smart contract per file, and `getContract()` will use the first
+contract it finds.
 
 Recall the transaction MagnetoCorp uses to issue its first commercial paper:
 
@@ -304,6 +304,11 @@ send the transaction proposal to the right peers in the network, where it can
 get the required endorsements. But the application doesn't need to worry about
 any of this -- it just issues `submitTransaction` and the SDK takes care of it
 all!
+
+Note that the `submitTransaction` API includes a process for listening for
+transaction commits. Listening for commits is required because without it,
+you will not know whether your transaction has successfully been orderered,
+validated, and committed to the ledger.
 
 Let's now turn our attention to how the application handles the response!
 
@@ -346,7 +351,7 @@ you're interested in what the SDK does under the covers, read the detailed
 That’s it! In this topic you’ve understood how to call a smart contract from a
 sample application by examining how MagnetoCorp's application issues a new
 commercial paper in PaperNet. Now examine the key ledger and smart contract data
-structures are designed by in the [architecture topic](./architecture.md) behind
+structures are designed by in the [architecture topic](./architecture.html) behind
 them.
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
