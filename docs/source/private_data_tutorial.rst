@@ -347,7 +347,7 @@ Use the `peer chaincode install <http://hyperledger-fabric.readthedocs.io/en/mas
 
     .. code:: bash
 
-       export CORE_PEER_ADDRESS=peer1.org1.example.com:7051
+       export CORE_PEER_ADDRESS=peer1.org1.example.com:8051
        peer chaincode install -n marblesp -v 1.0 -p github.com/chaincode/marbles02_private/go/
 
  3. Use the CLI to switch to Org2. Copy and paste the following block of
@@ -364,14 +364,14 @@ Use the `peer chaincode install <http://hyperledger-fabric.readthedocs.io/en/mas
 
     .. code:: bash
 
-       export CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+       export CORE_PEER_ADDRESS=peer0.org2.example.com:9051
        peer chaincode install -n marblesp -v 1.0 -p github.com/chaincode/marbles02_private/go/
 
  5. Switch the active peer to the second peer in org2 and install the chaincode:
 
     .. code:: bash
 
-       export CORE_PEER_ADDRESS=peer1.org2.example.com:7051
+       export CORE_PEER_ADDRESS=peer1.org2.example.com:10051
        peer chaincode install -n marblesp -v 1.0 -p github.com/chaincode/marbles02_private/go/
 
 Instantiate the chaincode on the channel
@@ -435,11 +435,12 @@ submit a request to add a marble:
  as transient data will not be persisted in the transaction in order to keep
  the data private. Transient data is passed as binary data and therefore when
  using CLI it must be base64 encoded. We use an environment variable
- to capture the base64 encoded value.
+ to capture the base64 encoded value, and use ``tr`` command to strip off the
+ problematic newline characters that linux base64 command adds.
 
  .. code:: bash
 
-   export MARBLE=$(echo -n "{\"name\":\"marble1\",\"color\":\"blue\",\"size\":35,\"owner\":\"tom\",\"price\":99}" | base64)
+   export MARBLE=$(echo -n "{\"name\":\"marble1\",\"color\":\"blue\",\"size\":35,\"owner\":\"tom\",\"price\":99}" | base64 | tr -d \\n)
    peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["initMarble"]}'  --transient "{\"marble\":\"$MARBLE\"}"
 
  You should see results similar to:
@@ -564,7 +565,7 @@ the peer which is unauthorized to access the marbles ``price`` private data.
 
  .. code:: bash
 
-    export CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+    export CORE_PEER_ADDRESS=peer0.org2.example.com:9051
     export CORE_PEER_LOCALMSPID=Org2MSP
     export PEER0_ORG2_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
     export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG2_CA
@@ -700,7 +701,7 @@ price private data is purged.
 
  .. code:: bash
 
-    export MARBLE=$(echo -n "{\"name\":\"marble2\",\"color\":\"blue\",\"size\":35,\"owner\":\"tom\",\"price\":99}" | base64)
+    export MARBLE=$(echo -n "{\"name\":\"marble2\",\"color\":\"blue\",\"size\":35,\"owner\":\"tom\",\"price\":99}" | base64 | tr -d \\n)
     peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["initMarble"]}' --transient "{\"marble\":\"$MARBLE\"}"
 
  Switch back to the Terminal window and view the private data logs for this peer
@@ -729,7 +730,7 @@ price private data is purged.
 
  .. code:: bash
 
-    export MARBLE_OWNER=$(echo -n "{\"name\":\"marble2\",\"owner\":\"joe\"}" | base64)
+    export MARBLE_OWNER=$(echo -n "{\"name\":\"marble2\",\"owner\":\"joe\"}" | base64 | tr -d \\n)
     peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["transferMarble"]}' --transient "{\"marble_owner\":\"$MARBLE_OWNER\"}"
 
  Switch back to the Terminal window and view the private data logs for this peer
@@ -757,7 +758,7 @@ price private data is purged.
 
  .. code:: bash
 
-    export MARBLE_OWNER=$(echo -n "{\"name\":\"marble2\",\"owner\":\"tom\"}" | base64)
+    export MARBLE_OWNER=$(echo -n "{\"name\":\"marble2\",\"owner\":\"tom\"}" | base64 | tr -d \\n)
     peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["transferMarble"]}' --transient "{\"marble_owner\":\"$MARBLE_OWNER\"}"
 
  Switch back to the Terminal window and view the private data logs for this peer
@@ -786,7 +787,7 @@ price private data is purged.
 
  .. code:: bash
 
-    export MARBLE_OWNER=$(echo -n "{\"name\":\"marble2\",\"owner\":\"jerry\"}" | base64)
+    export MARBLE_OWNER=$(echo -n "{\"name\":\"marble2\",\"owner\":\"jerry\"}" | base64 | tr -d \\n)
     peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["transferMarble"]}' --transient "{\"marble_owner\":\"$MARBLE_OWNER\"}"
 
  Switch back to the Terminal window and view the private data logs for this peer

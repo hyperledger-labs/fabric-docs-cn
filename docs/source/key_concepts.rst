@@ -11,6 +11,9 @@ Key Concepts
    identity/identity.md
    membership/membership.md
    peers/peers.md
-   private-data/private-data.md
+   smartcontract/smartcontract.md
    ledger/ledger.md
+   orderer/ordering_service.md
+   private-data/private-data.md
+   capabilities_concept.md
    usecases

@@ -24,7 +24,7 @@ Prerequisites
 ~~~~~~~~~~~~~
 
 -  `Git client <https://git-scm.com/downloads>`__
--  `Go <https://golang.org/dl/>`__ - version 1.11.x
+-  `Go <https://golang.org/dl/>`__ - version 1.12.x
 -  (macOS)
    `Xcode <https://itunes.apple.com/us/app/xcode/id497799835?mt=12>`__
    must be installed
@@ -102,28 +102,20 @@ If you continue with ``core.autocrlf`` set to ``true``, the
 Cloning the Hyperledger Fabric source
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+First navigate to https://github.com/hyperledger/fabric and fork the
+fabric repository using the fork button in the top-right corner
+
 Since Hyperledger Fabric is written in ``Go``, you'll need to
-clone the source repository to your $GOPATH/src directory. If your $GOPATH
+clone the forked repository to your $GOPATH/src directory. If your $GOPATH
 has multiple path components, then you will want to use the first one.
 There's a little bit of setup needed:
 
 ::
 
-    cd $GOPATH/src
-    mkdir -p github.com/hyperledger
-    cd github.com/hyperledger
-
-Recall that we are using ``Gerrit`` for source control, which has its
-own internal git repositories. Hence, we will need to clone from
-:doc:`Gerrit <../Gerrit/gerrit>`.
-For brevity, the command is as follows:
-
-::
-
-    git clone ssh://LFID@gerrit.hyperledger.org:29418/fabric && scp -p -P 29418 LFID@gerrit.hyperledger.org:hooks/commit-msg fabric/.git/hooks/
-
-**Note:** Of course, you would want to replace ``LFID`` with your own
-:doc:`Linux Foundation ID <../Gerrit/lf-account>`.
+    mkdir -p github.com/<your_github_userid>
+    cd github.com/<your_github_userid>
+    git clone https://github.com/<your_github_userid>/fabric
+    cd github.com/<your_github_userid>
 
 Bootstrapping the VM using Vagrant
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
