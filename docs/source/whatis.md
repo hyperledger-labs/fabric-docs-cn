@@ -290,11 +290,11 @@ particular deployment or solution. This modular architecture allows the platform
 to rely on well-established toolkits for CFT (crash fault-tolerant) or BFT
 (byzantine fault-tolerant) ordering.
 
-In the currently available releases, Fabric offers a CFT ordering service
-implemented with [Kafka](https://kafka.apache.org/) and
-[Zookeeper](https://zookeeper.apache.org/). In subsequent releases, Fabric will
-deliver a [Raft consensus ordering service](https://raft.github.io/) implemented
-with etcd/Raft and a fully decentralized BFT ordering service.
+Fabric currently offers two CFT ordering service implementations. The first is
+based on the [`etcd` library](https://coreos.com/etcd/) of the [Raft protocol](https://raft.github.io/raft.pdf).
+The other is [Kafka](https://kafka.apache.org/) (which uses [Zookeeper](https://zookeeper.apache.org/)
+internally). For information about currently available ordering services, check
+out our [conceptual documentation about ordering](./orderer/ordering_service.html).
 
 Note also that these are not mutually exclusive. A Fabric network can have
 multiple ordering services supporting different applications or application
@@ -332,7 +332,7 @@ enable the platform to support a wide range of industry use cases ranging from
 government, to finance, to supply-chain logistics, to healthcare and so much
 more.
 
-More importantly, Hyperledger Fabric is the most active of the (currently) ten
+Hyperledger Fabric is the most active of the
 Hyperledger projects. The community building around the platform is growing
 steadily, and the innovation delivered with each successive release far
 out-paces any of the other enterprise blockchain platforms.

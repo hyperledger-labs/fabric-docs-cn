@@ -6,6 +6,12 @@ you have all the prerequisites below installed on the platform(s)
 on which you'll be developing blockchain applications and/or operating
 Hyperledger Fabric.
 
+Install Git
+-----------
+Download the latest version of `git
+<https://git-scm.com/downloads>`_ if it is not already installed,
+or if you have problems running the curl commands.
+
 Install cURL
 ------------
 
@@ -36,6 +42,26 @@ command from a terminal prompt:
 
   docker --version
 
+.. note:: The following applies to linux systems running systemd.
+
+Make sure the docker daemon is running.
+
+.. code:: bash
+
+  sudo systemctl start docker
+
+Optional: If you want the docker daemon to start when the system starts, use the following:
+
+.. code:: bash
+
+  sudo systemctl enable docker
+
+Add your user to the docker group.
+
+.. code:: bash
+
+  sudo usermod -a -G docker <username>
+
 .. note:: Installing Docker for Mac or Windows, or Docker Toolbox will also
           install Docker Compose. If you already had Docker installed, you
           should check that you have Docker Compose version 1.14.0 or greater
@@ -57,7 +83,7 @@ Go Programming Language
 Hyperledger Fabric uses the Go Programming Language for many of its
 components.
 
-  - `Go <https://golang.org/dl/>`__ version 1.11.x is required.
+  - `Go <https://golang.org/dl/>`__ version 1.13.x is required.
 
 Given that we will be writing chaincode programs in Go, there are two
 environment variables you will need to set properly; you can make these
@@ -97,12 +123,10 @@ Node.js Runtime and NPM
 -----------------------
 
 If you will be developing applications for Hyperledger Fabric leveraging the
-Hyperledger Fabric SDK for Node.js, you will need to have version 8.9.x of Node.js
-installed.
+Hyperledger Fabric SDK for Node.js, version 8 is supported from 8.9.4 and higher.
+Node.js version 10 is supported from 10.15.3 and higher.
 
-.. note:: Versions other than the 8.x series are not supported at this time.
-
-  - `Node.js <https://nodejs.org/en/download/>`__ - version 8.x
+  - `Node.js <https://nodejs.org/en/download/>`__ download
 
 .. note:: Installing Node.js will also install NPM, however it is recommended
           that you confirm the version of NPM installed. You can upgrade
