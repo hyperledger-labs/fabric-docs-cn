@@ -24,7 +24,7 @@ Hyperledger Fabric 提供了不同编程语言的很多 APIs 来支持开发智�
   * `Node.js 合约 API <https://github.com/hyperledger/fabric-chaincode-node>`__ 和 `Node.js 合约 API 文档 <https://fabric-shim.github.io/>`__.
     * `Java 合约 API <https://github.com/hyperledger/fabric-chaincode-java>`__ and `Java 合约 API 文档 <https://hyperledger.github.io/fabric-chaincode-java/>`__.
 
-Hyperledge Fabric 应用程序 SKDs
+Hyperledge Fabric 应用程序 SDKs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Hyperledger Fabric 提供了许多 SDK 来支持各种编程语言开发应用程序。 SDK 有支持 Node.js 和 Java 语言的：
